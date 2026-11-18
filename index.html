@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<title>6 Micro-SaaS Việt Nam — Dùng thử ngay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F7F4; --surface:#FFFFFF; --surface2:#EEF2EE; --ink:#13201B; --muted:#5C6D65; --line:#DDE3DC;
+  --accent:#0B7A5E; --accent-ink:#065F4A; --accent-soft:#DFF3EC; --warm:#E4571D; --warm-soft:#FDECE4;
+  --gold:#B7791F; --radius:14px; --shadow:0 1px 3px rgba(19,32,27,.08),0 8px 24px rgba(19,32,27,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0E1512; --surface:#17211C; --surface2:#1E2B24; --ink:#E9F2ED; --muted:#9DB0A5; --line:#2A3A32; --accent:#2EC49A; --accent-ink:#7FE3C3; --accent-soft:#12362B; --warm:#FF7A45; --warm-soft:#3A2218; --shadow:0 1px 3px rgba(0,0,0,.4); }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:16px;line-height:1.55}
+a{color:var(--accent-ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+button,[role="button"],select,summary{min-height:40px}
+input,select,textarea{min-height:44px;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--surface);width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+label{font-size:.82rem;font-weight:600;display:block;margin-bottom:5px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 18px}
+.mono{font-family:"IBM Plex Mono",monospace}
+/* top nav */
+.topnav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topnav-in{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px;max-width:1140px;margin:0 auto}
+@media(max-width:640px){.topnav-in{padding:8px 10px;gap:5px}.topnav a{font-size:.8rem;padding:7px 10px;min-height:34px}}
+.topnav a{white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:600;font-size:.86rem;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;min-height:38px}
+.topnav a.cta{background:var(--warm);color:#fff;border-color:var(--warm)}
+/* hero */
+.hero{padding:34px 0 8px}
+.hero h1{font-size:clamp(1.9rem,5.2vw,3.1rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 12px;font-weight:900;max-width:820px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lead{font-size:1.06rem;color:var(--muted);max-width:720px;margin:0 0 20px}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 6px}
+@media(max-width:760px){.statrow{grid-template-columns:1fr 1fr}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.stat b{font-size:1.45rem;display:block;line-height:1.1}
+.stat span{font-size:.8rem;color:var(--muted)}
+.stat.hot{border-color:var(--warm);background:var(--warm-soft)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);padding:10px 16px;font-weight:700;cursor:pointer;text-decoration:none;font-size:.92rem;min-height:44px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.warm{background:var(--warm);border-color:var(--warm);color:#fff}
+.btn:active{transform:translateY(1px)}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+/* sections */
+section{padding:30px 0 6px}
+h2{font-size:clamp(1.35rem,3vw,1.8rem);letter-spacing:-.01em;margin:0 0 6px;line-height:1.2}
+.sub{color:var(--muted);max-width:760px;margin:0 0 18px}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid6{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.grid6{grid-template-columns:1fr}}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px}
+.pcard .num{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent);font-size:.85rem}
+.pcard h3{margin:0;font-size:1.05rem;line-height:1.3}
+.pcard p{margin:0;color:var(--muted);font-size:.9rem;flex:1}
+.price{font-weight:800;font-size:1.05rem}
+.price small{font-weight:500;color:var(--muted)}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:22px;scroll-margin-top:76px}
+.tool-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}
+.tool-head h3{margin:2px 0 4px;font-size:1.25rem}
+.tool-head p{margin:0;color:var(--muted);font-size:.9rem;max-width:640px}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink)}
+.badge.warm{background:var(--warm-soft);color:var(--warm)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.fgrid{grid-template-columns:1fr}}
+.result{background:var(--surface2);border-radius:12px;padding:16px}
+.result .big{font-size:1.9rem;font-weight:900;line-height:1.1}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
+.kv:last-child{border-bottom:none}
+.kv b{text-align:right}
+.pos{color:var(--accent-ink)} .neg{color:#C0392B}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+td.num,th.num{text-align:right}
+.note{font-size:.82rem;color:var(--muted);background:var(--surface2);border-radius:10px;padding:11px 13px;margin-top:12px}
+.warn{border:1px solid #E3B341;background:#FFF8E1;color:#5D4A00;border-radius:10px;padding:11px 13px;font-size:.85rem;margin-top:12px}
+@media (prefers-color-scheme: dark){.warn{background:#2E2A12;color:#F0D98C;border-color:#6B5E1E}}
+.listitem{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;background:var(--surface)}
+.listitem .t{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pill{font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--line)}
+textarea{resize:vertical}
+.output-box{white-space:pre-wrap;background:var(--surface2);border-radius:12px;padding:14px;font-size:.92rem;min-height:90px}
+.progress{height:12px;border-radius:999px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.progress>div{height:100%;background:var(--accent);transition:width .3s}
+input[type=range]{padding:0;border:none;min-height:36px}
+/* image maker preview */
+.shot{aspect-ratio:1/1;border-radius:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:26px;color:#fff;position:relative;overflow:hidden}
+.shot .brand{position:absolute;top:16px;left:18px;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.shot h4{font-size:clamp(1.4rem,4vw,2rem);margin:0 0 8px;line-height:1.15}
+.shot .pr{font-size:2rem;font-weight:900;background:#fff;color:#111;padding:4px 16px;border-radius:999px;margin-top:12px}
+.shot p{margin:0;opacity:.95;max-width:340px}
+/* roadmap */
+.tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.tracks{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.tracks{grid-template-columns:1fr}}
+.track{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.track h4{margin:0 0 8px;font-size:.98rem}
+.track ul{margin:0;padding-left:18px;color:var(--muted);font-size:.88rem}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+@media(max-width:900px){.cal{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.cal{grid-template-columns:1fr}}
+.cal div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:.85rem}
+.cal b{display:block;margin-bottom:4px}
+footer{padding:34px 0 50px;color:var(--muted);font-size:.85rem}
+.quote-print{background:var(--surface2);border-radius:12px;padding:18px}
+.mini-btn{min-height:34px;padding:5px 10px;font-size:.8rem;border-radius:8px}
+.danger{border-color:#C0392B;color:#C0392B;background:var(--surface)}
+.confirm-box{border:1.5px solid #C0392B;background:var(--warm-soft);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.9rem}
+.status-msg{font-size:.85rem;margin-top:8px;min-height:1.2em}
+.status-msg.ok{color:var(--accent-ink)} .status-msg.err{color:#C0392B}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media print{ .topnav,.btnrow,.no-print{display:none!important} body{background:#fff} }
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="topnav-in">
+  <a href="#tong-quan">Tổng quan</a>
+  <a href="#cong-cu">6 công cụ — dùng thử</a>
+  <a href="#bang-gia">Giá &amp; mục tiêu $1.000</a>
+  <a href="#tiep-thi">Tiếp thị 0 đồng</a>
+  <a href="#lo-trinh">Lộ trình song song</a>
+  <a href="#tool1" class="cta">Tính lãi ngay ↓</a>
+</div></nav>
+
+<div class="wrap">
+<header class="hero" id="tong-quan">
+  <span class="badge warm">Bản demo tương tác · Kế hoạch: chạy song song cả 6</span>
+  <h1>6 công cụ nhỏ cho người bán Việt Nam. <em>Giá thấp 29–39k/tháng,</em> dùng thử 3 ngày.</h1>
+  <p class="lead">Kế hoạch là một tài khoản dùng chung cho cả 6 công cụ: tính lãi sàn, quản lý đơn &amp; công nợ, tạo nội dung, sổ thu chi, ảnh sản phẩm và báo giá. Ngay bên dưới là <strong>bản demo của cả 6 công cụ — bấm dùng thử được ngay trên trang này</strong>, chưa cần đăng ký. Trong bản demo này, dữ liệu được lưu ngay trên trình duyệt của máy bạn (mở lại vẫn còn, đổi máy sẽ không thấy). Tài khoản đồng bộ, thanh toán và cảnh báo đổi phí tự động là phần nền tảng dự kiến hoàn thiện ở Tuần 1–2 (xem lộ trình) — chưa có trong demo.</p>
+  <div class="statrow">
+    <div class="stat"><b>6</b><span>sản phẩm trong kế hoạch chạy song song</span></div>
+    <div class="stat"><b>29–39k</b><span>đồng/tháng mỗi công cụ</span></div>
+    <div class="stat hot"><b>$1.000<span style="font-size:.9rem">/tháng</span></b><span>mục tiêu sau 3 tháng ≈ 26 triệu đồng</span></div>
+    <div class="stat"><b>~760</b><span>người trả phí cần duy trì ở giá TB 34k</span></div>
+  </div>
+  <div class="btnrow">
+    <a class="btn primary" href="#tool1">Thử công cụ tính lãi</a>
+    <a class="btn" href="#bang-gia">Xem gói Bundle 99k</a>
+    <a class="btn" href="#tiep-thi">Kế hoạch tiếp thị 0 đồng</a>
+  </div>
+  <p class="note">⚠️ Nói thẳng: 29k <strong>không phải rẻ nhất tuyệt đối</strong> — trên thị trường đã có công cụ tính phí sàn miễn phí (ví dụ trang tính phí của tuigoihang.vn, Dano), nên trang này không tự nhận là rẻ nhất. Phân biệt rõ: <strong>đã có ngay trong demo</strong> — lưu sản phẩm, đơn, thu chi và báo giá trên chính máy bạn, tạo đơn nhanh trên điện thoại; <strong>thuộc bản chính thức (chưa có trong demo)</strong> — cảnh báo khi sàn đổi phí và 6 công cụ chung 1 tài khoản đồng bộ. Giá 29–39k thấp hơn các phần mềm quản lý bán hàng đầy đủ như Sổ Bán Hàng, KiotViet, Sapo (nhóm này nhiều tính năng hơn hẳn, giá tham chiếu tại thời điểm viết khoảng 160–270k/tháng tùy gói — hãy kiểm tra giá hiện hành của từng nhà cung cấp trước khi so sánh).</p>
+</header>
+
+<section>
+  <h2>6 sản phẩm — một hệ sinh thái</h2>
+  <p class="sub">Mỗi thẻ nhảy thẳng xuống bản dùng thử tương ứng. Dữ liệu bạn nhập được lưu trên trình duyệt của máy này (localStorage), mở lại trang vẫn còn và không gửi đi đâu; xóa dữ liệu trình duyệt hoặc đổi máy sẽ mất — hãy sao chép/tải về những gì quan trọng.</p>
+  <div class="grid6">
+    <article class="pcard"><span class="num">01 · ƯU TIÊN SỐ 1</span><h3>Tính lợi nhuận sàn</h3><p>Cho người bán Shopee, TikTok Shop: lãi thật sau giá vốn, phí sàn, quảng cáo, affiliate và hoàn hủy — kèm giá hòa vốn &amp; ROAS hòa vốn.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool1">Dùng thử</a></article>
+    <article class="pcard"><span class="num">02</span><h3>Quản lý đơn, cọc &amp; công nợ</h3><p>Cho shop bán qua Facebook/Zalo/chat: ghi đơn nhanh, theo dõi tiền cọc, tiền còn thu và khách nợ quá hạn.</p><div class="price">39.000đ <small>/tháng · Pro 69k</small></div><a class="btn primary" href="#tool2">Dùng thử</a></article>
+    <article class="pcard"><span class="num">03</span><h3>Nội dung đa nền tảng</h3><p>Caption, tiêu đề, mô tả và hashtag cho Facebook / TikTok / website từ mẫu tiếng Việt theo ngành — không hứa hẹn “viral”.</p><div class="price">39.000đ <small>/tháng · Pro 79k</small></div><a class="btn primary" href="#tool3">Dùng thử</a></article>
+    <article class="pcard"><span class="num">04</span><h3>Sổ thu chi hộ kinh doanh</h3><p>Ghi thu/chi trong vài giây, xem dòng tiền tháng và nhóm chi lớn nhất. Công cụ quản lý nội bộ — không thay thế kế toán/thuế.</p><div class="price">39.000đ <small>/tháng · Pro 69k</small></div><a class="btn primary" href="#tool4">Dùng thử</a></article>
+    <article class="pcard"><span class="num">05</span><h3>Ảnh &amp; nội dung sản phẩm</h3><p>Thẻ ảnh đăng bán vuông 1:1 với giá, điểm nổi bật và màu thương hiệu — kèm mô tả sản phẩm viết sẵn để copy.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool5">Dùng thử</a></article>
+    <article class="pcard"><span class="num">06</span><h3>Báo giá &amp; hợp đồng mẫu</h3><p>Cho freelancer, thợ dịch vụ, đội thi công nhỏ: báo giá theo dòng việc, chiết khấu, thuế và in/gửi qua Zalo.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool6">Dùng thử</a></article>
+  </div>
+</section>
+
+<div id="cong-cu"></div>
+
+<!-- ============ TOOL 1 ============ -->
+<section class="tool" id="tool1">
+  <div class="tool-head"><div><span class="badge">Công cụ 01 · MVP số 1</span><h3>Tính lợi nhuận sàn Shopee / TikTok Shop</h3><p>Nhập số của 1 đơn hàng. Phí mặc định lấy từ biểu phí đã kiểm chứng (xem thư viện phí bên dưới) — bạn sửa được mọi ô.</p></div><span class="badge warm">29.000đ/tháng</span></div>
+  <div class="cols">
+    <div>
+      <div class="fgrid">
+        <div><label for="t1-platform">Kênh bán</label><select id="t1-platform">
+          <option value="shopee">Shopee — shop thường</option>
+          <option value="shopeeMall">Shopee Mall</option>
+          <option value="tiktok" selected>TikTok Shop</option>
+          <option value="tiktokMall">TikTok Shop Mall</option>
+          <option value="chat">Bán qua chat / Facebook (không phí sàn)</option>
+        </select></div>
+        <div><label for="t1-price">Giá bán (đ)</label><input id="t1-price" type="number" value="199000" min="0" inputmode="numeric"></div>
+        <div><label for="t1-cost">Giá vốn (đ)</label><input id="t1-cost" type="number" value="90000" min="0" inputmode="numeric"></div>
+        <div><label for="t1-ship">Vận chuyển shop chịu (đ)</label><input id="t1-ship" type="number" value="15000" min="0" inputmode="numeric"></div>
+        <div><label for="t1-pack">Đóng gói (đ)</label><input id="t1-pack" type="number" value="3000" min="0" inputmode="numeric"></div>
+        <div><label for="t1-fixed">Phí cố định / hoa hồng (%)</label><input id="t1-fixed" type="number" value="14" step="0.1" min="0"></div>
+        <div><label for="t1-trans">Phí giao dịch (%)</label><input id="t1-trans" type="number" value="6" step="0.1" min="0"></div>
+        <div><label for="t1-flat">Phí hạ tầng / xử lý mỗi đơn (đ)</label><input id="t1-flat" type="number" value="3000" min="0"></div>
+        <div><label for="t1-tax">Thuế khấu trừ tại nguồn (%)</label><input id="t1-tax" type="number" value="1.5" step="0.1" min="0"></div>
+        <div><label for="t1-ads">Quảng cáo (% trên giá bán)</label><input id="t1-ads" type="number" value="8" step="0.5" min="0"></div>
+        <div><label for="t1-aff">Affiliate / tiếp thị liên kết (%)</label><input id="t1-aff" type="number" value="5" step="0.5" min="0"></div>
+        <div><label for="t1-ret">Tỷ lệ hoàn / hủy dự kiến (%)</label><input id="t1-ret" type="number" value="3" step="0.5" min="0" max="90"></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="t1-calc" type="button">Tính lãi ngay</button></div>
+      <p class="note">Cách tính minh bạch: Lãi/đơn thành công = Giá bán − Giá vốn − Vận chuyển − Đóng gói − (phí % × giá bán) − phí cố định/đơn. Lãi kỳ vọng đã trừ dự phòng hoàn: nhân phần doanh thu &amp; phí theo tỷ lệ đơn thành công, và trừ thêm phí ship chiều về ước tính bằng phí ship đi × tỷ lệ hoàn.</p>
+    </div>
+    <div>
+      <div class="result" id="t1-result" aria-live="polite"></div>
+      <div class="warn">Kết quả là <strong>ước tính</strong> theo số bạn nhập. Biểu phí sàn thay đổi thường xuyên — luôn đối chiếu Seller Center trước khi quyết định giá. Hai số <strong>chưa xác minh dứt điểm</strong>: phí Voucher Xtra của Shopee (nguồn ghi 4%, nguồn khác 5,5%) và hoa hồng TikTok theo từng ngành hàng — công cụ không tự điền hai số này.</div>
+    </div>
+  </div>
+  <h4 style="margin:20px 0 8px">Thư viện biểu phí tham chiếu (đã kiểm chứng, tháng 11/2026)</h4>
+  <div style="overflow-x:auto">
+  <table>
+    <tr><th>Hạng mục</th><th>Shopee</th><th>TikTok Shop</th></tr>
+    <tr><td>Phí cố định / hoa hồng nền tảng</td><td>1,5–17% theo ngành; Mall tới 20,8%</td><td>Mặc định 14%; Mall 16% (theo ngành có thể khác — kiểm tra Seller Center)</td></tr>
+    <tr><td>Phí giao dịch / thanh toán</td><td>6%</td><td>6% (5% nếu đạt điều kiện GMV Max)</td></tr>
+    <tr><td>Phí hạ tầng / xử lý mỗi đơn</td><td>3.000đ/đơn</td><td>3.000đ/đơn</td></tr>
+    <tr><td>Thuế khấu trừ tại nguồn</td><td>1,5%</td><td>1,5%</td></tr>
+    <tr><td>Cộng các khoản % ở trên (chưa gồm phí cố định/đơn, quảng cáo &amp; affiliate)</td><td colspan="2">TikTok Shop mặc định: 14% + 6% + 1,5% = <b>21,5% giá bán</b>, cộng thêm 3.000đ/đơn. Shopee thay đổi theo ngành (phí cố định 1,5–17%) nên tổng % = phí cố định của ngành + 7,5%. Con số “tổng phí” luôn phải cộng cả 3.000đ/đơn và % quảng cáo/affiliate của shop mới ra tổng thật — công cụ tính ở trên đã cộng đủ các khoản này.</td></tr>
+  </table>
+  </div>
+  <p class="note">Nguồn tham chiếu: trang biểu phí công khai của Shopee &amp; TikTok Shop Seller Center, đối chiếu tháng 11/2026. Nhãn đúng của khoản 3.000đ là “phí xử lý/hạ tầng mỗi đơn” theo cách gọi của từng sàn — kiểm tra tên gọi hiện hành trong Seller Center. Khi sàn đổi phí, bản chính thức sẽ gửi cảnh báo và cập nhật ngày hiệu lực (chưa có trong demo này).</p>
+  <div style="margin-top:16px">
+    <label for="t1-pname">Tên sản phẩm (để lưu &amp; sao chép kết quả)</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input id="t1-pname" placeholder="VD: Áo thun form rộng" autocomplete="off" style="flex:1;min-width:200px"><button class="btn primary" id="t1-save" type="button">Lưu sản phẩm này</button><button class="btn" id="t1-copy" type="button">Sao chép kết quả</button></div>
+    <p class="status-msg" id="t1-status" aria-live="polite"></p>
+    <div id="t1-saved"></div>
+  </div>
+</section>
+
+<!-- ============ TOOL 2 ============ -->
+<section class="tool" id="tool2">
+  <div class="tool-head"><div><span class="badge">Công cụ 02</span><h3>Quản lý đơn, tiền cọc &amp; công nợ</h3><p>Tạo đơn trong 30–60 giây. Theo dõi đã cọc bao nhiêu, còn phải thu bao nhiêu, đơn nào chưa thu đủ tiền.</p></div><span class="badge warm">39.000đ/tháng</span></div>
+  <div class="cols">
+    <div>
+      <div class="fgrid">
+        <div><label for="t2-name">Tên khách</label><input id="t2-name" placeholder="VD: Chị Lan" autocomplete="off"></div>
+        <div><label for="t2-phone">Số điện thoại</label><input id="t2-phone" placeholder="09xx xxx xxx" inputmode="tel" autocomplete="off"></div>
+        <div><label for="t2-product">Sản phẩm</label><input id="t2-product" placeholder="VD: Áo thun x2" autocomplete="off"></div>
+        <div><label for="t2-total">Tổng tiền đơn (đ)</label><input id="t2-total" type="number" min="0" placeholder="350000" inputmode="numeric"></div>
+        <div><label for="t2-deposit">Đã cọc (đ)</label><input id="t2-deposit" type="number" min="0" value="0" inputmode="numeric"></div>
+        <div><label for="t2-status">Trạng thái</label><select id="t2-status"><option>Mới</option><option>Đã xác nhận</option><option>Đang chuẩn bị</option><option>Đã giao</option><option>Hoàn / Hủy</option></select></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="t2-add" type="button">+ Thêm đơn</button><button class="btn" id="t2-msg" type="button">Tạo tin nhắn xác nhận đơn</button><button class="btn" id="t2-remind" type="button">Tạo tin nhắn nhắc phần còn lại</button><button class="btn" id="t2-copymsg" type="button">Sao chép tin nhắn</button></div>
+      <p class="status-msg" id="t2-status" aria-live="polite"></p>
+      <div class="output-box" id="t2-msgout" style="margin-top:12px">Tin nhắn mẫu sẽ hiện ở đây — sao chép rồi gửi qua Zalo/Messenger cho khách. Công cụ không tự gửi tin nhắn hàng loạt. Đơn được lưu trên máy này; xóa hết đơn là xóa thật, tải lại trang không tự hiện lại đơn mẫu nào.</div>
+      <div id="t2-confirm"></div>
+    </div>
+    <div>
+      <div class="result" id="t2-summary"></div>
+      <div id="t2-list" style="margin-top:12px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOL 3 ============ -->
+<section class="tool" id="tool3">
+  <div class="tool-head"><div><span class="badge">Công cụ 03</span><h3>Bộ tạo nội dung đa nền tảng</h3><p>Tạo 3 biến thể caption từ mẫu tiếng Việt theo giọng văn — sửa lại theo ý bạn trước khi đăng. Không cam kết viral hay doanh số.</p></div><span class="badge warm">39.000đ/tháng</span></div>
+  <div class="cols">
+    <div>
+      <div class="fgrid">
+        <div><label for="t3-product">Tên sản phẩm</label><input id="t3-product" value="Serum vitamin C" autocomplete="off"></div>
+        <div><label for="t3-benefit">Lợi ích chính</label><input id="t3-benefit" value="da sáng đều màu sau 14 ngày" autocomplete="off"></div>
+        <div><label for="t3-audience">Khách mục tiêu</label><input id="t3-audience" value="chị em văn phòng 25–35 tuổi" autocomplete="off"></div>
+        <div><label for="t3-price">Giá / ưu đãi</label><input id="t3-price" value="199k, freeship hôm nay" autocomplete="off"></div>
+        <div><label for="t3-tone">Giọng văn</label><select id="t3-tone"><option value="than">Thân thiện, gần gũi</option><option value="sale">Chốt sale, thúc giục</option><option value="chuyen">Chuyên gia, đáng tin</option></select></div>
+        <div><label for="t3-platform">Nền tảng</label><select id="t3-platform"><option>Facebook</option><option>TikTok</option><option>Shopee / Website</option></select></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="t3-gen" type="button">Tạo 3 phiên bản</button></div>
+    </div>
+    <div><div class="output-box" id="t3-out">Bấm “Tạo 3 phiên bản” để xem caption, tiêu đề và hashtag gợi ý.</div>
+    <div class="btnrow"><button class="btn" id="t3-copy" type="button">Copy phiên bản 1</button><button class="btn" id="t3-copyall" type="button">Copy cả 3 phiên bản</button></div>
+    <p class="status-msg" id="t3-status" aria-live="polite"></p>
+    <p class="note">Thông tin bạn nhập và nội dung vừa tạo được lưu trên máy này, mở lại trang vẫn còn để sửa tiếp.</p></div>
+  </div>
+</section>
+
+<!-- ============ TOOL 4 ============ -->
+<section class="tool" id="tool4">
+  <div class="tool-head"><div><span class="badge">Công cụ 04</span><h3>Sổ thu chi &amp; lãi lỗ hộ kinh doanh</h3><p>Ghi nhanh, xem ngay tháng này thu bao nhiêu, chi bao nhiêu, nhóm chi nào lớn nhất.</p></div><span class="badge warm">39.000đ/tháng</span></div>
+  <div class="cols">
+    <div>
+      <div class="fgrid">
+        <div><label for="t4-type">Loại</label><select id="t4-type"><option value="thu">Thu</option><option value="chi">Chi</option></select></div>
+        <div><label for="t4-amount">Số tiền (đ)</label><input id="t4-amount" type="number" min="0" placeholder="500000" inputmode="numeric"></div>
+        <div><label for="t4-cat">Danh mục</label><select id="t4-cat"><option>Bán hàng</option><option>Nhập hàng</option><option>Vận chuyển</option><option>Quảng cáo</option><option>Mặt bằng / điện nước</option><option>Đóng gói</option><option>Khác</option></select></div>
+        <div><label for="t4-note">Ghi chú</label><input id="t4-note" placeholder="VD: Đơn sáng nay" autocomplete="off"></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="t4-add" type="button">+ Ghi khoản này</button><button class="btn" id="t4-csv" type="button">Tải CSV</button><button class="btn danger" id="t4-clear" type="button">Xóa toàn bộ sổ</button></div>
+      <div id="t4-confirm"></div>
+      <p class="status-msg" id="t4-status" aria-live="polite"></p>
+      <p class="note">Đây là công cụ quản lý nội bộ, không thay thế phần mềm kế toán hay tư vấn thuế. Sổ được lưu trên máy này. “0 đồng” trong kế hoạch của bộ công cụ nghĩa là <strong>chi phí đầu tư ban đầu của bên làm sản phẩm bằng 0</strong> nhờ hạ tầng miễn phí — không phải giá cho khách: khách vẫn dùng thử 3 ngày rồi trả 39.000đ/tháng cho công cụ này.</p>
+    </div>
+    <div><div class="result" id="t4-summary"></div><div id="t4-list" style="margin-top:12px"></div></div>
+  </div>
+</section>
+
+<!-- ============ TOOL 5 ============ -->
+<section class="tool" id="tool5">
+  <div class="tool-head"><div><span class="badge">Công cụ 05</span><h3>Tạo ảnh &amp; nội dung sản phẩm</h3><p>Thẻ ảnh vuông 1:1 chuẩn đăng Facebook / gian hàng, đổi màu theo thương hiệu và có sẵn mô tả đi kèm.</p></div><span class="badge warm">29.000đ/tháng</span></div>
+  <div class="cols">
+    <div>
+      <div class="fgrid">
+        <div><label for="t5-brand">Tên shop</label><input id="t5-brand" value="Shop Nhà Mình" autocomplete="off"></div>
+        <div><label for="t5-name">Tên sản phẩm</label><input id="t5-name" value="Mật ong rừng nguyên chất 500ml" autocomplete="off"></div>
+        <div><label for="t5-benefit">Điểm nổi bật</label><input id="t5-benefit" value="Thu hoạch thủ công · Không pha đường · Đổi trả trong 7 ngày" autocomplete="off"></div>
+        <div><label for="t5-price">Giá hiển thị</label><input id="t5-price" value="189.000đ" autocomplete="off"></div>
+        <div><label for="t5-color">Màu chủ đạo</label><select id="t5-color"><option value="#0B7A5E">Xanh lá — tươi, tin cậy</option><option value="#B7791F">Vàng mật — ấm, tự nhiên</option><option value="#1D4ED8">Xanh dương — chuyên nghiệp</option><option value="#C2255C">Hồng đậm — thời trang</option><option value="#222222">Đen — tối giản, sang</option></select></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="t5-gen" type="button">Cập nhật thẻ ảnh + mô tả</button></div>
+      <div class="output-box" id="t5-desc" style="margin-top:12px"></div>
+      <div class="btnrow"><button class="btn" id="t5-copy" type="button">Copy mô tả sản phẩm</button><button class="btn warm" id="t5-png" type="button">Tải PNG 1080×1080</button></div>
+      <p class="status-msg" id="t5-status" aria-live="polite"></p>
+      <div id="t5-history"></div>
+    </div>
+    <div><div class="shot" id="t5-shot"><span class="brand" id="t5-sbrand"></span><h4 id="t5-sname"></h4><p id="t5-sbenefit"></p><span class="pr" id="t5-sprice"></span></div>
+    <p class="note">Bản demo này tạo thẻ bằng mẫu thiết kế ngay trên máy bạn (không dùng AI tạo ảnh) và <strong>đã tải được PNG 1080×1080 ngay trong demo</strong> bằng nút “Tải PNG” — không cần chờ bản Pro. Bản chính thức sẽ thêm tải ảnh sản phẩm thật và logo của shop. Các thẻ đã tạo được lưu trong danh sách bên trái trên máy này để xem lại.</p></div>
+  </div>
+</section>
+
+<!-- ============ TOOL 6 ============ -->
+<section class="tool" id="tool6">
+  <div class="tool-head"><div><span class="badge">Công cụ 06</span><h3>Báo giá &amp; hợp đồng mẫu</h3><p>Thêm từng dòng công việc, công cụ tự cộng chiết khấu và thuế, rồi copy dạng text gửi ngay qua Zalo, hoặc tải bản HTML để mở và in ra PDF — tạo ngay trên máy bạn, không phụ thuộc thư viện/CDN bên ngoài. Khách hàng và báo giá được lưu trên máy này.</p></div><span class="badge warm">29.000đ/tháng</span></div>
+  <div class="cols">
+    <div>
+      <div class="fgrid">
+        <div><label for="t6-seller">Bên cung cấp dịch vụ</label><input id="t6-seller" value="Đội thi công An Phát — 09xx xxx xxx" autocomplete="off"></div>
+        <div><label for="t6-client">Khách hàng</label><input id="t6-client" placeholder="VD: Anh Tuấn, Q.7" autocomplete="off"></div>
+        <div><label for="t6-item">Hạng mục</label><input id="t6-item" placeholder="VD: Sơn lại phòng khách" autocomplete="off"></div>
+        <div><label for="t6-qty">Số lượng</label><input id="t6-qty" type="number" value="1" min="0" step="0.5" inputmode="numeric"></div>
+        <div><label for="t6-unit">Đơn giá (đ)</label><input id="t6-unit" type="number" min="0" placeholder="2500000" inputmode="numeric"></div>
+        <div><label for="t6-disc">Chiết khấu (%)</label><input id="t6-disc" type="number" value="0" min="0" max="100" step="0.5"></div>
+        <div><label for="t6-vat">Thuế VAT (%)</label><input id="t6-vat" type="number" value="8" min="0" step="0.5"></div>
+        <div><label for="t6-status">Trạng thái báo giá</label><select id="t6-status"><option>Nháp</option><option>Đã gửi</option><option>Đã chấp nhận</option><option>Từ chối</option></select></div>
+      </div>
+      <div class="btnrow"><button class="btn primary" id="t6-add" type="button">+ Thêm hạng mục</button><button class="btn" id="t6-sample" type="button">Xem mẫu có sẵn</button><button class="btn warm" id="t6-copy" type="button">Copy báo giá dạng text (gửi Zalo)</button><button class="btn" id="t6-html" type="button">Tải bản HTML (mở để in PDF)</button><button class="btn danger" id="t6-clear" type="button">Xóa hết hạng mục</button></div>
+      <div id="t6-confirm"></div>
+      <p class="status-msg" id="t6-statusmsg" aria-live="polite"></p>
+      <div class="output-box" id="t6-text" style="margin-top:12px">Bản text của báo giá sẽ hiện ở đây để copy gửi khách. Báo giá mới mặc định ở trạng thái “Nháp” — đổi trạng thái ở ô phía trên khi đã gửi/chốt với khách.</div>
+      <p class="note">Mẫu hợp đồng đi kèm chỉ là khung tham khảo để bạn chỉnh sửa — cần kiểm tra pháp lý trước khi ký, không phải tư vấn pháp luật.</p>
+    </div>
+    <div><div class="quote-print" id="t6-out"></div></div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="bang-gia" style="scroll-margin-top:76px">
+  <h2>Giá dự kiến &amp; bài toán $1.000/tháng</h2>
+  <p class="sub">Mô hình dự kiến khi mở bán: dùng thử <strong>đầy đủ tính năng 3 ngày</strong>, không cần thẻ; hết 3 ngày chuyển về gói Free giới hạn, không tự trừ tiền, không xóa dữ liệu; một tài khoản cho cả 6 công cụ. Hiện tại trang này mới là bản demo — <strong>chưa mở bán, chưa thu tiền</strong>.</p>
+  <div class="tbl-wrap" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:2px 10px">
+  <table>
+    <tr><th>Sản phẩm</th><th>Free sau dùng thử</th><th class="num">Gói tháng</th><th class="num">Gói Pro / tháng</th></tr>
+    <tr><td>1 · Tính lợi nhuận sàn</td><td>Tính cơ bản, không lưu lịch sử</td><td class="num"><b>29.000đ</b></td><td class="num">59.000đ</td></tr>
+    <tr><td>2 · Quản lý đơn &amp; công nợ</td><td>Tối đa 20 đơn/tháng</td><td class="num"><b>39.000đ</b></td><td class="num">69.000đ</td></tr>
+    <tr><td>3 · Nội dung đa nền tảng</td><td>Một số lượt tạo mỗi tháng</td><td class="num"><b>39.000đ</b></td><td class="num">79.000đ</td></tr>
+    <tr><td>4 · Sổ thu chi</td><td>Giới hạn số giao dịch/tháng</td><td class="num"><b>39.000đ</b></td><td class="num">69.000đ</td></tr>
+    <tr><td>5 · Ảnh sản phẩm</td><td>Mẫu cơ bản, giới hạn lượt</td><td class="num"><b>29.000đ</b></td><td class="num">59.000đ</td></tr>
+    <tr><td>6 · Báo giá &amp; hợp đồng</td><td>Tối đa 3 tài liệu/tháng</td><td class="num"><b>29.000đ</b></td><td class="num">59.000đ</td></tr>
+    <tr style="background:var(--accent-soft)"><td><b>Bundle 6-trong-1 (đòn bẩy doanh thu chính)</b></td><td>—</td><td class="num"><b>99.000đ/tháng</b> <span style="color:var(--muted)">(mua lẻ: 204.000đ/tháng)</span></td><td class="num"><b>990.000đ/năm</b><br><span style="color:var(--muted);font-size:.8rem">gói năm, không phải /tháng</span></td></tr>
+  </table>
+  </div>
+  <div class="cols" style="margin-top:16px">
+    <div class="result">
+      <h4 style="margin:0 0 10px">Mô phỏng doanh thu — tự kéo thử</h4>
+      <label for="sim-price">Giá thu trung bình / người / tháng: <b id="sim-price-v" class="mono">34.000đ</b></label>
+      <input type="range" id="sim-price" min="29000" max="99000" step="1000" value="34000">
+      <label for="sim-trial" style="margin-top:10px">Số người dùng thử mỗi tháng: <b id="sim-trial-v" class="mono">7.600</b></label>
+      <input type="range" id="sim-trial" min="500" max="20000" step="100" value="7600">
+      <label for="sim-conv" style="margin-top:10px">Tỷ lệ dùng thử → trả phí: <b id="sim-conv-v" class="mono">10%</b></label>
+      <input type="range" id="sim-conv" min="1" max="20" step="1" value="10">
+      <div style="margin-top:14px"><div class="kv"><span>Người trả phí duy trì</span><b class="mono" id="sim-users">760</b></div>
+      <div class="kv"><span>Doanh thu tháng</span><b class="mono" id="sim-rev">25.840.000đ</b></div>
+      <div class="kv"><span>So với mục tiêu $1.000 (≈26.000.000đ)</span><b id="sim-pct">99%</b></div></div>
+      <div class="progress" style="margin-top:10px"><div id="sim-bar" style="width:99%"></div></div>
+      <p class="note">Con số thật, không nói suông: chỉ bán lẻ 29k thì cần ~900 người trả phí; 39k cần ~670 người; Bundle 99k chỉ cần ~263 người. Vì vậy chiến lược là <strong>đẩy Bundle + gói năm</strong> song song bán lẻ. Doanh thu trên chưa trừ phí cổng thanh toán, thuế và tỷ lệ hủy — phải tính vào khi chốt giá chính thức.</p>
+    </div>
+    <div class="result">
+      <h4 style="margin:0 0 10px">Chi phí vận hành: bắt đầu 0 đồng, trả phí khi có doanh thu</h4>
+      <div class="kv"><span>Hosting + database + auth (free tier: Vercel / Supabase / Cloudflare)</span><b>0đ</b></div>
+      <div class="kv"><span>Mã nguồn &amp; quản lý (GitHub)</span><b>0đ</b></div>
+      <div class="kv"><span>Tiếp thị (TikTok, Groups, SEO, YouTube)</span><b>0đ</b></div>
+      <div class="kv"><span>Tên miền (.vn / .com) — khi ra mắt chính thức</span><b>~250–350k/năm</b></div>
+      <div class="kv"><span>Phí cổng thanh toán (MoMo / VNPay / chuyển khoản)</span><b>% trên giao dịch</b></div>
+      <div class="kv"><span>AI tạo nội dung (nếu bật API trả phí)</span><b>Theo lượt, có hạn mức</b></div>
+      <p class="note">0 đồng làm được MVP thử nghiệm. Vận hành thương mại thật <strong>không thể 0 đồng tuyệt đối</strong>: tên miền, phí cổng thanh toán và AI (nếu dùng) phát sinh theo quy mô. Nguyên tắc: chỉ bật tính năng tốn phí khi đã đo được chi phí mỗi người dùng ở mốc 100 / 1.000 / 10.000 người dùng.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARKETING ============ -->
+<section id="tiep-thi" style="scroll-margin-top:76px">
+  <h2>Kế hoạch tiếp thị 0 đồng — dự kiến chạy mỗi ngày, cả 6 sản phẩm</h2>
+  <p class="sub">Không spam, không mua danh sách số điện thoại, không đăng lặp trái nội quy nhóm. Mỗi kênh đều có đầu ra phải đo: lượt xem → click → đăng ký → hoàn thành thao tác chính → trả phí sau 3 ngày.</p>
+  <div class="grid6">
+    <article class="pcard"><h3>🎬 TikTok / Reels / Shorts</h3><p>2–3 video ngắn mỗi ngày: một lỗi khiến shop mất tiền (tính sai phí sàn, quên tiền còn thu…) và cách công cụ xử lý trong 30 giây. Đây là kênh chính cho công cụ 01 &amp; 02.</p></article>
+    <article class="pcard"><h3>👥 Facebook Groups</h3><p>Vào nhóm bán hàng Shopee/TikTok, freelancer, thợ dịch vụ: trả lời câu hỏi có ích trước, chia sẻ công cụ khi nội quy cho phép. Mỗi sản phẩm một nhóm tệp riêng.</p></article>
+    <article class="pcard"><h3>🔎 SEO Google</h3><p>Bài hướng dẫn + trang công cụ miễn phí theo từ khóa có nhu cầu thật: “cách tính phí Shopee 2026”, “mẫu báo giá thi công”, “sổ thu chi hộ kinh doanh”.</p></article>
+    <article class="pcard"><h3>▶️ YouTube</h3><p>Video hướng dẫn 2–5 phút cho từng công cụ + Shorts cắt từ bản demo TikTok. Một lần quay, dùng cho 3 nền tảng.</p></article>
+    <article class="pcard"><h3>🔗 Giới thiệu người dùng</h3><p>Tặng thêm ngày dùng / hạn mức khi giới thiệu được người đăng ký hợp lệ. Đo số lời mời, tỷ lệ kích hoạt của người được giới thiệu.</p></article>
+    <article class="pcard"><h3>🤝 Cộng đồng Zalo</h3><p>Nhóm hỗ trợ người dùng thật: giải đáp biểu phí mới, xin phản hồi tính năng. Người dùng hài lòng là kênh bán Bundle rẻ nhất.</p></article>
+  </div>
+  <h3 style="margin:22px 0 10px">Lịch nội dung 7 ngày — lặp lại hằng tuần cho cả 6 sản phẩm</h3>
+  <div class="cal">
+    <div><b>Thứ 2</b>Một lỗi phổ biến khiến khách mất tiền / mất thời gian</div>
+    <div><b>Thứ 3</b>Hướng dẫn từng bước dùng công cụ miễn phí</div>
+    <div><b>Thứ 4</b>Ví dụ trước / sau, số liệu &amp; giả định minh bạch</div>
+    <div><b>Thứ 5</b>Giải đáp 1 câu hỏi thường gặp từ cộng đồng</div>
+    <div><b>Thứ 6</b>Tính năng mới hoặc thay đổi biểu phí / quy trình</div>
+    <div><b>Thứ 7</b>Câu chuyện sử dụng thật (có đồng ý của khách)</div>
+    <div><b>Chủ nhật</b>Tổng hợp số liệu tuần, lên nội dung tuần sau</div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section id="lo-trinh" style="scroll-margin-top:76px">
+  <h2>Lộ trình 12 tuần — 6 sản phẩm song song</h2>
+  <p class="sub">Theo yêu cầu của anh: <strong>làm và tiếp thị cả 6 cùng lúc, liên tục</strong> — thay cho lộ trình lần lượt trong brief gốc. Cả 6 dùng chung một nền tảng lõi (tài khoản, dùng thử 3 ngày, thanh toán, phân quyền) nên phát triển song song không tốn gấp 6 lần công sức.</p>
+  <div class="tracks">
+    <div class="track"><h4>Tuần 1–2 · Nền tảng + cả 6 MVP bản đầu</h4><ul><li>Tài khoản chung, trial 3 ngày, gói Free/Pro</li><li>6 công cụ bản dùng thử như trên trang này</li><li>Thư viện biểu phí có ngày hiệu lực &amp; nguồn</li><li>Phỏng vấn 15–20 người dùng mỗi nhóm tệp</li></ul></div>
+    <div class="track"><h4>Tuần 3–6 · Ra mắt &amp; đo chuyển đổi</h4><ul><li>Landing page riêng cho từng công cụ + SEO</li><li>2–3 video/ngày, Groups, YouTube đều cả 6</li><li>Đo: đăng ký → kích hoạt → trial → paid, D7 retention</li><li>Mở bán Bundle 99k &amp; gói năm 990k</li></ul></div>
+    <div class="track"><h4>Tuần 7–12 · Tối ưu để chạm $1.000/tháng</h4><ul><li>Tăng hạn mức Pro cho công cụ chuyển đổi tốt nhất</li><li>Cảnh báo đổi phí tự động cho công cụ 01</li><li>Chương trình giới thiệu bạn bè cả 6 sản phẩm</li><li>Chốt cổng thanh toán, hóa đơn &amp; điều khoản hoàn/hủy</li></ul></div>
+  </div>
+  <p class="warn">Cam kết trung thực: trang này là <strong>bản dùng thử chạy ngay trên trình duyệt</strong> của cả 6 công cụ. Để thu tiền thật cần hoàn thiện phần máy chủ (tài khoản, thanh toán qua cổng được cấp phép, bảo mật dữ liệu theo người dùng) — đó là việc của giai đoạn nền tảng ở tuần 1–2, không thể bỏ qua bằng cách chỉ khóa giao diện. Mục tiêu $1.000/tháng là bài toán đã tính ở trên, không phải cam kết doanh thu.</p>
+</section>
+
+<footer>
+  <p><strong>6 Micro-SaaS Việt Nam</strong> · Dùng thử đầy đủ 3 ngày · Không tự trừ tiền · Hủy gia hạn bất cứ lúc nào, quyền Pro giữ đến hết chu kỳ đã trả.</p>
+  <p>Biểu phí sàn trên trang là số tham chiếu đã đối chiếu tháng 11/2026 và có thể thay đổi — luôn kiểm tra Seller Center của Shopee / TikTok Shop trước khi quyết định giá bán. Mẫu hợp đồng không phải tư vấn pháp lý; sổ thu chi không thay thế kế toán/thuế. Nội dung do công cụ tạo cần được người dùng kiểm tra trước khi đăng.</p>
+</footer>
+</div>
+
+<script>
+var fmt = function(n){ return Math.round(n).toLocaleString('vi-VN'); };
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function storeGet(k, fb){ try{ var v = localStorage.getItem(k); return v===null? fb : JSON.parse(v); }catch(e){ return fb; } }
+function storeSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function copyText(txt){
+  return new Promise(function(resolve){
+    function fallback(){
+      try{
+        var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        var ok=document.execCommand('copy'); document.body.removeChild(ta); resolve(!!ok);
+      }catch(e){ resolve(false); }
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ resolve(true); }, fallback);
+    } else fallback();
+  });
+}
+function setStatus(id, msg, ok){ var el=$(id); if(!el) return; el.textContent=msg; el.className='status-msg '+(ok?'ok':'err'); }
+function download(name, content, type){
+  try{
+    var blob=new Blob([content],{type:type||'text/plain;charset=utf-8'});
+    var url=URL.createObjectURL(blob); var a=document.createElement('a');
+    a.href=url; a.download=name; document.body.appendChild(a); a.click();
+    document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(url); },800); return true;
+  }catch(e){ return false; }
+}
+
+/* ---------- TOOL 1: Profit calculator ---------- */
+var presets = {
+  shopee:{fixed:10, trans:6, flat:3000, tax:1.5},
+  shopeeMall:{fixed:15, trans:6, flat:3000, tax:1.5},
+  tiktok:{fixed:14, trans:6, flat:3000, tax:1.5},
+  tiktokMall:{fixed:16, trans:6, flat:3000, tax:1.5},
+  chat:{fixed:0, trans:0, flat:0, tax:0}
+};
+$('t1-platform').addEventListener('change', function(){
+  var p = presets[this.value];
+  $('t1-fixed').value = p.fixed; $('t1-trans').value = p.trans; $('t1-flat').value = p.flat; $('t1-tax').value = p.tax;
+  calc1();
+});
+function num(id){ var v = parseFloat($(id).value); return isNaN(v)?0:v; }
+function calc1(){
+  var P=num('t1-price'), von=num('t1-cost'), ship=num('t1-ship'), pack=num('t1-pack');
+  var pct = (num('t1-fixed')+num('t1-trans')+num('t1-tax')+num('t1-ads')+num('t1-aff'))/100;
+  var flat=num('t1-flat'), r=num('t1-ret')/100;
+  var fees = P*pct + flat;
+  var profit = P - von - ship - pack - fees;
+  var margin = P>0 ? profit/P*100 : 0;
+  var expected = (1-r)*(P - fees) - von - ship - pack - r*ship;
+  var denom = 1 - pct;
+  var be = denom>0 ? (von+ship+pack+flat)/denom : 0;
+  var marginBeforeAds = P>0 ? (P - von - ship - pack - (P*(pct - num('t1-ads')/100) + flat))/P : 0;
+  var roas = marginBeforeAds>0 ? (1/marginBeforeAds) : 0;
+  var cls = profit>=0 ? 'pos':'neg';
+  $('t1-result').innerHTML =
+    '<div style="font-size:.82rem;font-weight:700;color:var(--muted)">LỢI NHUẬN / ĐƠN THÀNH CÔNG</div>'+
+    '<div class="big '+cls+'">'+fmt(profit)+'đ</div>'+
+    '<div class="kv"><span>Biên lợi nhuận</span><b class="'+cls+'">'+margin.toFixed(1)+'%</b></div>'+
+    '<div class="kv"><span>Tổng phí sàn + thuế + ads + affiliate</span><b>'+fmt(fees)+'đ ('+(P>0?(fees/P*100).toFixed(1):0)+'% giá bán)</b></div>'+
+    '<div class="kv"><span>Lãi kỳ vọng sau dự phòng hoàn '+num('t1-ret')+'%</span><b class="'+(expected>=0?'pos':'neg')+'">'+fmt(expected)+'đ/đơn</b></div>'+
+    '<div class="kv"><span>Giá hòa vốn (chưa lãi)</span><b>'+fmt(be)+'đ</b></div>'+
+    '<div class="kv"><span>ROAS hòa vốn</span><b>'+(roas? roas.toFixed(2):'—')+'</b></div>'+
+    (profit<0 ? '<p class="note" style="margin-top:10px">⚠️ Đang <b>lỗ</b> ở cấu hình này. Thử tăng giá bán lên ít nhất '+fmt(be)+'đ, giảm % quảng cáo, hoặc đàm phán lại giá vốn.</p>' : '<p class="note" style="margin-top:10px">Đang có lãi. Muốn chắc hơn, hãy thử tăng % quảng cáo lên mức ngày chạy ads mạnh và xem lãi kỳ vọng còn dương không.</p>');
+}
+$('t1-calc').addEventListener('click', calc1);
+var T1FIELDS=['t1-price','t1-cost','t1-ship','t1-pack','t1-fixed','t1-trans','t1-flat','t1-tax','t1-ads','t1-aff','t1-ret'];
+var t1saved = storeGet('hub_t1_saved', []);
+(function(){
+  var savedInputs = storeGet('hub_t1_inputs', null);
+  if(savedInputs){ T1FIELDS.forEach(function(id){ if(savedInputs[id]!=null) $(id).value=savedInputs[id]; }); if(savedInputs.platform) $('t1-platform').value=savedInputs.platform; if(savedInputs.pname) $('t1-pname').value=savedInputs.pname; }
+})();
+function t1Persist(){
+  var o={platform:$('t1-platform').value, pname:$('t1-pname').value};
+  T1FIELDS.forEach(function(id){ o[id]=$(id).value; });
+  storeSet('hub_t1_inputs', o);
+}
+function t1ResultText(){
+  var P=num('t1-price'); var pct=(num('t1-fixed')+num('t1-trans')+num('t1-tax')+num('t1-ads')+num('t1-aff'))/100;
+  var fees=P*pct+num('t1-flat'); var profit=P-num('t1-cost')-num('t1-ship')-num('t1-pack')-fees;
+  var name=$('t1-pname').value.trim()||'Sản phẩm chưa đặt tên';
+  var pf=$('t1-platform').options[$('t1-platform').selectedIndex].text;
+  return name+' — '+pf+'\nGiá bán: '+fmt(P)+'đ · Lãi/đơn thành công: '+fmt(profit)+'đ · Biên: '+(P>0?(profit/P*100).toFixed(1):0)+'%\nTổng phí sàn + thuế + quảng cáo + affiliate (gồm phí % và phí cố định/đơn): '+fmt(fees)+'đ';
+}
+function renderT1Saved(){
+  $('t1-saved').innerHTML = t1saved.length ? '<h4 style="margin:14px 0 8px">Sản phẩm đã lưu trên máy này ('+t1saved.length+')</h4>'+t1saved.map(function(s,i){
+    return '<div class="listitem"><div class="t"><b>'+esc(s.name)+'</b><span>'+esc(s.platform)+' · '+esc(s.date)+'</span></div><div style="font-size:.88rem;color:var(--muted)">Giá bán '+fmt(s.price)+'đ · Lãi/đơn '+fmt(s.profit)+'đ · Biên '+s.margin+'%</div><div class="btnrow"><button class="btn mini-btn" type="button" data-t1open="'+i+'">Mở lại</button><button class="btn mini-btn danger" type="button" data-t1del="'+i+'">Xóa</button></div></div>';
+  }).join('') : '';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t1del]'), function(b){ b.addEventListener('click', function(){ t1saved.splice(+this.getAttribute('data-t1del'),1); storeSet('hub_t1_saved', t1saved); renderT1Saved(); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t1open]'), function(b){ b.addEventListener('click', function(){ var s=t1saved[+this.getAttribute('data-t1open')]; if(!s) return; T1FIELDS.forEach(function(id){ if(s.inputs[id]!=null) $(id).value=s.inputs[id]; }); $('t1-platform').value=s.platformValue; $('t1-pname').value=s.name; calc1(); t1Persist(); }); });
+}
+$('t1-save').addEventListener('click', function(){
+  var P=num('t1-price'); var pct=(num('t1-fixed')+num('t1-trans')+num('t1-tax')+num('t1-ads')+num('t1-aff'))/100;
+  var fees=P*pct+num('t1-flat'); var profit=P-num('t1-cost')-num('t1-ship')-num('t1-pack')-fees;
+  var inputs={}; T1FIELDS.forEach(function(id){ inputs[id]=$(id).value; });
+  t1saved.unshift({name:$('t1-pname').value.trim()||'Sản phẩm chưa đặt tên', platform:$('t1-platform').options[$('t1-platform').selectedIndex].text, platformValue:$('t1-platform').value, price:P, profit:profit, margin:P>0?(profit/P*100).toFixed(1):'0', date:new Date().toLocaleDateString('vi-VN'), inputs:inputs});
+  var ok=storeSet('hub_t1_saved', t1saved); renderT1Saved();
+  setStatus('t1-status', ok?'Đã lưu sản phẩm trên máy này.':'Không lưu được — trình duyệt đã chặn lưu trữ.', ok);
+});
+$('t1-copy').addEventListener('click', function(){
+  copyText(t1ResultText()).then(function(ok){ setStatus('t1-status', ok?'Đã sao chép kết quả (kèm tên sản phẩm + sàn).':'Sao chép thất bại — hãy bôi đen kết quả và copy thủ công.', ok); });
+});
+T1FIELDS.forEach(function(id){ $(id).addEventListener('input', function(){ calc1(); t1Persist(); }); });
+$('t1-platform').addEventListener('change', t1Persist);
+$('t1-pname').addEventListener('input', t1Persist);
+renderT1Saved();
+calc1();
+
+/* ---------- TOOL 2: Orders (persisted; empty stays empty) ---------- */
+var orders = storeGet('hub_t2_orders', []);
+var oid = storeGet('hub_t2_nextid', 1);
+function save2(){ storeSet('hub_t2_orders', orders); storeSet('hub_t2_nextid', oid); storeSet('hub_t2_init', true); }
+function render2(){
+  var total=0, dep=0, remain=0, open=0;
+  orders.forEach(function(o){ if(o.status!=='Hoàn / Hủy'){ total+=o.total; dep+=o.deposit; if(o.total-o.deposit>0){ remain+=o.total-o.deposit; open++; } } });
+  $('t2-summary').innerHTML = '<div class="kv"><span>Số đơn (chưa tính hoàn/hủy)</span><b>'+orders.filter(function(o){return o.status!=='Hoàn / Hủy';}).length+'</b></div>'+
+    '<div class="kv"><span>Tổng tiền đơn</span><b>'+fmt(total)+'đ</b></div>'+
+    '<div class="kv"><span>Đã thu (cọc + thu thêm)</span><b class="pos">'+fmt(dep)+'đ</b></div>'+
+    '<div class="kv"><span>Còn phải thu</span><b class="neg">'+fmt(remain)+'đ</b></div>'+
+    '<div class="kv"><span>Đơn chưa thu đủ tiền</span><b>'+open+' đơn</b></div>';
+  $('t2-list').innerHTML = orders.length ? orders.map(function(o){
+    var left=o.total-o.deposit;
+    return '<div class="listitem"><div class="t"><b>#'+o.id+' · '+esc(o.name)+'</b><span class="pill">'+esc(o.status)+'</span></div>'+
+    '<div style="font-size:.88rem;color:var(--muted)">'+esc(o.product)+' · '+esc(o.phone)+'<br>Tổng '+fmt(o.total)+'đ · Đã thu '+fmt(o.deposit)+'đ · <b style="color:var(--ink)">Còn thu '+fmt(left)+'đ</b></div>'+
+    (left>0 ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><input type="number" min="0" placeholder="Số tiền vừa thu (đ)" data-t2amt="'+o.id+'" style="flex:1;min-width:150px;min-height:38px"><button class="btn mini-btn primary" type="button" data-t2collect="'+o.id+'">Thu thêm tiền</button><button class="btn mini-btn" type="button" data-t2full="'+o.id+'">Đánh dấu thu đủ</button></div>' : '<div style="font-size:.85rem" class="pos">✓ Đã thu đủ</div>')+
+    '<div class="btnrow"><button class="btn mini-btn danger" type="button" data-t2del="'+o.id+'">Xóa đơn</button></div></div>';
+  }).join('') : '<p class="note">Chưa có đơn nào. Thêm đơn đầu tiên ở form bên trái — mục tiêu: xong trong 30–60 giây. Danh sách trống này được giữ nguyên khi tải lại trang, không tự nạp đơn mẫu.</p>';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t2collect]'), function(b){ b.addEventListener('click', function(){
+    var id=+this.getAttribute('data-t2collect'); var inp=document.querySelector('[data-t2amt="'+id+'"]'); var amt=inp?parseFloat(inp.value)||0:0;
+    var o=orders.filter(function(x){return x.id===id;})[0]; if(!o) return;
+    if(amt<=0){ setStatus('t2-status','Hãy nhập số tiền khách vừa trả vào ô bên cạnh nút Thu thêm tiền.', false); return; }
+    o.deposit=Math.min(o.total, o.deposit+amt); save2(); render2(); setStatus('t2-status','Đã thu thêm '+fmt(amt)+'đ cho đơn #'+id+'. Còn thu '+fmt(o.total-o.deposit)+'đ.', true);
+  }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t2full]'), function(b){ b.addEventListener('click', function(){
+    var id=+this.getAttribute('data-t2full'); var o=orders.filter(function(x){return x.id===id;})[0]; if(!o) return;
+    o.deposit=o.total; save2(); render2(); setStatus('t2-status','Đơn #'+id+' đã thu đủ.', true);
+  }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t2del]'), function(b){ b.addEventListener('click', function(){
+    var id=+this.getAttribute('data-t2del');
+    $('t2-confirm').innerHTML='<div class="confirm-box">Xóa đơn #'+id+'? Thao tác này không khôi phục được. <div class="btnrow"><button class="btn mini-btn danger" type="button" id="t2-del-yes">Xóa đơn này</button><button class="btn mini-btn" type="button" id="t2-del-no">Giữ lại</button></div></div>';
+    $('t2-del-yes').addEventListener('click', function(){ orders=orders.filter(function(x){return x.id!==id;}); save2(); $('t2-confirm').innerHTML=''; render2(); setStatus('t2-status','Đã xóa đơn #'+id+'.', true); });
+    $('t2-del-no').addEventListener('click', function(){ $('t2-confirm').innerHTML=''; });
+  }); });
+}
+$('t2-add').addEventListener('click', function(){
+  var name=$('t2-name').value.trim()||'Khách chưa đặt tên', total=num('t2-total');
+  if(!total){ setStatus('t2-status','Hãy nhập Tổng tiền đơn trước khi thêm đơn.', false); return; }
+  orders.unshift({id:oid++, name:name, phone:$('t2-phone').value.trim()||'—', product:$('t2-product').value.trim()||'Sản phẩm', total:total, deposit:Math.min(num('t2-deposit'), total), status:$('t2-status').value});
+  save2(); render2(); setStatus('t2-status','Đã thêm đơn và lưu trên máy này.', true);
+});
+function t2OrderOrWarn(){
+  var o = orders[0];
+  if(!o){ $('t2-msgout').textContent='Thêm một đơn trước, tin nhắn sẽ tự điền theo đơn mới nhất.'; return null; }
+  return o;
+}
+$('t2-msg').addEventListener('click', function(){
+  var o=t2OrderOrWarn(); if(!o) return;
+  $('t2-msgout').textContent = 'Xin chào '+o.name+', shop xác nhận đơn #'+o.id+': '+o.product+' — tổng '+fmt(o.total)+'đ. Bạn đã thanh toán '+fmt(o.deposit)+'đ, số tiền còn lại '+fmt(o.total-o.deposit)+'đ thanh toán khi nhận hàng. Cảm ơn bạn đã ủng hộ shop!';
+});
+$('t2-remind').addEventListener('click', function(){
+  var o=t2OrderOrWarn(); if(!o) return;
+  var left=o.total-o.deposit;
+  if(left<=0){ $('t2-msgout').textContent='Đơn mới nhất #'+o.id+' đã thu đủ, không cần nhắc nữa.'; return; }
+  $('t2-msgout').textContent = 'Chào '+o.name+', shop nhắc nhẹ về đơn #'+o.id+' ('+o.product+'): tổng '+fmt(o.total)+'đ, bạn đã thanh toán '+fmt(o.deposit)+'đ, còn lại '+fmt(left)+'đ. Bạn thu xếp thanh toán phần còn lại giúp shop nhé — cần hỗ trợ gì cứ nhắn lại cho shop. Cảm ơn bạn!';
+});
+$('t2-copymsg').addEventListener('click', function(){
+  var txt=$('t2-msgout').textContent;
+  copyText(txt).then(function(ok){ setStatus('t2-status', ok?'Đã sao chép tin nhắn.':'Sao chép thất bại — hãy bôi đen tin nhắn và copy thủ công.', ok); });
+});
+render2();
+
+/* ---------- TOOL 3: Content generator ---------- */
+var lastCap = '';
+function gen3(){
+  var p=$('t3-product').value.trim()||'Sản phẩm', b=$('t3-benefit').value.trim()||'chất lượng tốt', a=$('t3-audience').value.trim()||'mọi người', pr=$('t3-price').value.trim()||'giá tốt hôm nay', tone=$('t3-tone').value, pf=$('t3-platform').value;
+  var caps=[];
+  if(tone==='than'){
+    caps=[ 'Mình dùng '+p+' được một thời gian rồi, điều thích nhất là '+b+'. Ai thuộc nhóm '+a+' đang phân vân thì thật sự nên thử một lần. Giá hiện tại: '+pr+' — nhắn mình tư vấn kỹ hơn nhé!',
+           p+' về thêm rồi cả nhà ơi ✨ Điểm cộng lớn nhất: '+b+'. Rất hợp với '+a+'. Ưu đãi: '+pr+'. Comment “TV” để mình gửi thêm hình thật và cách dùng nhé!',
+           'Nếu bạn là '+a+' và đang tìm một sản phẩm giúp '+b+' thì đừng bỏ qua '+p+'. Giá: '+pr+'. Hàng có sẵn, kiểm tra thoải mái trước khi thanh toán.' ];
+  } else if(tone==='sale'){
+    caps=[ '🔥 '+p.toUpperCase()+' — '+pr.toUpperCase()+'! Giúp '+b+'. Số lượng ưu đãi có hạn, hết là về giá gốc. '+a.charAt(0).toUpperCase()+a.slice(1)+' chốt đơn ngay hôm nay kẻo lỡ!',
+           'Chỉ hôm nay: '+p+' giá '+pr+'. Lý do nên chốt ngay: '+b+'. Inbox ngay để giữ suất — mình ưu tiên đơn xác nhận trước!',
+           'Đừng mua '+p+' ở mức giá gốc khi hôm nay đang có: '+pr+'. Hiệu quả nổi bật: '+b+'. Chốt đơn bằng cách nhắn “MUA” ngay dưới bài này!' ];
+  } else {
+    caps=[ p+': giải pháp cho '+a+' cần '+b+'. Sản phẩm được chọn lọc theo tiêu chí thành phần rõ ràng, hướng dẫn sử dụng chi tiết kèm theo mỗi đơn. Giá: '+pr+'. Inbox để được tư vấn đúng nhu cầu trước khi mua.',
+           'Góc chia sẻ: khi chọn sản phẩm để '+b+', hãy ưu tiên nguồn gốc rõ ràng và cách dùng đúng hướng dẫn. '+p+' đáp ứng cả hai tiêu chí này. Giá hiện tại: '+pr+'.',
+           'Hỏi đáp nhanh — '+p+' hợp với ai? Hợp với '+a+' đang muốn '+b+'. Cách dùng và lưu ý đã có trong tờ hướng dẫn kèm sản phẩm. Giá: '+pr+'.' ];
+  }
+  var tags = '#'+p.replace(/\s+/g,'')+' #BanHangOnline #ShopViet '+(pf==='TikTok'?'#TikTokShop #ReviewThat':'#MuaSamOnline');
+  lastCap = caps[0];
+  $('t3-out').textContent = 'NỀN TẢNG: '+pf+'\n\n— Phiên bản 1 —\n'+caps[0]+'\n\n— Phiên bản 2 —\n'+caps[1]+'\n\n— Phiên bản 3 —\n'+caps[2]+'\n\nHashtag gợi ý: '+tags;
+}
+function save3(){
+  storeSet('hub_t3_form', {product:$('t3-product').value, benefit:$('t3-benefit').value, audience:$('t3-audience').value, price:$('t3-price').value, tone:$('t3-tone').value, platform:$('t3-platform').value});
+  storeSet('hub_t3_out', $('t3-out').textContent); storeSet('hub_t3_cap', lastCap);
+}
+(function(){
+  var f=storeGet('hub_t3_form', null);
+  if(f){ $('t3-product').value=f.product||$('t3-product').value; $('t3-benefit').value=f.benefit||''; $('t3-audience').value=f.audience||''; $('t3-price').value=f.price||''; $('t3-tone').value=f.tone||'than'; $('t3-platform').value=f.platform||'Facebook'; }
+})();
+$('t3-gen').addEventListener('click', function(){ gen3(); save3(); setStatus('t3-status','Đã tạo và lưu nội dung trên máy này.', true); });
+['t3-product','t3-benefit','t3-audience','t3-price','t3-tone','t3-platform'].forEach(function(id){ $(id).addEventListener('input', save3); $(id).addEventListener('change', save3); });
+$('t3-copy').addEventListener('click', function(){
+  if(!lastCap){ gen3(); }
+  var b=this;
+  copyText(lastCap).then(function(ok){
+    if(ok){ b.textContent='Đã copy phiên bản 1 ✓'; setStatus('t3-status','Đã sao chép phiên bản 1.', true); setTimeout(function(){ b.textContent='Copy phiên bản 1'; },2000); }
+    else setStatus('t3-status','Sao chép thất bại — trình duyệt đã chặn. Hãy bôi đen nội dung ở khung bên trên và copy thủ công.', false);
+  });
+});
+$('t3-copyall').addEventListener('click', function(){
+  copyText($('t3-out').textContent).then(function(ok){ setStatus('t3-status', ok?'Đã sao chép cả 3 phiên bản.':'Sao chép thất bại — hãy bôi đen nội dung và copy thủ công.', ok); });
+});
+(function(){
+  var savedOut=storeGet('hub_t3_out', null); var savedCap=storeGet('hub_t3_cap', '');
+  if(savedOut){ $('t3-out').textContent=savedOut; lastCap=savedCap; } else gen3();
+})();
+
+/* ---------- TOOL 4: Cashbook (persisted, guarded clear) ---------- */
+var txs = storeGet('hub_t4_txs', []);
+function save4(){ storeSet('hub_t4_txs', txs); }
+function render4(){
+  var thu=0, chi=0, byCat={};
+  txs.forEach(function(t){ if(t.type==='thu') thu+=t.amount; else { chi+=t.amount; byCat[t.cat]=(byCat[t.cat]||0)+t.amount; } });
+  var top='—'; var max=0; for(var k in byCat){ if(byCat[k]>max){ max=byCat[k]; top=k; } }
+  var breakdown = chi>0 ? Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];}).map(function(k){
+    var pct = byCat[k]/chi*100;
+    return '<div class="kv"><span>Chi · '+esc(k)+' — '+pct.toFixed(1)+'% tổng chi</span><b>'+fmt(byCat[k])+'đ</b></div>';
+  }).join('') : '';
+  var pctNote = chi>0 ? '<p style="font-size:.8rem;color:var(--muted);margin:8px 0 0">Các % ở trên là % của <b>tổng chi</b> (không phải của thu) và cộng lại đúng bằng 100% tổng chi (sai số làm tròn 0,1%). Nhãn này thay cho nhãn biểu đồ cũ dễ gây hiểu nhầm.</p>' : '';
+  $('t4-summary').innerHTML = '<div class="kv"><span>Tổng thu</span><b class="pos">'+fmt(thu)+'đ</b></div><div class="kv"><span>Tổng chi</span><b class="neg">'+fmt(chi)+'đ</b></div><div class="kv"><span>Chênh lệch thu − chi (lãi ròng)</span><b class="'+(thu-chi>=0?'pos':'neg')+'">'+fmt(thu-chi)+'đ</b></div><div class="kv"><span>Nhóm chi lớn nhất</span><b>'+(max? esc(top)+' ('+fmt(max)+'đ · '+(max/chi*100).toFixed(1)+'% tổng chi)':'—')+'</b></div>'+breakdown+pctNote;
+  $('t4-list').innerHTML = txs.length ? txs.slice(0,12).map(function(t,i){
+    return '<div class="listitem"><div class="t"><b>'+esc(t.cat)+'</b><b class="'+(t.type==='thu'?'pos':'neg')+'">'+(t.type==='thu'?'+':'−')+fmt(t.amount)+'đ</b></div><div style="font-size:.86rem;color:var(--muted)">'+esc(t.note||'')+'</div><div class="btnrow"><button class="btn mini-btn danger" type="button" data-t4del="'+i+'">Xóa khoản này</button></div></div>';
+  }).join('') : '<p class="note">Chưa có giao dịch nào. Ghi khoản đầu tiên ở form bên trái.</p>';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t4del]'), function(b){ b.addEventListener('click', function(){ txs.splice(+this.getAttribute('data-t4del'),1); save4(); render4(); }); });
+}
+$('t4-add').addEventListener('click', function(){
+  var amt=num('t4-amount'); if(!amt){ setStatus('t4-status','Hãy nhập số tiền trước khi ghi.', false); return; }
+  txs.unshift({type:$('t4-type').value, amount:amt, cat:$('t4-cat').value, note:$('t4-note').value.trim()});
+  $('t4-amount').value=''; $('t4-note').value=''; save4(); render4(); setStatus('t4-status','Đã ghi và lưu trên máy này.', true);
+});
+$('t4-csv').addEventListener('click', function(){
+  if(!txs.length){ setStatus('t4-status','Sổ đang trống, chưa có gì để tải.', false); return; }
+  var rows=[['Loại','Số tiền','Danh mục','Ghi chú']].concat(txs.map(function(t){ return [t.type==='thu'?'Thu':'Chi', t.amount, '"'+String(t.cat).replace(/"/g,'""')+'"', '"'+String(t.note||'').replace(/"/g,'""')+'"']; }));
+  var ok=download('so-thu-chi.csv', '﻿'+rows.map(function(r){return r.join(',');}).join('\n'), 'text/csv;charset=utf-8');
+  setStatus('t4-status', ok?'Đã tạo file CSV để tải xuống.':'Không tạo được file — trình duyệt đã chặn tải xuống.', ok);
+});
+$('t4-clear').addEventListener('click', function(){
+  if(!txs.length){ setStatus('t4-status','Sổ đang trống, không có gì để xóa.', false); return; }
+  $('t4-confirm').innerHTML='<div class="confirm-box"><b>Xóa toàn bộ sổ ('+txs.length+' khoản)?</b> Toàn bộ thu/chi đã lưu trên máy này sẽ mất và không khôi phục được. Hãy tải CSV trước nếu cần giữ lại.<div class="btnrow"><button class="btn mini-btn danger" type="button" id="t4-clear-yes">Đúng, xóa toàn bộ sổ</button><button class="btn mini-btn" type="button" id="t4-clear-no">Hủy, giữ lại sổ</button></div></div>';
+  $('t4-clear-yes').addEventListener('click', function(){ txs=[]; save4(); $('t4-confirm').innerHTML=''; render4(); setStatus('t4-status','Đã xóa toàn bộ sổ.', true); });
+  $('t4-clear-no').addEventListener('click', function(){ $('t4-confirm').innerHTML=''; });
+});
+render4();
+
+/* ---------- TOOL 5: Product shot ---------- */
+var lastDesc='';
+function gen5(){
+  var brand=$('t5-brand').value.trim()||'Shop', name=$('t5-name').value.trim()||'Sản phẩm', ben=$('t5-benefit').value.trim(), price=$('t5-price').value.trim()||'', color=$('t5-color').value;
+  $('t5-shot').style.background=color;
+  $('t5-sbrand').textContent=brand; $('t5-sname').textContent=name; $('t5-sbenefit').textContent=ben.replace(/·/g,'·'); $('t5-sprice').textContent=price;
+  lastDesc = name+' — '+ben.replace(/\s*·\s*/g,', ')+'. Giá: '+price+'. Đặt hàng: nhắn tin trực tiếp cho '+brand+' để được tư vấn và xác nhận đơn trong ngày. Hàng kiểm tra kỹ trước khi gửi, hỗ trợ đổi trả theo chính sách của shop.';
+  $('t5-desc').textContent = 'MÔ TẢ SẢN PHẨM:\n'+lastDesc;
+}
+var t5hist = storeGet('hub_t5_history', []);
+function renderT5Hist(){
+  $('t5-history').innerHTML = t5hist.length ? '<h4 style="margin:14px 0 8px">Đã tạo trên máy này ('+t5hist.length+') — bấm để xem lại</h4>'+t5hist.slice(0,10).map(function(h,i){
+    return '<div class="listitem"><div class="t"><b>'+esc(h.name)+'</b><span>'+esc(h.date)+'</span></div><div style="font-size:.86rem;color:var(--muted)">'+esc(h.brand)+' · '+esc(h.price)+'</div><div class="btnrow"><button class="btn mini-btn" type="button" data-t5open="'+i+'">Xem lại</button><button class="btn mini-btn danger" type="button" data-t5del="'+i+'">Xóa</button></div></div>';
+  }).join('') : '';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t5open]'), function(b){ b.addEventListener('click', function(){ var h=t5hist[+this.getAttribute('data-t5open')]; if(!h) return; $('t5-brand').value=h.brand; $('t5-name').value=h.name; $('t5-benefit').value=h.benefit; $('t5-price').value=h.price; $('t5-color').value=h.color; gen5(); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t5del]'), function(b){ b.addEventListener('click', function(){ t5hist.splice(+this.getAttribute('data-t5del'),1); storeSet('hub_t5_history', t5hist); renderT5Hist(); }); });
+}
+$('t5-gen').addEventListener('click', function(){
+  gen5();
+  t5hist.unshift({brand:$('t5-brand').value, name:$('t5-name').value, benefit:$('t5-benefit').value, price:$('t5-price').value, color:$('t5-color').value, date:new Date().toLocaleString('vi-VN')});
+  if(t5hist.length>20) t5hist=t5hist.slice(0,20);
+  storeSet('hub_t5_history', t5hist); renderT5Hist(); setStatus('t5-status','Đã cập nhật thẻ và lưu vào danh sách trên máy này.', true);
+});
+$('t5-copy').addEventListener('click', function(){
+  var b=this;
+  copyText(lastDesc).then(function(ok){
+    if(ok){ b.textContent='Đã copy mô tả ✓'; setStatus('t5-status','Đã sao chép mô tả sản phẩm.', true); setTimeout(function(){ b.textContent='Copy mô tả sản phẩm'; },2000); }
+    else setStatus('t5-status','Sao chép thất bại — hãy bôi đen mô tả và copy thủ công.', false);
+  });
+});
+$('t5-png').addEventListener('click', function(){
+  try{
+    var c=document.createElement('canvas'); c.width=1080; c.height=1080; var x=c.getContext('2d');
+    x.fillStyle=$('t5-color').value; x.fillRect(0,0,1080,1080);
+    x.fillStyle='rgba(255,255,255,.92)'; x.font='600 30px sans-serif'; x.textAlign='left';
+    x.fillText(($('t5-brand').value||'').toUpperCase(), 60, 80);
+    x.textAlign='center'; x.fillStyle='#ffffff'; x.font='800 64px sans-serif';
+    var words=($('t5-name').value||'Sản phẩm').split(' '); var lines=[]; var line='';
+    words.forEach(function(w){ if((line+' '+w).trim().length>22){ lines.push(line.trim()); line=w; } else line+=' '+w; }); if(line.trim()) lines.push(line.trim());
+    lines.slice(0,4).forEach(function(l,i){ x.fillText(l, 540, 380+i*78); });
+    x.font='400 34px sans-serif'; x.fillStyle='rgba(255,255,255,.95)';
+    x.fillText(($('t5-benefit').value||'').slice(0,60), 540, 380+lines.slice(0,4).length*78+30);
+    var price=$('t5-price').value||''; x.font='800 52px sans-serif';
+    var w=x.measureText(price).width+70; x.fillStyle='#ffffff';
+    x.beginPath(); if(x.roundRect) x.roundRect(540-w/2, 760, w, 96, 48); else x.rect(540-w/2, 760, w, 96);
+    x.fill(); x.fillStyle='#111111'; x.fillText(price, 540, 830);
+    c.toBlob(function(blob){
+      if(!blob){ setStatus('t5-status','Không tạo được PNG trên trình duyệt này.', false); return; }
+      var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='the-san-pham-1080.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); },800);
+      setStatus('t5-status','Đã tạo PNG 1080×1080 để tải xuống.', true);
+    }, 'image/png');
+  }catch(e){ setStatus('t5-status','Không tạo được PNG trên trình duyệt này.', false); }
+});
+['t5-brand','t5-name','t5-benefit','t5-price','t5-color'].forEach(function(id){ $(id).addEventListener('input', gen5); });
+renderT5Hist();
+gen5();
+
+/* ---------- TOOL 6: Quote (persisted, local HTML export, no CDN) ---------- */
+var qitems=storeGet('hub_t6_items', null);
+var qIsSample=false;
+if(!qitems){ qitems=[{name:'Khảo sát & tư vấn tại nhà', qty:1, unit:0}]; qIsSample=true; }
+(function(){
+  var m=storeGet('hub_t6_meta', null);
+  if(m){ if(m.seller) $('t6-seller').value=m.seller; if(m.client) $('t6-client').value=m.client; if(m.disc!=null) $('t6-disc').value=m.disc; if(m.vat!=null) $('t6-vat').value=m.vat; if(m.status) $('t6-status').value=m.status; }
+})();
+function save6(){ storeSet('hub_t6_items', qitems); storeSet('hub_t6_meta', {seller:$('t6-seller').value, client:$('t6-client').value, disc:$('t6-disc').value, vat:$('t6-vat').value, status:$('t6-status').value}); }
+function render6(){
+  var sub=0; qitems.forEach(function(i){ sub+=i.qty*i.unit; });
+  var disc=sub*num('t6-disc')/100, vat=(sub-disc)*num('t6-vat')/100, total=sub-disc+vat;
+  var code='BG-'+new Date().getFullYear()+'-'+String(qitems.length+100);
+  var rows = qitems.length ? qitems.map(function(i,idx){ return '<tr><td>'+(idx+1)+'. '+esc(i.name)+' <button class="btn mini-btn danger no-print" type="button" data-t6del="'+idx+'" style="min-height:28px;padding:2px 7px">Xóa</button></td><td class="num">'+i.qty+'</td><td class="num">'+fmt(i.unit)+'đ</td><td class="num">'+fmt(i.qty*i.unit)+'đ</td></tr>'; }).join('') : '<tr><td colspan="4" style="color:var(--muted)">Chưa có hạng mục nào — thêm ở form bên trái.</td></tr>';
+  $('t6-out').innerHTML = '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><b>BÁO GIÁ '+code+'</b><span class="mono" style="font-size:.82rem">'+new Date().toLocaleDateString('vi-VN')+'</span></div>'+
+  '<p style="margin:8px 0;font-size:.9rem">Bên cung cấp: <b>'+esc($('t6-seller').value||'—')+'</b><br>Khách hàng: <b>'+esc($('t6-client').value||'—')+'</b></p>'+
+  '<table><tr><th>Hạng mục</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr>'+rows+'</table>'+
+  '<div class="kv" style="margin-top:8px"><span>Tạm tính</span><b>'+fmt(sub)+'đ</b></div>'+
+  '<div class="kv"><span>Chiết khấu '+num('t6-disc')+'%</span><b>−'+fmt(disc)+'đ</b></div>'+
+  '<div class="kv"><span>VAT '+num('t6-vat')+'%</span><b>+'+fmt(vat)+'đ</b></div>'+
+  '<div class="kv"><span><b>TỔNG CỘNG</b></span><b style="font-size:1.1rem">'+fmt(total)+'đ</b></div>'+
+  '<p style="font-size:.8rem;color:var(--muted);margin:10px 0 0">Báo giá có hiệu lực 7 ngày. Trạng thái hiện tại: <b>'+esc($('t6-status').value)+'</b>'+(qIsSample?' · Đang hiển thị 1 hạng mục mẫu — thêm hạng mục thật hoặc bấm “Xem mẫu có sẵn”.':'')+'</p>';
+  Array.prototype.forEach.call($('t6-out').querySelectorAll('[data-t6del]'), function(b){ b.addEventListener('click', function(){ qitems.splice(+this.getAttribute('data-t6del'),1); qIsSample=false; save6(); render6(); }); });
+}
+function quoteText(){
+  var sub=0; qitems.forEach(function(i){ sub+=i.qty*i.unit; });
+  var disc=sub*num('t6-disc')/100, vat=(sub-disc)*num('t6-vat')/100, total=sub-disc+vat;
+  var lines = qitems.map(function(i,idx){ return (idx+1)+'. '+i.name+' — SL '+i.qty+' x '+fmt(i.unit)+'đ = '+fmt(i.qty*i.unit)+'đ'; }).join('\n');
+  return 'BÁO GIÁ — Trạng thái: '+$('t6-status').value+'\nBên cung cấp: '+$('t6-seller').value+'\nKhách hàng: '+($('t6-client').value||'—')+'\n\n'+lines+'\n\nTạm tính: '+fmt(sub)+'đ\nChiết khấu: −'+fmt(disc)+'đ\nVAT: +'+fmt(vat)+'đ\nTỔNG CỘNG: '+fmt(total)+'đ\nBáo giá có hiệu lực 7 ngày.';
+}
+$('t6-add').addEventListener('click', function(){
+  var name=$('t6-item').value.trim(), unit=num('t6-unit');
+  if(!name||!unit){ setStatus('t6-statusmsg','Hãy nhập hạng mục và đơn giá trước khi thêm.', false); return; }
+  if(qIsSample && qitems.length===1 && qitems[0].unit===0){ qitems=[]; qIsSample=false; }
+  qitems.push({name:name, qty:num('t6-qty')||1, unit:unit}); $('t6-item').value=''; $('t6-unit').value=''; save6(); render6(); setStatus('t6-statusmsg','Đã thêm hạng mục và lưu báo giá trên máy này.', true);
+});
+$('t6-sample').addEventListener('click', function(){
+  qitems=[{name:'Khảo sát & tư vấn tại nhà', qty:1, unit:0},{name:'Sơn lại phòng khách (gồm vật tư)', qty:1, unit:4500000},{name:'Lắp đặt điện nước bổ sung', qty:2, unit:850000}];
+  qIsSample=false; if(!$('t6-client').value) $('t6-client').value='Anh Tuấn, Q.7 (khách mẫu)';
+  save6(); render6(); $('t6-text').textContent=quoteText(); setStatus('t6-statusmsg','Đã nạp mẫu báo giá thi công để xem thử — sửa lại theo khách thật của bạn.', true);
+});
+$('t6-copy').addEventListener('click', function(){
+  var txt=quoteText(); $('t6-text').textContent = txt;
+  var b=this;
+  copyText(txt).then(function(ok){
+    if(ok){ b.textContent='Đã copy báo giá ✓'; setStatus('t6-statusmsg','Đã sao chép báo giá dạng text.', true); setTimeout(function(){ b.textContent='Copy báo giá dạng text (gửi Zalo)'; },2200); }
+    else setStatus('t6-statusmsg','Sao chép thất bại — hãy bôi đen bản text phía dưới và copy thủ công.', false);
+  });
+});
+$('t6-html').addEventListener('click', function(){
+  var body=$('t6-out').innerHTML;
+  var html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo giá</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#13201B}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ccc;padding:8px;text-align:left}td.num,th.num{text-align:right}.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #ccc}</style></head><body>'+body+'<p style="color:#666;font-size:12px">Mở file này trong trình duyệt rồi dùng lệnh In (Ctrl+P) → Lưu dưới dạng PDF. File được tạo ngay trên máy bạn, không cần thư viện bên ngoài.</p></body></html>';
+  var ok=download('bao-gia.html', html, 'text/html;charset=utf-8');
+  setStatus('t6-statusmsg', ok?'Đã tạo file HTML — mở file rồi in ra PDF.':'Không tạo được file — trình duyệt đã chặn tải xuống.', ok);
+});
+$('t6-clear').addEventListener('click', function(){
+  if(!qitems.length){ setStatus('t6-statusmsg','Chưa có hạng mục nào để xóa.', false); return; }
+  $('t6-confirm').innerHTML='<div class="confirm-box">Xóa hết '+qitems.length+' hạng mục trong báo giá này? <div class="btnrow"><button class="btn mini-btn danger" type="button" id="t6-clear-yes">Xóa hết</button><button class="btn mini-btn" type="button" id="t6-clear-no">Giữ lại</button></div></div>';
+  $('t6-clear-yes').addEventListener('click', function(){ qitems=[]; qIsSample=false; save6(); $('t6-confirm').innerHTML=''; render6(); setStatus('t6-statusmsg','Đã xóa hết hạng mục.', true); });
+  $('t6-clear-no').addEventListener('click', function(){ $('t6-confirm').innerHTML=''; });
+});
+['t6-seller','t6-client','t6-disc','t6-vat','t6-status'].forEach(function(id){ $(id).addEventListener('input', function(){ save6(); render6(); }); $(id).addEventListener('change', function(){ save6(); render6(); }); });
+render6();
+
+/* ---------- Revenue simulator ---------- */
+function sim(){
+  var price=num('sim-price'), trial=num('sim-trial'), conv=num('sim-conv');
+  var users=Math.round(trial*conv/100), rev=users*price, pct=Math.min(100, Math.round(rev/26000000*100));
+  $('sim-price-v').textContent=fmt(price)+'đ'; $('sim-trial-v').textContent=fmt(trial); $('sim-conv-v').textContent=conv+'%';
+  $('sim-users').textContent=fmt(users); $('sim-rev').textContent=fmt(rev)+'đ'; $('sim-pct').textContent=pct+'%'; $('sim-bar').style.width=pct+'%';
+}
+['sim-price','sim-trial','sim-conv'].forEach(function(id){ $(id).addEventListener('input', sim); });
+sim();
+</script>
+</body>
+</html>
