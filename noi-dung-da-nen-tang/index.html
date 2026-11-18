@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<title>Nội Dung Đa Nền Tảng — Tạo caption, tiêu đề &amp; mô tả cho Facebook, TikTok, Website | Dùng thử 3 ngày, 39.000đ/tháng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F5F0; --surface:#FFFFFF; --surface2:#EEF3EE; --ink:#17201B; --muted:#5B6B60; --line:#DCE3DC;
+  --accent:#E4572E; --accent-ink:#fff; --teal:#0E7A66; --teal-bg:#E0F2EC; --yellow:#FFC53D; --fb:#1877F2; --tt:#111111;
+  --radius:16px; --shadow:0 10px 30px rgba(23,32,27,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121614; --surface:#1B211E; --surface2:#232B27; --ink:#EDF3EE; --muted:#A7B5AA; --line:#2E3832; --teal-bg:#17382F; --shadow:0 10px 30px rgba(0,0,0,.35); --tt:#F2F2F2; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--teal)}
+button,input,select,textarea{font:inherit}
+button,[role="button"],select,summary,input:not([type=checkbox]),textarea{min-height:44px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+.mono{font-family:"IBM Plex Mono",monospace}
+
+/* HERO */
+.hero{padding:28px 0 8px}
+.hero-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.pill{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600}
+.pill b{color:var(--accent)}
+.pill.price{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pill.price b{color:var(--yellow)}
+h1{font-size:clamp(30px,5.4vw,50px);line-height:1.06;letter-spacing:-.02em;margin:0 0 12px;font-weight:900;max-width:820px}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:17px;color:var(--muted);max-width:720px;margin:0 0 18px}
+.lede strong{color:var(--ink)}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:12px 22px;font-weight:700;font-size:15px;border:1.5px solid var(--ink);cursor:pointer;text-decoration:none;transition:transform .12s, background .12s;min-height:48px}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-small{padding:8px 16px;min-height:40px;font-size:13.5px;border-width:1px}
+.btn-teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.platform-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 26px}
+.plat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.plat .dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:7px}
+.plat h3{margin:0 0 3px;font-size:15px;display:flex;align-items:center}
+.plat p{margin:0;font-size:13px;color:var(--muted)}
+
+/* TOOL */
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.tool-head{padding:18px 20px 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.tool-head h2{margin:0;font-size:21px;letter-spacing:-.01em}
+.tool-head p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.examples{display:flex;gap:7px;flex-wrap:wrap;padding:14px 20px 0}
+.examples span{font-size:12.5px;color:var(--muted);align-self:center;font-weight:600}
+.chip{border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);min-height:38px}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.tool-grid{display:grid;grid-template-columns:380px 1fr;gap:0;margin-top:16px;border-top:1px solid var(--line)}
+.form{padding:20px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field label small{font-weight:500;color:var(--muted)}
+.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--bg);color:var(--ink);font-size:15px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--teal);outline-offset:0;border-color:var(--teal)}
+.field textarea{resize:vertical;min-height:74px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.tone{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px;font-size:13.5px;font-weight:600;cursor:pointer;text-align:left;color:var(--ink)}
+.tone small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:1px}
+.tone[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%, var(--surface))}
+.gen-btn{width:100%;font-size:16px;padding:14px}
+.form-note{font-size:12.5px;color:var(--muted);margin:0;text-align:center}
+
+.results{padding:20px;min-width:0;background:var(--surface2)}
+.plat-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.ptab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:700;font-size:13.5px;cursor:pointer;min-height:40px}
+.ptab[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.empty{border:1.5px dashed var(--line);border-radius:var(--radius);padding:34px 22px;text-align:center;color:var(--muted);background:var(--surface)}
+.empty strong{color:var(--ink);display:block;font-size:16px;margin-bottom:5px}
+.result-group{margin-bottom:18px}
+.result-group:last-child{margin-bottom:0}
+.rg-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.rg-head .badge{font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;border-radius:6px;padding:4px 9px}
+.badge.fb{background:var(--fb)} .badge.tt{background:#111;color:#fff} @media(prefers-color-scheme:dark){.badge.tt{background:#EDEDED;color:#111}}
+.badge.web{background:var(--teal)}
+.rg-head h3{margin:0;font-size:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:10px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.card-head .kind{font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--accent)}
+.card-head .count{font-size:11.5px;color:var(--muted)}
+.card-text{white-space:pre-wrap;font-size:14.5px;line-height:1.6;word-break:break-word}
+.card-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.copy-btn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;min-height:38px}
+.copy-btn.copied{background:var(--teal);border-color:var(--teal);color:#fff}
+.script-steps{margin:8px 0 0;padding:0;list-style:none;counter-reset:st}
+.script-steps li{display:flex;gap:10px;padding:8px 0;border-top:1px dashed var(--line);font-size:14px}
+.script-steps li:first-child{border-top:none}
+.script-steps .t{flex:0 0 52px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--teal);font-weight:500;padding-top:2px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px;z-index:50;transition:transform .25s;box-shadow:var(--shadow);max-width:92vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* SECTIONS */
+section.block{padding:34px 0 6px}
+.sec-head{max-width:680px;margin-bottom:18px}
+.sec-head h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 7px;letter-spacing:-.015em}
+.sec-head p{margin:0;color:var(--muted);font-size:15px}
+.hooks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hook{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px;cursor:pointer;text-align:left;color:var(--ink);width:100%}
+.hook:hover{border-color:var(--accent)}
+.hook .n{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--accent);font-weight:500}
+.hook p{margin:5px 0 0;font-size:14.5px;font-weight:600;line-height:1.45}
+.hook small{color:var(--muted);font-weight:400}
+.plan{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 12px}
+.day .d{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--teal)}
+.day h4{margin:5px 0 4px;font-size:13.5px;line-height:1.35}
+.day p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}
+.day .fmt{margin-top:8px;font-size:11px;font-weight:700;background:var(--teal-bg);color:var(--teal);display:inline-block;border-radius:5px;padding:3px 7px}
+
+/* PRICING */
+.price-box{background:var(--ink);color:var(--bg);border-radius:20px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:4px}
+.price-box h2{margin:0 0 6px;font-size:26px;color:var(--bg)}
+.price-box .sub{color:color-mix(in srgb, var(--bg) 72%, transparent);font-size:14.5px;margin:0}
+.big-price{font-size:46px;font-weight:900;letter-spacing:-.02em;line-height:1;margin:14px 0 2px}
+.big-price small{font-size:16px;font-weight:600}
+.trial{display:inline-block;background:var(--yellow);color:#17201B;font-weight:800;font-size:13px;border-radius:999px;padding:6px 13px;margin-top:10px}
+.price-box ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
+.price-box li{display:flex;gap:10px}
+.price-box li::before{content:"✓";color:var(--yellow);font-weight:900;flex:0 0 auto}
+.compare{font-size:13px;color:color-mix(in srgb, var(--bg) 65%, transparent);margin-top:14px;line-height:1.6}
+.compare b{color:var(--bg)}
+.btn-yellow{background:var(--yellow);border-color:var(--yellow);color:#17201B;margin-top:16px}
+
+/* FAQ */
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:9px}
+.faq summary{padding:15px 18px;font-weight:700;font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:48px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:20px;color:var(--accent);font-weight:800}
+.faq details[open ] summary::after{content:"–"}
+.faq .a{padding:0 18px 16px;color:var(--muted);font-size:14.5px}
+footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
+.clear-link{background:none;border:none;color:var(--teal);font-weight:700;font-size:12.5px;cursor:pointer;padding:2px 4px;min-height:0;text-decoration:underline}
+.copy-modal{position:fixed;inset:0;background:rgba(10,14,12,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+.copy-modal[hidden]{display:none}
+.copy-modal-box{background:var(--surface);color:var(--ink);border-radius:16px;padding:20px;max-width:560px;width:100%;box-shadow:var(--shadow)}
+.copy-modal-box h3{margin:0 0 6px;font-size:17px}
+.copy-modal-box p{margin:0 0 10px;font-size:13.5px;color:var(--muted)}
+.copy-modal-box textarea{width:100%;min-height:170px;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--bg);color:var(--ink);font-size:14px;resize:vertical}
+.copy-modal-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+@media(max-width:900px){
+  .tool-grid{grid-template-columns:1fr}
+  .form{border-right:none;border-bottom:1px solid var(--line)}
+  .hooks{grid-template-columns:1fr 1fr}
+  .plan{grid-template-columns:repeat(2,1fr)}
+  .price-box{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .platform-strip{grid-template-columns:1fr}
+  .hooks{grid-template-columns:1fr}
+  .plan{grid-template-columns:1fr 1fr}
+  .row2{grid-template-columns:1fr 1fr}
+  .hero-cta .btn{flex:1}
+}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} .btn,.toast{transition:none} }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="pill">✍️ Bộ công cụ nội dung · Sản phẩm 3/6</span>
+      <span class="pill price">39.000đ <b>/tháng</b></span>
+      <span class="pill">Dùng thử <b>3 ngày miễn phí</b></span>
+    </div>
+    <h1>Một sản phẩm, <em>đăng được cả 3 nơi</em> — không còn bí caption mỗi ngày</h1>
+    <p class="lede">Nhập tên sản phẩm và điểm nổi bật, công cụ tạo ngay <strong>caption Facebook, kịch bản &amp; caption TikTok, tiêu đề + mô tả website/Shopee</strong> — mỗi nền tảng một giọng riêng, kèm 3 biến thể để bạn chọn bản ưng nhất. Dành cho chủ shop, người làm nội dung và cộng tác viên bán hàng.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#cong-cu">Dùng thử 3 ngày miễn phí ↓</a>
+      <a class="btn btn-ghost" href="#hook">Xem 12 hook mở đầu</a>
+    </div>
+    <div class="platform-strip">
+      <div class="plat"><h3><span class="dot" style="background:var(--fb)"></span>Facebook</h3><p>Caption bán hàng dài, kể chuyện &amp; bài tương tác — đúng format Fanpage / Group / trang cá nhân.</p></div>
+      <div class="plat"><h3><span class="dot" style="background:var(--ink)"></span>TikTok</h3><p>Hook 3 giây đầu, kịch bản video 30 giây theo mốc thời gian &amp; caption ngắn kèm hashtag.</p></div>
+      <div class="plat"><h3><span class="dot" style="background:var(--teal)"></span>Website / Shopee</h3><p>Tiêu đề chuẩn SEO, mô tả ngắn, mô tả chi tiết dạng gạch đầu dòng &amp; meta description.</p></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- TOOL -->
+  <div class="tool" id="cong-cu">
+    <div class="tool-head">
+      <div>
+        <h2>Tạo nội dung cho sản phẩm của bạn</h2>
+        <p>Điền 30 giây — nhận 10 bản nội dung cho 3 nền tảng. Bấm “Tạo lại” để xoay biến thể khác.</p>
+      </div>
+    </div>
+    <div class="examples">
+      <span>Thử nhanh:</span>
+      <button class="chip" type="button" data-ex="ao">Áo thun form rộng</button>
+      <button class="chip" type="button" data-ex="mypham">Serum vitamin C</button>
+      <button class="chip" type="button" data-ex="doan">Khô gà lá chanh</button>
+    </div>
+    <div class="tool-grid">
+      <form class="form" id="genForm">
+        <div class="field">
+          <label for="fName">Tên sản phẩm *</label>
+          <input id="fName" type="text" placeholder="VD: Áo thun form rộng Unisex" autocomplete="off">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="fPrice">Giá bán <small>(đ)</small></label>
+            <input id="fPrice" type="text" inputmode="numeric" placeholder="189.000">
+          </div>
+          <div class="field">
+            <label for="fOld">Giá gốc <small>(nếu giảm)</small></label>
+            <input id="fOld" type="text" inputmode="numeric" placeholder="259.000">
+          </div>
+        </div>
+        <div class="field">
+          <label for="fBenefits">Điểm nổi bật <small>— mỗi dòng 1 ý</small></label>
+          <textarea id="fBenefits" placeholder="Vải cotton 250gsm dày, không xù&#10;Form rộng, che khuyết điểm vai/bụng&#10;Đủ size S–XXL, 5 màu dễ phối"></textarea>
+        </div>
+        <div class="field">
+          <label for="fAudience">Khách hàng chính</label>
+          <input id="fAudience" type="text" placeholder="VD: bạn trẻ 18–28 tuổi, học sinh sinh viên" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="fPromo">Ưu đãi / lời kêu gọi mua</label>
+          <input id="fPromo" type="text" placeholder="VD: Freeship đơn từ 299k, tặng kèm túi tote" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Giọng văn</label>
+          <div class="tone-grid" id="toneGrid">
+            <button type="button" class="tone" data-tone="th than" aria-pressed="false">Thân thiện<small>Gần gũi, dễ chốt đơn</small></button>
+            <button type="button" class="tone" data-tone="trend" aria-pressed="true">Bắt trend<small>Trẻ, nhanh, nhiều hook</small></button>
+            <button type="button" class="tone" data-tone="sang" aria-pressed="false">Sang trọng<small>Ít chữ, nhấn chất lượng</small></button>
+            <button type="button" class="tone" data-tone="chuyen" aria-pressed="false">Chuyên gia<small>Số liệu, lý do tin cậy</small></button>
+          </div>
+        </div>
+        <button class="btn btn-primary gen-btn" type="submit">✨ Tạo 10 bản nội dung</button>
+        <p class="form-note">Tạo ngay trên trang này — sửa số liệu, giá và ưu đãi cho khớp sản phẩm thật trước khi đăng.</p>
+        <p class="form-note">Thông tin bạn nhập và nội dung đã tạo được tự lưu trên trình duyệt của máy này — tắt trang mở lại vẫn còn. Đổi máy hoặc xóa dữ liệu trình duyệt sẽ mất. <button type="button" class="clear-link" id="clearSaved">Xóa dữ liệu đã lưu</button></p>
+      </form>
+
+      <div class="results">
+        <div class="plat-tabs" role="group" aria-label="Lọc theo nền tảng">
+          <button class="ptab" type="button" data-filter="all" aria-pressed="true">Tất cả</button>
+          <button class="ptab" type="button" data-filter="fb" aria-pressed="false">Facebook</button>
+          <button class="ptab" type="button" data-filter="tt" aria-pressed="false">TikTok</button>
+          <button class="ptab" type="button" data-filter="web" aria-pressed="false">Website</button>
+        </div>
+        <div id="output">
+          <div class="empty">
+            <strong>Kết quả sẽ hiện ở đây</strong>
+            Điền thông tin sản phẩm bên trái (hoặc bấm một ví dụ ở trên) rồi bấm “Tạo 10 bản nội dung”. Mỗi bản đều có nút copy riêng để dán thẳng lên kênh của bạn.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOOKS -->
+  <section class="block" id="hook">
+    <div class="sec-head">
+      <h2>12 câu mở đầu giữ chân 3 giây đầu</h2>
+      <p>Bấm vào một câu để copy — thay phần trong [ngoặc] bằng sản phẩm của bạn. Hook tốt quyết định khách dừng lại hay lướt qua.</p>
+    </div>
+    <div class="hooks" id="hookGrid"></div>
+  </section>
+
+  <!-- 7-DAY PLAN -->
+  <section class="block">
+    <div class="sec-head">
+      <h2>Lịch nội dung 7 ngày cho một sản phẩm</h2>
+      <p>Đừng ngày nào cũng đăng bài bán hàng. Xoay đủ 4 loại nội dung này, khách mới tin và thuật toán mới đẩy đều.</p>
+    </div>
+    <div class="plan">
+      <div class="day"><span class="d">Thứ 2</span><h4>Bài giới thiệu sản phẩm</h4><p>Nêu vấn đề khách đang gặp + sản phẩm giải quyết thế nào.</p><span class="fmt">FB bài viết · TikTok quay cận</span></div>
+      <div class="day"><span class="d">Thứ 3</span><h4>Video hậu trường</h4><p>Đóng gói đơn, chọn nguyên liệu, kiểm tra hàng trước khi gửi.</p><span class="fmt">TikTok / Reels</span></div>
+      <div class="day"><span class="d">Thứ 4</span><h4>So sánh &amp; giải đáp</h4><p>So với loại thường khác ở đâu? Trả lời 3 câu hỏi khách hay hỏi nhất.</p><span class="fmt">FB Group · Website FAQ</span></div>
+      <div class="day"><span class="d">Thứ 5</span><h4>Feedback khách thật</h4><p>Ảnh chụp màn hình tin nhắn / ảnh khách dùng, xin phép trước khi đăng.</p><span class="fmt">FB + Story</span></div>
+      <div class="day"><span class="d">Thứ 6</span><h4>Ưu đãi cuối tuần</h4><p>Thông báo giảm giá / freeship có hạn chót rõ ràng.</p><span class="fmt">Cả 3 nền tảng</span></div>
+      <div class="day"><span class="d">Thứ 7</span><h4>Video bắt trend</h4><p>Ghép nhạc đang hot, sản phẩm xuất hiện trong 3 giây đầu.</p><span class="fmt">TikTok / Reels</span></div>
+      <div class="day"><span class="d">Chủ nhật</span><h4>Tổng kết &amp; hỏi ý kiến</h4><p>Khoe số đơn trong tuần, hỏi khách muốn màu/mẫu/size nào tiếp theo.</p><span class="fmt">FB tương tác</span></div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="block" id="gia">
+    <div class="price-box">
+      <div>
+        <h2>Dùng thử 3 ngày, ưng mới trả phí</h2>
+        <p class="sub">Dùng cho cả Facebook, TikTok và website/Shopee. Không giới hạn số sản phẩm, không tính phí theo bài trong thời gian dùng gói.</p>
+        <div class="big-price">39.000đ<small> /tháng</small></div>
+        <span class="trial">Dùng thử 3 ngày miễn phí · Sau đó 39.000đ/tháng</span>
+        <p class="compare">Khách hàng vẫn trả phí sau 3 ngày dùng thử. Giá giữ được ở mức này vì sản phẩm được xây trên hạ tầng miễn phí — <b>chi phí đầu tư ban đầu của đội ngũ là 0đ</b>, không tốn chi phí máy chủ đắt đỏ để đội lên giá bán. Nói rõ để tránh hiểu nhầm: <b>“0đ” là chi phí đầu tư của bên làm sản phẩm, không phải giá cho khách hàng.</b></p>
+        <p class="compare">Lưu ý: công cụ ở trên là bản dùng thử trực tiếp — bấm là tạo được ngay, trang này không có nút thanh toán giả. Đăng ký dùng thử 3 ngày và thanh toán sẽ mở khi sản phẩm ra mắt chính thức.</p>
+        <a class="btn btn-yellow" href="#cong-cu">Bắt đầu dùng thử 3 ngày ở công cụ trên ↑</a>
+      </div>
+      <ul>
+        <li>Tạo caption Facebook: bán hàng, kể chuyện, tương tác — 3 biến thể mỗi lần</li>
+        <li>Hook + kịch bản TikTok 30 giây theo mốc thời gian, sẵn câu chốt đơn</li>
+        <li>Tiêu đề SEO + mô tả sản phẩm cho website và sàn thương mại</li>
+        <li>4 giọng văn: thân thiện, bắt trend, sang trọng, chuyên gia</li>
+        <li>Thư viện 12 hook mở đầu &amp; lịch nội dung 7 ngày có sẵn</li>
+        <li>Tạo lại không giới hạn đến khi chọn được bản ưng ý</li>
+        <li>Dùng ngay trên điện thoại &amp; máy tính, không cần cài đặt</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="block faq">
+    <div class="sec-head"><h2>Câu hỏi thường gặp</h2></div>
+    <details><summary>Công cụ này khác gì tự viết hoặc dùng ChatGPT miễn phí?</summary><div class="a">Khác ở chỗ format đã đóng sẵn theo từng nền tảng: Facebook cần caption có cấu trúc chốt đơn, TikTok cần hook 3 giây và kịch bản theo giây, website cần tiêu đề SEO đúng độ dài. Bạn không phải nghĩ prompt, không phải sửa lại format — điền thông tin sản phẩm là có bản dùng được, kèm sẵn nhiều biến thể để khỏi trùng lặp khi đăng lại.</div></details>
+    <details><summary>Dùng được cho nhiều shop / nhiều sản phẩm không?</summary><div class="a">Được. Trong 3 ngày dùng thử và khi đang dùng gói trả phí, công cụ không giới hạn số sản phẩm và số lần tạo, phù hợp cả cộng tác viên chạy nội dung cho nhiều shop cùng lúc.</div></details>
+    <details><summary>Dùng thử và giá như thế nào? “0 đồng” nghĩa là gì?</summary><div class="a">Bạn được dùng thử miễn phí 3 ngày. Sau 3 ngày, phí là 39.000đ/tháng nếu bạn tiếp tục dùng. “0 đồng” mà đội ngũ nhắc tới là chi phí đầu tư ban đầu để xây dựng và vận hành sản phẩm trên hạ tầng miễn phí, không phải giá bán cho khách hàng — nhờ vậy giá mới giữ được ở mức 39.000đ/tháng.</div></details>
+    <details><summary>Nội dung tạo ra có đăng luôn được không?</summary><div class="a">Đăng được ngay sau khi bạn kiểm tra lại 3 thứ: giá và ưu đãi còn đúng không, thông số sản phẩm có khớp hàng thật không, và thêm ảnh/video thật của shop. Tránh giữ lại cam kết nào shop không thực hiện được (như “hiệu quả 100%”) để không vi phạm chính sách quảng cáo của nền tảng.</div></details>
+    <details><summary>Đăng cùng một nội dung lên cả 3 nền tảng có sao không?</summary><div class="a">Không nên copy y nguyên. Mỗi nền tảng chuộng một format: Facebook đọc caption dài, TikTok xem video, website cần chữ cho SEO. Đó là lý do công cụ tách riêng 3 bản thay vì cho bạn một bản dùng chung.</div></details>
+  </section>
+
+  <footer>
+    Nội Dung Đa Nền Tảng — một trong 6 công cụ cho người bán hàng Việt Nam.<br>
+    Dùng thử 3 ngày miễn phí · Sau đó 39.000đ/tháng · Dùng ngay trên trình duyệt.
+  </footer>
+</main>
+
+<div class="copy-modal" id="copyModal" hidden>
+  <div class="copy-modal-box" role="dialog" aria-modal="true" aria-labelledby="copyModalTitle">
+    <h3 id="copyModalTitle">Trình duyệt chặn copy tự động</h3>
+    <p>Nội dung đã được chọn sẵn bên dưới — bấm Ctrl+C (trên điện thoại: nhấn giữ rồi chọn “Sao chép”) để copy thủ công:</p>
+    <textarea id="copyModalText" readonly></textarea>
+    <div class="copy-modal-actions">
+      <button type="button" class="btn btn-teal btn-small" id="copyModalSelect">Chọn lại toàn bộ</button>
+      <button type="button" class="btn btn-ghost btn-small" id="copyModalClose">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+  function showCopyFallback(text){
+    var m = $("copyModal"); if(!m) return;
+    $("copyModalText").value = text; m.hidden = false;
+    var ta = $("copyModalText"); ta.focus(); ta.select();
+  }
+  $("copyModalClose").addEventListener("click", function(){ $("copyModal").hidden = true; });
+  $("copyModalSelect").addEventListener("click", function(){ var ta = $("copyModalText"); ta.focus(); ta.select(); });
+  $("copyModal").addEventListener("click", function(e){ if(e.target === this) this.hidden = true; });
+  function copyText(text, btn){
+    function done(){
+      if(btn){ var old = btn.textContent; btn.textContent = "✓ Đã copy"; btn.classList.add("copied");
+        setTimeout(function(){ btn.textContent = old; btn.classList.remove("copied"); }, 1600); }
+      toast("Đã copy — dán lên kênh của bạn là đăng được");
+    }
+    function fail(){
+      /* Chỉ báo thành công khi copy thật sự được; thất bại thì hiện khung copy thủ công. */
+      if(btn){ btn.classList.remove("copied"); }
+      toast("Chưa copy được — hãy copy thủ công ở khung vừa hiện");
+      showCopyFallback(text);
+    }
+    function fallback(){
+      var ta = document.createElement("textarea"); ta.value = text;
+      ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0"; ta.style.opacity = "0.01";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+      document.body.removeChild(ta);
+      if(ok) done(); else fail();
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(); });
+    } else fallback();
+  }
+
+  /* ---------- Lưu trữ trên máy này (localStorage) ---------- */
+  var LS_KEY = "noiDungDaNenTang.v1";
+  var lastGroups = null;
+  function saveState(){
+    try{
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        form: { name: $("fName").value, price: $("fPrice").value, old: $("fOld").value,
+          benefits: $("fBenefits").value, audience: $("fAudience").value, promo: $("fPromo").value, tone: tone },
+        genCount: genCount, filter: filter, groups: lastGroups
+      }));
+    }catch(e){}
+  }
+  function loadState(){
+    try{ var raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; }
+  }
+  $("clearSaved").addEventListener("click", function(){
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    toast("Đã xóa dữ liệu đã lưu trên máy này");
+  });
+
+  /* ---------- Tone ---------- */
+  var tone = "trend";
+  document.querySelectorAll("#toneGrid .tone").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll("#toneGrid .tone").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true"); tone = b.getAttribute("data-tone");
+      saveState();
+    });
+  });
+
+  /* ---------- Examples ---------- */
+  var examples = {
+    ao: { name:"Áo thun form rộng Unisex Cotton 250gsm", price:"189000", old:"259000",
+      benefits:"Vải cotton 250gsm dày dặn, đứng form, không xù lông\nForm rộng che khuyết điểm vai và bụng\nĐủ size S–XXL, 5 màu: đen, trắng, be, xám, xanh rêu",
+      audience:"bạn trẻ 18–28 tuổi thích mặc thoải mái, dễ phối đồ", promo:"Freeship đơn từ 299k — inbox shop để được tư vấn size miễn phí" },
+    mypham: { name:"Serum Vitamin C 15% sáng da, mờ thâm 30ml", price:"249000", old:"320000",
+      benefits:"Vitamin C 15% hỗ trợ sáng da, mờ vết thâm sau mụn\nKết cấu lỏng nhẹ, thấm nhanh, không bết dính\nCó tem chống hàng giả, hạn dùng 24 tháng",
+      audience:"chị em 22–35 tuổi da xỉn màu, có thâm mụn", promo:"Tặng kèm mặt nạ giấy cho 20 đơn đầu tiên hôm nay — comment SÁNG DA để shop tư vấn" },
+    doan: { name:"Khô gà lá chanh loại 1 — hũ 500g", price:"135000", old:"165000",
+      benefits:"Thịt gà ta xé sợi, sấy giòn vừa, không bở\nLá chanh tươi + ớt hiểm, cay nhẹ dễ ăn\nĐóng hũ kín, bảo quản 3 tháng, có ngày sản xuất rõ ràng",
+      audience:"dân văn phòng và team mê ăn vặt, hay mua lai rai xem phim", promo:"Mua 2 hũ freeship toàn quốc — inbox shop chốt đơn trong hôm nay" }
+  };
+  document.querySelectorAll("[data-ex]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var e = examples[b.getAttribute("data-ex")]; if(!e) return;
+      $("fName").value = e.name; $("fPrice").value = fmtNum(e.price); $("fOld").value = fmtNum(e.old);
+      $("fBenefits").value = e.benefits; $("fAudience").value = e.audience; $("fPromo").value = e.promo;
+      generate();
+    });
+  });
+
+  /* ---------- Helpers ---------- */
+  function parseNum(s){ var n = parseInt(String(s||"").replace(/[^\d]/g,""),10); return isNaN(n)?0:n; }
+  function fmtNum(n){ n = parseNum(n); return n? n.toLocaleString("vi-VN") : ""; }
+  function fmtPrice(n){ return n? n.toLocaleString("vi-VN")+"đ" : ""; }
+  ["fPrice","fOld"].forEach(function(id){
+    $(id).addEventListener("blur", function(){ this.value = fmtNum(this.value); });
+  });
+  function slugTag(s){
+    return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D")
+      .replace(/[^a-zA-Z0-9\s]/g,"").trim().split(/\s+/).slice(0,3).join("");
+  }
+  function pick(arr, seed){ return arr[Math.abs(seed) % arr.length]; }
+  var genCount = 0, filter = "all";
+
+  /* ---------- Generation ---------- */
+  function getData(){
+    var benefits = $("fBenefits").value.split("\n").map(function(x){return x.trim();}).filter(Boolean);
+    return {
+      name: $("fName").value.trim(),
+      price: parseNum($("fPrice").value), old: parseNum($("fOld").value),
+      benefits: benefits.length? benefits : ["Chất lượng đúng mô tả, kiểm tra kỹ trước khi gửi","Đổi trả dễ dàng nếu lỗi từ shop"],
+      audience: $("fAudience").value.trim(),
+      promo: $("fPromo").value.trim()
+    };
+  }
+  function discount(d){ return (d.old && d.price && d.old>d.price)? Math.round((1-d.price/d.old)*100) : 0; }
+  function hashtags(d){
+    var tag = slugTag(d.name); var base = ["MuaSamOnline","ShopUyTin","HangChuan"];
+    if(tag) base.unshift(tag);
+    return base.map(function(t){return "#"+t;}).join(" ");
+  }
+  var T = {
+    "th than": { open:["Mọi người ơi, cuối cùng cũng về hàng rồi nè","Chia sẻ thật lòng với mọi người mẫu này","Hôm nay shop lên một mẫu mà khách hỏi hoài"], cta:"Nhắn tin cho shop, shop tư vấn tận tình cho mình nha", feel:"dùng là mê" },
+    "trend":   { open:["Dừng lại 3 giây, cái này đáng xem nè","POV: bạn vừa tìm được món hời nhất tuần này","Đừng mua vội nếu chưa xem hết bài này"], cta:"Chốt nhanh kẻo hết — comment hoặc inbox ngay", feel:"xài là ghiền" },
+    "sang":    { open:["Đơn giản, tinh tế và đáng tiền","Một lựa chọn chỉn chu cho người kỹ tính","Chất lượng là thứ không cần nói nhiều"], cta:"Inbox để được tư vấn riêng và giữ hàng", feel:"đáng từng đồng" },
+    "chuyen":  { open:["3 lý do khách quay lại mua lần 2","Phân tích nhanh trước khi bạn xuống tiền","Đừng chỉ nhìn giá — hãy nhìn vào thông số này"], cta:"Để lại câu hỏi, shop giải đáp chi tiết trước khi bạn mua", feel:"được kiểm chứng thực tế" }
+  };
+
+  function buildFB(d, seed){
+    var t = T[tone], disc = discount(d), b = d.benefits;
+    var priceLine = d.price? ("Giá: " + fmtPrice(d.price) + (disc? (" (gốc " + fmtPrice(d.old) + " — giảm " + disc + "%)") : "")) : "Giá: inbox shop báo giá tốt nhất hôm nay";
+    var bl = b.map(function(x){ return "✔️ " + x; }).join("\n");
+    var aud = d.audience? ("\nĐặc biệt hợp với " + d.audience + ".") : "";
+    var promo = d.promo? ("\n🎁 " + d.promo) : "";
+    var v1 = pick(t.open, seed) + "!\n\n" + d.name + " — " + t.feel + ".\n\n" + bl + aud + "\n\n" + priceLine + promo + "\n\n👉 " + (d.promo? "" : t.cta + ". ") + (d.promo? t.cta + "." : "") + "\n" + hashtags(d);
+    var v2 = "Có một kiểu khách rất khó tính: mua một lần, kiểm tra kỹ từng chi tiết… rồi quay lại mua thêm cho người thân.\n\n" +
+      d.name + " là sản phẩm như vậy ở shop mình.\n\n" + bl + aud + "\n\n" + priceLine + promo + "\n\nBạn thuộc team mua ngay hay team cân nhắc? Comment cho shop biết, shop giữ ưu đãi cho bạn hôm nay.\n" + hashtags(d);
+    var v3 = "❓ Khách hay hỏi shop 3 câu này về " + d.name + ":\n\n1. Có đúng như hình không?\n→ Shop chụp ảnh thật, nhận hàng được kiểm tra trước.\n\n2. Nổi bật nhất là gì?\n→ " + b[0] + (b[1]? ("\n→ Thêm nữa: " + b[1]) : "") + "\n\n3. Mua sao cho hời nhất?\n→ " + priceLine + (d.promo? ("\n→ " + d.promo) : "") + "\n\nCòn câu nào chưa rõ, cứ comment — shop trả lời hết trong bài này.\n" + hashtags(d);
+    return [
+      {kind:"Caption bán hàng", text:v1},
+      {kind:"Caption kể chuyện", text:v2},
+      {kind:"Bài tương tác / giải đáp", text:v3}
+    ];
+  }
+  function buildTT(d, seed){
+    var t = T[tone], disc = discount(d), b = d.benefits;
+    var hooks = [
+      pick(t.open, seed+1) + " — " + d.name + (disc? (" đang giảm " + disc + "%") : "") + "!",
+      "Nếu bạn là " + (d.audience || "người hay mua online") + " thì đừng bỏ qua món này.",
+      "Chỉ " + (d.price? fmtPrice(d.price) : "hơn trăm nghìn") + " mà được thế này thì quá hời…"
+    ];
+    var script =
+      "0–3s (HOOK): Giơ sản phẩm sát camera, nói: “" + hooks[0] + "”\n" +
+      "3–10s (VẤN ĐỀ): Nêu đúng nỗi đau của " + (d.audience || "khách hàng") + " — quay cận cảnh chỗ sản phẩm giải quyết được.\n" +
+      "10–22s (CHỨNG MINH): Lần lượt show: " + b.slice(0,3).join(" → ") + ". Vừa nói vừa thao tác thật, đừng chỉ đọc.\n" +
+      "22–27s (GIÁ): “" + (d.price? ("Chỉ " + fmtPrice(d.price)) : "Giá đang rất tốt") + (disc? (", giảm " + disc + "% so với giá gốc") : "") + (d.promo? (" — " + d.promo) : "") + ".”\n" +
+      "27–30s (CHỐT): Chỉ tay xuống giỏ hàng / hướng dẫn comment: “Bấm vào giỏ hàng góc trái để chốt, số lượng đợt này có hạn.”";
+    var cap = hooks[1] + "\n" + d.name + (d.price? (" — " + fmtPrice(d.price)) : "") + (d.promo? ("\n" + d.promo) : "") + "\n" + hashtags(d) + " #TikTokMadeMeBuyIt #ReviewThat";
+    return [
+      {kind:"3 hook mở đầu video", text: hooks.map(function(h,i){ return (i+1) + ". " + h; }).join("\n")},
+      {kind:"Kịch bản quay 30 giây", text: script, script:true},
+      {kind:"Caption TikTok", text: cap}
+    ];
+  }
+  function buildWeb(d){
+    var b = d.benefits, disc = discount(d);
+    var title = d.name + (b[0]? (" – " + b[0]) : "") + (disc? (" | Giảm " + disc + "%") : "") + " | Chính Hãng, Giá Tốt";
+    var short = d.name + " — lựa chọn " + T[tone].feel + " dành cho " + (d.audience || "người dùng cần chất lượng ổn định với giá hợp lý") + ". " +
+      (b[0]? ("Nổi bật: " + b[0] + ". ") : "") + (d.price? ("Giá bán: " + fmtPrice(d.price) + (disc? (" (tiết kiệm " + fmtPrice(d.old - d.price) + " so với giá gốc)") : "") + ". ") : "") +
+      (d.promo? (d.promo + ".") : "Đặt hàng ngay để nhận tư vấn và hỗ trợ sau bán hàng.");
+    var detail = "GIỚI THIỆU SẢN PHẨM\n" + short + "\n\nĐIỂM NỔI BẬT\n" + b.map(function(x){ return "• " + x; }).join("\n") +
+      "\n\nTHÔNG TIN MUA HÀNG\n• Giá bán: " + (d.price? fmtPrice(d.price) : "Liên hệ") + (d.old? (" — Giá gốc: " + fmtPrice(d.old)) : "") +
+      "\n• Đối tượng phù hợp: " + (d.audience || "Mọi khách hàng") +
+      (d.promo? ("\n• Ưu đãi: " + d.promo) : "") +
+      "\n• Cam kết: hàng đúng mô tả, hỗ trợ đổi trả nếu lỗi từ nhà bán.";
+    var meta = (d.name + ": " + (b[0] || "") + (d.price? (" Giá chỉ " + fmtPrice(d.price)) : "") + (disc? (" — giảm " + disc + "% hôm nay") : "") + ". Mua ngay, giao nhanh toàn quốc.").slice(0,158);
+    return [
+      {kind:"Tiêu đề SEO (đưa lên đầu trang sản phẩm)", text:title},
+      {kind:"Mô tả ngắn", text:short},
+      {kind:"Mô tả chi tiết", text:detail},
+      {kind:"Meta description", text:meta}
+    ];
+  }
+
+  function cardHTML(item){
+    var count = item.text.length;
+    return '<div class="card"><div class="card-head"><span class="kind">' + item.kind + '</span><span class="count mono">' + count + ' ký tự</span></div>' +
+      '<div class="card-text"></div><div class="card-actions"><button type="button" class="copy-btn">📋 Copy bản này</button></div></div>';
+  }
+  function groupHTML(id, badgeCls, badgeTxt, title, items){
+    var h = '<div class="result-group" data-group="' + id + '"><div class="rg-head"><span class="badge ' + badgeCls + '">' + badgeTxt + '</span><h3>' + title + '</h3></div>';
+    items.forEach(function(it){ h += cardHTML(it); });
+    return h + "</div>";
+  }
+  function renderResults(groups){
+    var out = $("output"); out.innerHTML = groups.map(function(g){ return groupHTML(g.id, g.cls, g.badge, g.title, g.items); }).join("");
+    var flat = []; groups.forEach(function(g){ g.items.forEach(function(it){ flat.push(it); }); });
+    var cards = out.querySelectorAll(".card");
+    cards.forEach(function(card, i){
+      card.querySelector(".card-text").textContent = flat[i].text;
+      card.querySelector(".copy-btn").addEventListener("click", function(){ copyText(flat[i].text, this); });
+    });
+    applyFilter();
+    return flat.length;
+  }
+  function generate(){
+    var d = getData();
+    if(!d.name){ toast("Hãy nhập tên sản phẩm trước nhé"); $("fName").focus(); return; }
+    genCount++;
+    var groups = [
+      {id:"fb", cls:"fb", badge:"Facebook", title:"Caption Facebook — 3 biến thể", items: buildFB(d, genCount)},
+      {id:"tt", cls:"tt", badge:"TikTok", title:"TikTok — hook, kịch bản & caption", items: buildTT(d, genCount)},
+      {id:"web", cls:"web", badge:"Website", title:"Website / Shopee — tiêu đề & mô tả", items: buildWeb(d)}
+    ];
+    lastGroups = groups;
+    var total = renderResults(groups);
+    saveState();
+    toast("Đã tạo " + total + " bản nội dung — bấm Copy ở bản bạn ưng nhất");
+    if(window.innerWidth < 900){ $("output").scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+  function applyFilter(){
+    document.querySelectorAll(".result-group").forEach(function(g){
+      g.style.display = (filter==="all" || g.getAttribute("data-group")===filter)? "" : "none";
+    });
+  }
+  document.querySelectorAll(".ptab").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll(".ptab").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true"); filter = b.getAttribute("data-filter"); applyFilter(); saveState();
+    });
+  });
+  $("genForm").addEventListener("submit", function(e){ e.preventDefault(); generate(); });
+  ["fName","fPrice","fOld","fBenefits","fAudience","fPromo"].forEach(function(id){
+    $(id).addEventListener("input", saveState);
+  });
+
+  /* ---------- Khôi phục dữ liệu đã lưu ---------- */
+  (function restore(){
+    var st = loadState(); if(!st) return;
+    if(st.form){
+      $("fName").value = st.form.name || ""; $("fPrice").value = st.form.price || ""; $("fOld").value = st.form.old || "";
+      $("fBenefits").value = st.form.benefits || ""; $("fAudience").value = st.form.audience || ""; $("fPromo").value = st.form.promo || "";
+      if(st.form.tone){
+        tone = st.form.tone;
+        document.querySelectorAll("#toneGrid .tone").forEach(function(x){
+          x.setAttribute("aria-pressed", x.getAttribute("data-tone") === tone ? "true" : "false");
+        });
+      }
+    }
+    if(typeof st.genCount === "number") genCount = st.genCount;
+    if(st.filter){
+      filter = st.filter;
+      document.querySelectorAll(".ptab").forEach(function(x){
+        x.setAttribute("aria-pressed", x.getAttribute("data-filter") === filter ? "true" : "false");
+      });
+    }
+    if(st.groups && st.groups.length){
+      lastGroups = st.groups;
+      renderResults(st.groups);
+    }
+  })();
+
+  /* ---------- Hooks library ---------- */
+  var hooks = [
+    ["Đừng mua [sản phẩm] nếu chưa biết điều này","Cảnh báo — tạo tò mò, hợp TikTok & Reels"],
+    ["3 sai lầm khi chọn [sản phẩm] mà 90% người mua mắc phải","Liệt kê — hợp bài Facebook dài"],
+    ["Mình đã thử [sản phẩm] 7 ngày và đây là kết quả thật","Trải nghiệm — tăng độ tin cậy"],
+    ["[Sản phẩm] giá dưới [X] mà chất lượng thế này thì quá hời","Nhấn giá — hợp bài chốt đơn"],
+    ["Khách hỏi shop câu này mỗi ngày về [sản phẩm]…","Giải đáp — hợp video trả lời comment"],
+    ["So sánh [sản phẩm] loại thường và loại của shop mình","So sánh — làm rõ khác biệt"],
+    ["Đóng gói một đơn [sản phẩm] gửi cho khách ở xa","Hậu trường — hợp video ngắn"],
+    ["Nếu bạn thuộc nhóm [khách hàng] thì món này sinh ra cho bạn","Đúng người — tăng tỷ lệ dừng xem"],
+    ["Unbox [sản phẩm] ngay khi hàng vừa về kho","Mở hộp — hợp TikTok & Story"],
+    ["1 phút phân biệt [sản phẩm] thật và hàng kém chất lượng","Chuyên gia — xây uy tín shop"],
+    ["Feedback thật của khách sau khi dùng [sản phẩm]","Bằng chứng — hợp Facebook"],
+    ["Hôm nay shop giảm [X]% cho [sản phẩm], hết là về giá cũ","Khẩn cấp — chỉ dùng khi giảm thật"]
+  ];
+  var hg = $("hookGrid");
+  hooks.forEach(function(h, i){
+    var btn = document.createElement("button"); btn.type="button"; btn.className="hook";
+    btn.innerHTML = '<span class="n">HOOK ' + String(i+1).padStart(2,"0") + '</span><p></p><small></small>';
+    btn.querySelector("p").textContent = h[0]; btn.querySelector("small").textContent = h[1];
+    btn.addEventListener("click", function(){ copyText(h[0], null); });
+    hg.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>
