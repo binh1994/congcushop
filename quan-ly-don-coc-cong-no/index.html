@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Quản Lý Đơn Cọc Công Nợ — 39.000đ/tháng, dùng thử 3 ngày cho shop bán qua chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f6f5;
+        --surface:#ffffff;
+        --surface-2:#eef3f1;
+        --ink:#12211c;
+        --ink-soft:#43564e;
+        --line:#d8e2dd;
+        --brand:#0c7a5c;
+        --brand-dark:#075c44;
+        --brand-tint:#e2f2ec;
+        --amber:#b45309;
+        --amber-tint:#fdf0dd;
+        --red:#b3352c;
+        --red-tint:#fbe7e4;
+        --blue:#1d6fb8;
+        --blue-tint:#e3eefb;
+        --shadow:0 10px 30px rgba(10,50,38,.10);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1512;
+          --surface:#16211c;
+          --surface-2:#1c2a24;
+          --ink:#e8f1ed;
+          --ink-soft:#a7bcb2;
+          --line:#2b3d35;
+          --brand:#2fbf94;
+          --brand-dark:#2fbf94;
+          --brand-tint:#123529;
+          --amber:#f0a832;
+          --amber-tint:#3a2a10;
+          --red:#f0837a;
+          --red-tint:#3d1d19;
+          --blue:#6cb2ec;
+          --blue-tint:#17334d;
+          --shadow:0 10px 30px rgba(0,0,0,.35);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+        font-size:16px;line-height:1.55;
+        -webkit-font-smoothing:antialiased;
+      }
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+      button{font-family:inherit;cursor:pointer}
+      input,select,textarea{font-family:inherit;font-size:1rem;color:var(--ink)}
+      .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+      .num{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+      /* ---------- HERO ---------- */
+      .hero{padding:44px 0 8px}
+      .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+      .tag{
+        display:inline-flex;align-items:center;gap:8px;
+        background:var(--brand-tint);color:var(--brand-dark);
+        font-weight:700;font-size:.82rem;padding:7px 13px;border-radius:999px;
+      }
+      .tag .dot{width:8px;height:8px;border-radius:50%;background:var(--brand)}
+      h1{
+        font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.14;font-weight:900;
+        letter-spacing:-.01em;margin:16px 0 14px;
+      }
+      h1 em{font-style:normal;color:var(--brand)}
+      .hero p.lead{font-size:1.08rem;color:var(--ink-soft);margin:0 0 22px;max-width:34em}
+      .price-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:22px}
+      .price-line .big{font-size:2rem;font-weight:900}
+      .price-line .per{color:var(--ink-soft);font-weight:600}
+      .price-line .trial{
+        background:var(--amber-tint);color:var(--amber);font-weight:700;font-size:.85rem;
+        padding:5px 11px;border-radius:999px;
+      }
+      .cta-row{display:flex;flex-wrap:wrap;gap:12px}
+      .btn{
+        display:inline-flex;align-items:center;justify-content:center;gap:8px;
+        border:0;border-radius:12px;padding:12px 22px;min-height:48px;
+        font-weight:700;font-size:1rem;text-decoration:none;transition:transform .12s ease, background .12s ease;
+      }
+      .btn:active{transform:scale(.98)}
+      .btn-primary{background:var(--brand);color:#fff}
+      .btn-primary:hover{background:var(--brand-dark)}
+      @media (prefers-color-scheme: dark){.btn-primary{color:#06231a}}
+      .btn-ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
+      .hero-points{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:9px;color:var(--ink-soft);font-size:.97rem}
+      .hero-points li{display:flex;gap:10px;align-items:flex-start}
+      .hero-points .ck{color:var(--brand);font-weight:900;flex:none}
+
+      /* phone mock */
+      .phone{
+        background:var(--surface);border:1.5px solid var(--line);border-radius:22px;
+        box-shadow:var(--shadow);padding:18px;max-width:400px;justify-self:end;width:100%;
+      }
+      .phone-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+      .phone-head b{font-size:.95rem}
+      .phone-head span{font-size:.75rem;color:var(--ink-soft)}
+      .mini-order{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--surface)}
+      .mini-order .row1{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:.92rem}
+      .mini-order .row2{color:var(--ink-soft);font-size:.83rem;margin-top:2px}
+      .mini-order .money{display:flex;gap:14px;margin-top:8px;font-size:.83rem;flex-wrap:wrap}
+      .mini-order .money b{display:block;font-size:.95rem}
+      .badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+      .b-new{background:var(--blue-tint);color:var(--blue)}
+      .b-dep{background:var(--brand-tint);color:var(--brand-dark)}
+      .b-ship{background:var(--amber-tint);color:var(--amber)}
+      .b-done{background:var(--brand);color:#fff}
+      .b-debt{background:var(--red-tint);color:var(--red)}
+      @media (prefers-color-scheme: dark){.b-done{color:#06231a}}
+      .phone-total{
+        display:flex;justify-content:space-between;align-items:center;
+        background:var(--red-tint);border-radius:12px;padding:12px 14px;font-size:.9rem;
+      }
+      .phone-total b{color:var(--red);font-size:1.05rem}
+
+      /* ---------- PAIN STRIP ---------- */
+      .pain{margin:38px 0 0;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:22px}
+      .pain h2{font-size:1.15rem;margin:0 0 14px}
+      .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+      .pain-item b{display:block;margin-bottom:4px;font-size:.98rem}
+      .pain-item p{margin:0;color:var(--ink-soft);font-size:.92rem}
+      .pain-item .ic{font-size:1.3rem;display:block;margin-bottom:6px}
+
+      /* ---------- SECTIONS ---------- */
+      section{padding:44px 0 4px}
+      .sec-head{max-width:640px;margin-bottom:20px}
+      .sec-head h2{font-size:clamp(1.45rem,3vw,1.9rem);font-weight:800;margin:0 0 8px;line-height:1.25}
+      .sec-head p{color:var(--ink-soft);margin:0}
+
+      /* ---------- DEMO ---------- */
+      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+      .stat{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+      .stat .lbl{font-size:.8rem;color:var(--ink-soft);font-weight:600}
+      .stat .val{font-size:1.35rem;font-weight:800;margin-top:2px}
+      .stat.alert .val{color:var(--red)}
+      .stat.good .val{color:var(--brand)}
+      .demo-grid{display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
+      .card{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px}
+      .card h3{margin:0 0 4px;font-size:1.08rem;font-weight:800}
+      .card .sub{color:var(--ink-soft);font-size:.88rem;margin:0 0 16px}
+      .field{margin-bottom:13px}
+      .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:5px}
+      .field input,.field select{
+        width:100%;border:1.5px solid var(--line);border-radius:10px;
+        background:var(--surface);padding:9px 12px;min-height:44px;
+      }
+      .field input:focus,.field select:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+      .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .remain-box{
+        background:var(--amber-tint);border-radius:12px;padding:12px 14px;margin:4px 0 14px;
+        display:flex;justify-content:space-between;align-items:center;gap:10px;
+      }
+      .remain-box .lbl{font-size:.85rem;font-weight:600;color:var(--amber)}
+      .remain-box .val{font-size:1.3rem;font-weight:800;color:var(--amber)}
+      .remain-box.ok{background:var(--brand-tint)}
+      .remain-box.ok .lbl,.remain-box.ok .val{color:var(--brand-dark)}
+      .btn-block{width:100%}
+      .hint{font-size:.8rem;color:var(--ink-soft);margin-top:10px}
+
+      .filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+      .chip{
+        border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
+        border-radius:999px;padding:7px 14px;font-weight:600;font-size:.86rem;min-height:38px;
+      }
+      .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+      @media (prefers-color-scheme: dark){.chip.on{color:#06231a}}
+      .order{
+        border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:11px;background:var(--surface);
+      }
+      .order-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+      .order-top .who{font-weight:800}
+      .order-top .who small{display:block;font-weight:500;color:var(--ink-soft);font-size:.8rem}
+      .order-prod{color:var(--ink-soft);font-size:.9rem;margin-top:3px}
+      .order-money{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:.83rem;color:var(--ink-soft)}
+      .order-money b{display:block;color:var(--ink);font-size:.95rem}
+      .order-money .due b{color:var(--red)}
+      .order-money .paid b{color:var(--brand)}
+      .order-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+      .mini-btn{
+        border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);
+        border-radius:9px;padding:7px 13px;font-weight:600;font-size:.84rem;min-height:38px;
+      }
+      .mini-btn.warn{border-color:var(--amber);color:var(--amber);background:var(--amber-tint)}
+      .mini-btn.good{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-tint)}
+      .empty{color:var(--ink-soft);text-align:center;padding:26px 10px;border:1.5px dashed var(--line);border-radius:12px}
+
+      /* message box */
+      .msg-box{margin-top:18px}
+      .msg-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+      .msg-out{
+        background:var(--surface-2);border-radius:12px;padding:16px;white-space:pre-wrap;
+        font-size:.94rem;line-height:1.6;min-height:120px;
+      }
+      .msg-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+
+      /* debt table */
+      .debt-list{display:grid;gap:10px}
+      .debt-row{
+        display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+        background:var(--surface);border:1.5px solid var(--line);border-left:5px solid var(--red);
+        border-radius:12px;padding:13px 16px;
+      }
+      .debt-row .who{font-weight:700}
+      .debt-row .who small{display:block;color:var(--ink-soft);font-weight:500;font-size:.82rem}
+      .debt-row .amt{font-weight:800;color:var(--red);font-size:1.05rem;text-align:right}
+      .debt-row .amt small{display:block;color:var(--ink-soft);font-weight:500;font-size:.78rem}
+
+      /* steps */
+      .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+      .step{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px}
+      .step .n{
+        width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;
+        display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:10px;
+      }
+      @media (prefers-color-scheme: dark){.step .n{color:#06231a}}
+      .step b{display:block;margin-bottom:5px}
+      .step p{margin:0;color:var(--ink-soft);font-size:.93rem}
+
+      /* pricing */
+      .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+      .plan{border-radius:var(--radius);padding:26px;background:var(--surface);border:1.5px solid var(--line)}
+      .plan.hot{border:2px solid var(--brand);box-shadow:var(--shadow);position:relative}
+      .plan .flag{
+        position:absolute;top:-13px;left:22px;background:var(--brand);color:#fff;
+        font-size:.75rem;font-weight:800;padding:4px 12px;border-radius:999px;
+      }
+      @media (prefers-color-scheme: dark){.plan .flag{color:#06231a}}
+      .plan h3{margin:0 0 4px;font-size:1.15rem}
+      .plan .p{font-size:2.1rem;font-weight:900;margin:8px 0 2px}
+      .plan .p small{font-size:.95rem;color:var(--ink-soft);font-weight:600}
+      .plan ul{list-style:none;margin:16px 0 20px;padding:0;display:grid;gap:9px;font-size:.95rem}
+      .plan ul li{display:flex;gap:9px}
+      .plan ul .ck{color:var(--brand);font-weight:900;flex:none}
+      .compare{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:6px}
+      .compare th,.compare td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+      .compare th{font-size:.82rem;color:var(--ink-soft);font-weight:700}
+      .compare td:last-child,.compare th:last-child{text-align:right;font-weight:700}
+      .compare tr.us td{color:var(--brand-dark);font-weight:800}
+      .fineprint{color:var(--ink-soft);font-size:.83rem;margin-top:12px}
+
+      /* faq */
+      .faq{display:grid;gap:10px}
+      details{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:4px 18px}
+      summary{font-weight:700;cursor:pointer;padding:12px 0;min-height:44px;display:flex;align-items:center}
+      details p{color:var(--ink-soft);margin:0 0 14px;font-size:.95rem}
+
+      footer{margin-top:52px;border-top:1.5px solid var(--line);padding:24px 0 40px;color:var(--ink-soft);font-size:.88rem}
+      footer .cols{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+      /* collect-payment inline form */
+      .collect-form{
+        display:none;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;
+        background:var(--surface-2);border-radius:10px;padding:10px;
+      }
+      .collect-form.open{display:flex}
+      .collect-form input{
+        flex:1;min-width:140px;border:1.5px solid var(--line);border-radius:9px;
+        background:var(--surface);padding:8px 11px;min-height:40px;
+      }
+      .collect-form input:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+      .saved-note{
+        display:flex;gap:9px;align-items:flex-start;background:var(--brand-tint);
+        border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;color:var(--brand-dark);
+      }
+      .saved-note .ck{font-weight:900;flex:none}
+
+      .toast{
+        position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);
+        background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;font-weight:600;
+        font-size:.92rem;box-shadow:var(--shadow);transition:transform .25s ease;z-index:50;max-width:92vw;text-align:center;
+      }
+      .toast.show{transform:translateX(-50%) translateY(0)}
+
+      @media (max-width:900px){
+        .hero-grid{grid-template-columns:1fr}
+        .phone{justify-self:start}
+        .demo-grid{grid-template-columns:1fr}
+        .stats{grid-template-columns:1fr 1fr}
+        .pain-grid,.steps{grid-template-columns:1fr}
+        .price-grid{grid-template-columns:1fr}
+      }
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        *{transition:none !important}
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!-- ============ HERO ============ -->
+      <div class="wrap hero">
+        <div class="hero-grid">
+          <div>
+            <span class="tag"><span class="dot"></span>Cho shop bán qua Facebook &amp; Zalo</span>
+            <h1>Bán qua chat, đừng để <em>tiền cọc</em> trôi theo tin nhắn</h1>
+            <p class="lead">Ghi đơn trong 30 giây ngay trên điện thoại. Phần mềm tự tính tiền cọc đã nhận, số còn phải thu và ai đang nợ — kể cả đơn đặt trước, hàng order chờ lâu ngày.</p>
+            <div class="price-line">
+              <span class="big">39.000đ</span>
+              <span class="per">/tháng</span>
+              <span class="trial">Dùng thử miễn phí 3 ngày</span>
+            </div>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#demo">Dùng thử 3 ngày — ghi 1 đơn ngay</a>
+              <a class="btn btn-ghost" href="#bang-gia">Xem bảng giá</a>
+            </div>
+            <ul class="hero-points">
+              <li><span class="ck">✓</span><span>Không còn lục lại 200 tin nhắn chat để tìm “khách này cọc bao nhiêu rồi”.</span></li>
+              <li><span class="ck">✓</span><span>Danh sách khách nợ xếp sẵn theo số tiền — nhắn nhắc nợ bằng mẫu có sẵn, copy gửi Zalo/Facebook.</span></li>
+              <li><span class="ck">✓</span><span>Chạy ngay trên trình duyệt điện thoại — không cần cài app. Dùng thử 3 ngày miễn phí, sau đó 39.000đ/tháng.</span></li>
+            </ul>
+          </div>
+          <div class="phone" aria-hidden="true">
+            <div class="phone-head"><b>Đơn hôm nay</b><span>Thứ Tư, 18/11</span></div>
+            <div class="mini-order">
+              <div class="row1"><span>Chị Lan Anh</span><span class="badge b-ship">Đang giao</span></div>
+              <div class="row2">Áo len cổ lọ ×2 · qua Zalo</div>
+              <div class="money">
+                <span>Tổng<b class="num">560.000đ</b></span>
+                <span>Đã cọc<b class="num">200.000đ</b></span>
+                <span>Còn thu<b class="num" style="color:var(--red)">360.000đ</b></span>
+              </div>
+            </div>
+            <div class="mini-order">
+              <div class="row1"><span>Anh Tuấn</span><span class="badge b-dep">Đã cọc · chờ hàng</span></div>
+              <div class="row2">Giày order Hàn ×1 · qua Facebook</div>
+              <div class="money">
+                <span>Tổng<b class="num">1.250.000đ</b></span>
+                <span>Đã cọc<b class="num">500.000đ</b></span>
+                <span>Còn thu<b class="num" style="color:var(--red)">750.000đ</b></span>
+              </div>
+            </div>
+            <div class="phone-total"><span>Còn phải thu của 2 đơn trên</span><b class="num">1.110.000đ</b></div>
+          </div>
+        </div>
+
+        <div class="pain">
+          <h2>3 kiểu mất tiền quen thuộc của shop bán qua chat</h2>
+          <div class="pain-grid">
+            <div class="pain-item">
+              <span class="ic">💬</span>
+              <b>Quên khách đã cọc</b>
+              <p>Khách cọc 200k từ tuần trước, hôm nay giao hàng lại thu đủ 100% — khách bực, shop mất uy tín, có khi mất luôn khách quen.</p>
+            </div>
+            <div class="pain-item">
+              <span class="ic">📦</span>
+              <b>Hàng đặt trước không ai theo dõi</b>
+              <p>Đơn order 2–3 tuần mới về. Không ghi lại thì đến lúc hàng về không nhớ của ai, cọc bao nhiêu, phải thu thêm bao nhiêu.</p>
+            </div>
+            <div class="pain-item">
+              <span class="ic">🧾</span>
+              <b>Nợ đọng không biết đòi ai</b>
+              <p>Cho khách quen nợ “vài hôm”, vài người cộng lại thành vài triệu. Cuối tháng nhìn lại mới biết mình đang cho vay không lãi.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DEMO ============ -->
+      <section id="demo" class="wrap">
+        <div class="sec-head">
+          <h2>Thử ngay: ghi đơn, tính cọc, xem ai đang nợ</h2>
+          <p>Ghi thử một đơn của shop bạn ngay trên trang này — mọi con số tự tính lại ngay, và đơn tự lưu trên máy này nên tắt trang mở lại vẫn còn. Vài đơn mẫu có sẵn để bạn thấy cách hiển thị, xóa lúc nào cũng được.</p>
+        </div>
+
+        <div class="stats" id="stats">
+          <div class="stat"><div class="lbl">Tổng số đơn</div><div class="val num" id="stCount">0</div></div>
+          <div class="stat good"><div class="lbl">Đã thu (cọc + thanh toán)</div><div class="val num" id="stPaid">0đ</div></div>
+          <div class="stat alert"><div class="lbl">Còn phải thu</div><div class="val num" id="stDue">0đ</div></div>
+          <div class="stat alert"><div class="lbl">Khách đang nợ</div><div class="val num" id="stDebtors">0</div></div>
+        </div>
+
+        <div class="saved-note"><span class="ck">✓</span><span><b>Dữ liệu tự lưu trên máy này.</b> Đơn bạn ghi sẽ còn nguyên khi mở lại trang trên cùng điện thoại/máy tính này. Đổi máy thì dữ liệu không đi theo — khi nào có tài khoản đồng bộ, trang sẽ thông báo rõ.</span></div>
+
+        <div class="demo-grid">
+          <form class="card" id="orderForm">
+            <h3>Ghi đơn mới</h3>
+            <p class="sub">Điền nhanh như lúc chốt đơn trong chat — chưa tới 30 giây.</p>
+            <div class="field">
+              <label for="fName">Tên khách</label>
+              <input id="fName" type="text" placeholder="VD: Chị Lan Anh" required />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="fPhone">Số điện thoại</label>
+                <input id="fPhone" type="tel" inputmode="tel" placeholder="09xx xxx xxx" />
+              </div>
+              <div class="field">
+                <label for="fChannel">Kênh bán</label>
+                <select id="fChannel">
+                  <option>Zalo</option>
+                  <option>Facebook</option>
+                  <option>Tại shop</option>
+                  <option>Kênh khác</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="fProduct">Sản phẩm</label>
+              <input id="fProduct" type="text" placeholder="VD: Áo len cổ lọ, giày order Hàn…" required />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="fQty">Số lượng</label>
+                <input id="fQty" type="number" min="1" value="1" inputmode="numeric" required />
+              </div>
+              <div class="field">
+                <label for="fPrice">Đơn giá (đ)</label>
+                <input id="fPrice" type="number" min="0" step="1000" placeholder="350000" inputmode="numeric" required />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="fDeposit">Tiền cọc đã nhận (đ)</label>
+                <input id="fDeposit" type="number" min="0" step="1000" value="0" inputmode="numeric" />
+              </div>
+              <div class="field">
+                <label for="fShip">Phí ship (đ)</label>
+                <input id="fShip" type="number" min="0" step="1000" value="0" inputmode="numeric" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="fStatus">Trạng thái giao hàng</label>
+              <select id="fStatus">
+                <option value="new">Đơn mới</option>
+                <option value="dep">Đã cọc · chờ hàng về</option>
+                <option value="ship">Đang giao</option>
+                <option value="done">Đã giao</option>
+              </select>
+            </div>
+            <div class="remain-box" id="remainBox">
+              <span class="lbl">Khách còn phải trả</span>
+              <span class="val num" id="remainVal">0đ</span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">+ Thêm đơn này</button>
+            <p class="hint">Đơn tự lưu trên trình duyệt của máy này. Xóa lịch sử trình duyệt hoặc đổi máy thì dữ liệu sẽ mất — hãy chụp lại danh sách công nợ quan trọng để phòng hờ.</p>
+          </form>
+
+          <div>
+            <div class="card">
+              <h3>Danh sách đơn</h3>
+              <p class="sub">Bấm vào từng đơn để đổi trạng thái, thu tiền hoặc lấy tin nhắn nhắc nợ.</p>
+              <div class="filter-row" id="filters">
+                <button type="button" class="chip on" data-filter="all">Tất cả</button>
+                <button type="button" class="chip" data-filter="debt">Còn nợ</button>
+                <button type="button" class="chip" data-filter="dep">Đã cọc · chờ hàng</button>
+                <button type="button" class="chip" data-filter="ship">Đang giao</button>
+                <button type="button" class="chip" data-filter="done">Hoàn tất</button>
+              </div>
+              <div id="orderList"></div>
+            </div>
+
+            <div class="card msg-box">
+              <h3>Tin nhắn gửi khách — copy là gửi</h3>
+              <p class="sub">Tự điền theo đơn đang chọn. Gửi qua Zalo, Facebook Messenger hay SMS đều được.</p>
+              <div class="msg-tabs" id="msgTabs">
+                <button type="button" class="chip on" data-msg="confirm">Xác nhận đơn</button>
+                <button type="button" class="chip" data-msg="deposit">Nhắc cọc</button>
+                <button type="button" class="chip" data-msg="debt">Nhắc nợ nhẹ nhàng</button>
+                <button type="button" class="chip" data-msg="arrived">Báo hàng đã về</button>
+              </div>
+              <div class="msg-out" id="msgOut"></div>
+              <div class="msg-actions">
+                <button type="button" class="btn btn-primary" id="copyMsg">Sao chép tin nhắn</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ DEBT ============ -->
+      <section class="wrap">
+        <div class="sec-head">
+          <h2>Công nợ: ai nợ bao nhiêu, nhìn một cái là rõ</h2>
+          <p>Danh sách tự cập nhật từ các đơn chưa thu đủ, xếp người nợ nhiều nhất lên đầu — để bạn ưu tiên nhắc đúng người.</p>
+        </div>
+        <div class="debt-list" id="debtList"></div>
+      </section>
+
+      <!-- ============ STEPS ============ -->
+      <section class="wrap">
+        <div class="sec-head">
+          <h2>Một ngày bán hàng với phần mềm này</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="n">1</div>
+            <b>Chốt đơn trong chat → ghi ngay 30 giây</b>
+            <p>Khách chốt qua Zalo/Facebook, bạn mở điện thoại ghi tên, món hàng, tiền cọc. Xong là đơn nằm yên một chỗ, không trôi theo tin nhắn nữa.</p>
+          </div>
+          <div class="step">
+            <div class="n">2</div>
+            <b>Hàng về / đi giao → đổi trạng thái 1 chạm</b>
+            <p>Đơn đặt trước chuyển sang “đang giao” khi hàng về. Phần mềm luôn hiển thị số tiền còn phải thu của từng đơn ngay trên thẻ đơn.</p>
+          </div>
+          <div class="step">
+            <div class="n">3</div>
+            <b>Cuối ngày → xem ai còn nợ, nhắc bằng mẫu sẵn</b>
+            <p>Mở danh sách công nợ, chọn khách, copy mẫu nhắc nợ đã điền sẵn số tiền và gửi. Thu đủ thì bấm “Đã thu đủ”, đơn tự đóng.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PRICING ============ -->
+      <section id="bang-gia" class="wrap">
+        <div class="sec-head">
+          <h2>Bảng giá — dùng thử 3 ngày, sau đó 39.000đ/tháng</h2>
+          <p>Dùng thử miễn phí 3 ngày để ghi đơn thật của shop bạn. Hết 3 ngày, chỉ 39.000đ/tháng để dùng tiếp — rẻ hơn khoảng 4–7 lần phần mềm bán hàng phổ thông, vì sản phẩm được vận hành trên hạ tầng miễn phí, chi phí đầu tư 0đ nên không đội giá lên khách hàng.</p>
+        </div>
+        <div class="price-grid">
+          <div class="plan hot">
+            <span class="flag">DÙNG THỬ 3 NGÀY MIỄN PHÍ</span>
+            <h3>Quản lý đơn, cọc &amp; công nợ</h3>
+            <div class="p">39.000đ<small> /tháng</small></div>
+            <p style="color:var(--ink-soft);margin:0">3 ngày đầu miễn phí. Sau đó 39.000đ/tháng, hủy lúc nào cũng được. Đơn tự lưu trên máy bạn đang dùng trong bản demo này.</p>
+            <ul>
+              <li><span class="ck">✓</span><span>Ghi đơn không giới hạn, theo dõi cọc &amp; số còn thu từng đơn</span></li>
+              <li><span class="ck">✓</span><span>Trạng thái giao hàng: mới → đã cọc → đang giao → hoàn tất</span></li>
+              <li><span class="ck">✓</span><span>Danh sách công nợ tự động, xếp theo số tiền nợ</span></li>
+              <li><span class="ck">✓</span><span>Mẫu tin nhắn xác nhận đơn, nhắc cọc, nhắc nợ — copy gửi ngay</span></li>
+              <li><span class="ck">✓</span><span>Thu thêm tiền từng lần với số tiền tùy ý khách vừa trả</span></li>
+              <li><span class="ck">✓</span><span>Dùng tốt trên điện thoại, không cần cài app</span></li>
+              <li><span class="ck">✓</span><span>Dữ liệu tự lưu trên máy này, mở lại không mất đơn</span></li>
+            </ul>
+            <a class="btn btn-primary btn-block" href="#demo">Bắt đầu dùng thử 3 ngày</a>
+            <p class="fineprint">Lưu ý: “0đ” ở đây là chi phí đầu tư vận hành của bên làm sản phẩm (hạ tầng miễn phí), không phải giá cho khách hàng. Khách hàng vẫn dùng thử 3 ngày miễn phí rồi trả 39.000đ/tháng như trên.</p>
+          </div>
+          <div class="plan">
+            <h3>So giá &amp; gói Bundle</h3>
+            <table class="compare">
+              <tr><th>Phần mềm</th><th style="text-align:right">Giá /tháng</th></tr>
+              <tr class="us"><td>Quản Lý Đơn Cọc Công Nợ (trang này)</td><td>39.000đ</td></tr>
+              <tr><td>Sổ Bán Hàng</td><td>~160.000đ</td></tr>
+              <tr><td>Sapo</td><td>~170.000đ</td></tr>
+              <tr><td>KiotViet</td><td>~270.000đ</td></tr>
+            </table>
+            <p class="fineprint">Giá của Sổ Bán Hàng, Sapo và KiotViet là mức giá gói phổ thông tham khảo tại thời điểm tháng 11/2026, có thể thay đổi theo gói và chương trình của từng nhà cung cấp — hãy đối chiếu bảng giá hiện hành của họ khi so sánh.</p>
+            <ul>
+              <li><span class="ck">✓</span><span><b>Gói Bundle 6 công cụ:</b> 99.000đ/tháng — dùng cả 6 sản phẩm cho shop (tính lợi nhuận sàn, quản lý đơn, nội dung, sổ thu chi, ảnh sản phẩm, báo giá).</span></li>
+              <li><span class="ck">✓</span><span><b>Một máy chính:</b> ở bản demo, ghi đơn trên cùng một điện thoại/máy tính, dữ liệu nằm trong trình duyệt của máy đó.</span></li>
+              <li><span class="ck">✓</span><span><b>Đừng xóa dữ liệu trình duyệt</b> của trang này — xóa dữ liệu duyệt web là đơn cũng mất theo. Chụp lại công nợ quan trọng để dự phòng.</span></li>
+            </ul>
+            <p class="fineprint">Bản demo trên trang này chưa thu tiền thật và chưa có tài khoản đồng bộ — thanh toán qua VietQR/payOS và tài khoản sẽ mở khi ra mắt chính thức. Giá trên là giá dự kiến đã công bố cho gói trả phí sau 3 ngày dùng thử.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ FAQ ============ -->
+      <section class="wrap">
+        <div class="sec-head"><h2>Câu hỏi thường gặp</h2></div>
+        <div class="faq">
+          <details>
+            <summary>Tôi bán hàng đặt trước (order 2–3 tuần), phần mềm có hợp không?</summary>
+            <p>Đây chính là trường hợp phần mềm làm tốt nhất: đơn ở trạng thái “Đã cọc · chờ hàng” nằm riêng một danh sách, ghi rõ đã cọc bao nhiêu. Hàng về chỉ cần đổi trạng thái và bấm mẫu tin “Báo hàng đã về” để nhắn khách.</p>
+          </details>
+          <details>
+            <summary>Tôi không rành công nghệ, có dùng được không?</summary>
+            <p>Được. Màn hình ghi đơn chỉ gồm những ô bạn vẫn nói với khách mỗi ngày: tên, món hàng, giá, tiền cọc. Không có kho hàng, không có mã vạch, không thuật ngữ kế toán. Ghi một đơn mất khoảng 30 giây.</p>
+          </details>
+          <details>
+            <summary>Dùng có mất phí gì không?</summary>
+            <p>Bạn được dùng thử miễn phí 3 ngày, không cần thẻ. Sau 3 ngày, phí là 39.000đ/tháng để dùng tiếp, hoặc 99.000đ/tháng cho gói Bundle cả 6 công cụ. “0đ” mà sản phẩm nhắc tới là chi phí đầu tư vận hành của bên làm ra nó (dùng hạ tầng miễn phí) — nhờ vậy mới giữ được giá 39.000đ/tháng cho khách hàng, chứ không phải miễn phí vĩnh viễn cho người dùng.</p>
+          </details>
+          <details>
+            <summary>Hết 3 ngày dùng thử thì sao?</summary>
+            <p>Hết 3 ngày, bạn chọn trả 39.000đ/tháng để tiếp tục dùng đầy đủ, hoặc dừng lại. Bản demo trên trang này chưa thu tiền thật — khi mở bán chính thức, thanh toán sẽ qua VietQR/payOS và trang sẽ thông báo rõ trước khi tính phí, không trừ tiền bất ngờ.</p>
+          </details>
+          <details>
+            <summary>Khách trả góp nhiều lần cho một đơn thì ghi thế nào?</summary>
+            <p>Mỗi lần khách trả thêm, bạn bấm “Thu thêm tiền” ngay trên thẻ đơn và nhập đúng số tiền khách vừa trả. Phần mềm cộng dồn vào “đã thu” và tính lại số còn nợ — khách trả 3–4 lần cũng không rối.</p>
+          </details>
+          <details>
+            <summary>Dữ liệu đơn hàng của tôi lưu ở đâu, có an toàn không?</summary>
+            <p>Đơn hàng chỉ lưu trong trình duyệt trên chính máy bạn đang dùng — không gửi lên máy chủ nào, nên người khác không xem được. Đổi lại, nếu bạn xóa dữ liệu trình duyệt hoặc đổi máy thì đơn sẽ mất; hãy chụp lại danh sách công nợ quan trọng để dự phòng.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap cols">
+        <span><b>Quản Lý Đơn Cọc Công Nợ</b> — một trong 6 công cụ cho người bán hàng Việt Nam.</span>
+        <span>Dùng thử 3 ngày miễn phí · Sau đó 39.000đ/tháng · Vận hành với chi phí đầu tư 0đ · Dữ liệu lưu trên máy của bạn</span>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      (function(){
+        var fmt = function(n){ return Math.round(n).toLocaleString('vi-VN') + 'đ'; };
+        var uid = 0;
+        var STORE_KEY = 'qldccn_orders_v1';
+        function saveOrders(){
+          try{ localStorage.setItem(STORE_KEY, JSON.stringify(orders)); }catch(e){}
+        }
+        function loadOrders(){
+          try{
+            var raw = localStorage.getItem(STORE_KEY);
+            if(raw===null) return null; /* chưa từng lưu -> nạp đơn mẫu */
+            var arr = JSON.parse(raw);
+            /* Đã lưu (kể cả danh sách rỗng do xóa hết đơn) -> dùng đúng như đã lưu */
+            return Array.isArray(arr) ? arr : null;
+          }catch(e){ return null; }
+        }
+        var orders = [
+          { id:++uid, name:'Chị Lan Anh', phone:'0903 555 218', channel:'Zalo', product:'Áo len cổ lọ', qty:2, price:265000, ship:30000, paid:200000, status:'ship', demo:true },
+          { id:++uid, name:'Anh Tuấn', phone:'0912 884 307', channel:'Facebook', product:'Giày order Hàn (đặt trước)', qty:1, price:1250000, ship:0, paid:500000, status:'dep', demo:true },
+          { id:++uid, name:'Chị Ngọc Trâm', phone:'0987 120 456', channel:'Zalo', product:'Set váy công sở', qty:1, price:480000, ship:25000, paid:505000, status:'done', demo:true },
+          { id:++uid, name:'Anh Hoàng Nam', phone:'0934 672 901', channel:'Facebook', product:'Túi xách da', qty:1, price:890000, ship:30000, paid:300000, status:'ship', demo:true }
+        ];
+        var savedOrders = loadOrders();
+        if(savedOrders){
+          orders = savedOrders;
+          uid = orders.reduce(function(m,o){ return Math.max(m, o.id||0); }, 0);
+        }
+        var filter = 'all';
+        var msgType = 'confirm';
+        var selectedId = orders.length ? orders[0].id : 0;
+
+        var $ = function(id){ return document.getElementById(id); };
+        var total = function(o){ return o.qty*o.price + (o.ship||0); };
+        var due = function(o){ return Math.max(0, total(o) - o.paid); };
+        var statusMeta = {
+          new:{label:'Đơn mới', cls:'b-new', next:'dep', nextLabel:'Đã nhận cọc'},
+          dep:{label:'Đã cọc · chờ hàng', cls:'b-dep', next:'ship', nextLabel:'Hàng về · đi giao'},
+          ship:{label:'Đang giao', cls:'b-ship', next:'done', nextLabel:'Đã giao xong'},
+          done:{label:'Đã giao', cls:'b-done', next:null, nextLabel:null}
+        };
+        function effStatus(o){ return (o.status==='done' && due(o)>0) ? 'debt' : o.status; }
+
+        var toastTimer;
+        function toast(msg){
+          var t = $('toast'); t.textContent = msg; t.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+        }
+
+        function renderStats(){
+          var paidSum = orders.reduce(function(s,o){ return s+o.paid; },0);
+          var dueSum = orders.reduce(function(s,o){ return s+due(o); },0);
+          var debtors = {};
+          orders.forEach(function(o){ if(due(o)>0) debtors[o.name]=true; });
+          $('stCount').textContent = orders.length;
+          $('stPaid').textContent = fmt(paidSum);
+          $('stDue').textContent = fmt(dueSum);
+          $('stDebtors').textContent = Object.keys(debtors).length;
+        }
+
+        function matches(o){
+          if(filter==='all') return true;
+          if(filter==='debt') return due(o)>0;
+          if(filter==='done') return o.status==='done' && due(o)===0;
+          return o.status===filter && due(o)>=0;
+        }
+
+        function renderOrders(){
+          var list = $('orderList');
+          var shown = orders.filter(matches);
+          if(!shown.length){
+            list.innerHTML = '<div class="empty">Chưa có đơn nào trong mục này. Ghi đơn đầu tiên ở form bên trái nhé.</div>';
+            return;
+          }
+          list.innerHTML = shown.map(function(o){
+            var es = effStatus(o);
+            var badge = es==='debt'
+              ? '<span class="badge b-debt">Đã giao · còn nợ</span>'
+              : '<span class="badge '+statusMeta[o.status].cls+'">'+statusMeta[o.status].label+'</span>';
+            var meta = statusMeta[o.status];
+            var nextBtn = meta.next
+              ? '<button type="button" class="mini-btn" data-act="next" data-id="'+o.id+'">'+meta.nextLabel+' →</button>' : '';
+            var collectBtn = due(o)>0
+              ? '<button type="button" class="mini-btn warn" data-act="collect" data-id="'+o.id+'">Thu thêm tiền</button>'
+              + '<button type="button" class="mini-btn" data-act="remind" data-id="'+o.id+'">Lấy tin nhắc nợ</button>' : '';
+            var paidBtn = due(o)>0
+              ? '<button type="button" class="mini-btn good" data-act="paidfull" data-id="'+o.id+'">Đã thu đủ</button>' : '';
+            var delBtn = '<button type="button" class="mini-btn" data-act="del" data-id="'+o.id+'">Xóa đơn</button>';
+            var collectForm = '<div class="collect-form" id="collect-'+o.id+'">'
+              + '<input type="number" min="0" step="1000" inputmode="numeric" placeholder="Nhập số tiền khách vừa trả (đ)" data-collect-input="'+o.id+'" />'
+              + '<button type="button" class="mini-btn warn" data-act="collect-ok" data-id="'+o.id+'">Ghi nhận thu</button>'
+              + '<button type="button" class="mini-btn" data-act="collect-cancel" data-id="'+o.id+'">Hủy</button>'
+              + '</div>';
+            return '<div class="order">'
+              + '<div class="order-top"><div class="who">'+escapeHtml(o.name)+(o.demo?' <span class="badge b-new">đơn mẫu</span>':'')
+              + '<small>'+escapeHtml(o.phone||'—')+' · qua '+escapeHtml(o.channel)+'</small></div>'+badge+'</div>'
+              + '<div class="order-prod">'+escapeHtml(o.product)+' × '+o.qty+'</div>'
+              + '<div class="order-money">'
+              + '<span>Tổng đơn<b class="num">'+fmt(total(o))+'</b></span>'
+              + '<span class="paid">Đã thu<b class="num">'+fmt(o.paid)+'</b></span>'
+              + '<span class="due">Còn phải thu<b class="num">'+fmt(due(o))+'</b></span>'
+              + '</div>'
+              + '<div class="order-actions">'+nextBtn+collectBtn+paidBtn+delBtn
+              + '<button type="button" class="mini-btn" data-act="select" data-id="'+o.id+'">Dùng cho tin nhắn</button>'
+              + '</div>'+collectForm+'</div>';
+          }).join('');
+        }
+
+        function renderDebt(){
+          var map = {};
+          orders.forEach(function(o){
+            if(due(o)>0){
+              if(!map[o.name]) map[o.name] = { name:o.name, phone:o.phone, amt:0, count:0 };
+              map[o.name].amt += due(o); map[o.name].count++;
+            }
+          });
+          var rows = Object.keys(map).map(function(k){ return map[k]; }).sort(function(a,b){ return b.amt-a.amt; });
+          var el = $('debtList');
+          if(!rows.length){
+            el.innerHTML = '<div class="empty">Không ai đang nợ — sổ sạch bong. 🎉</div>';
+            return;
+          }
+          el.innerHTML = rows.map(function(r){
+            return '<div class="debt-row"><div class="who">'+escapeHtml(r.name)
+              + '<small>'+escapeHtml(r.phone||'')+' · '+r.count+' đơn chưa thu đủ</small></div>'
+              + '<div class="amt num">'+fmt(r.amt)+'<small>tổng còn nợ</small></div></div>';
+          }).join('');
+        }
+
+        function currentOrder(){
+          var o = orders.filter(function(x){ return x.id===selectedId; })[0];
+          return o || orders[0];
+        }
+
+        function renderMsg(){
+          var o = currentOrder();
+          if(!o){ $('msgOut').textContent = 'Hãy thêm một đơn trước để tạo tin nhắn.'; return; }
+          var t = '';
+          if(msgType==='confirm'){
+            t = 'Chào '+o.name+', shop xác nhận đơn của mình ạ:\n'
+              + '• Sản phẩm: '+o.product+' × '+o.qty+'\n'
+              + '• Tổng đơn: '+fmt(total(o))+(o.ship?' (đã gồm ship '+fmt(o.ship)+')':'')+'\n'
+              + '• Đã cọc: '+fmt(o.paid)+'\n'
+              + '• Còn lại khi nhận hàng: '+fmt(due(o))+'\n'
+              + 'Shop sẽ báo ngay khi hàng được gửi đi. Cảm ơn '+o.name+' đã ủng hộ shop ạ!';
+          } else if(msgType==='deposit'){
+            if(due(o)===0){
+              t = 'Chào '+o.name+', đơn '+o.product+' của mình tổng '+fmt(total(o))+' đã thanh toán đủ rồi ạ, không cần cọc thêm nữa.\n'
+                + 'Shop sẽ giao hàng đúng hẹn. Cảm ơn '+o.name+' đã ủng hộ shop ạ!';
+            } else if(o.paid>0){
+              t = 'Chào '+o.name+', shop đã nhận cọc '+fmt(o.paid)+' cho đơn '+o.product+' rồi ạ.\n'
+                + 'Phần còn lại '+fmt(due(o))+' mình thanh toán khi nhận hàng giúp shop nhé — chưa cần chuyển thêm lúc này đâu ạ.';
+            } else {
+              var depAmt = Math.round(total(o)*0.3/1000)*1000;
+              if(depAmt<1000) depAmt = Math.min(1000, due(o));
+              if(depAmt>due(o)) depAmt = due(o);
+              t = 'Chào '+o.name+', đơn '+o.product+' của mình tổng '+fmt(total(o))+' ạ.\n'
+                + 'Mình cọc trước giúp shop '+fmt(depAmt)+' (khoảng 30% giá trị đơn) để shop giữ hàng/đặt hàng về nhé.\n'
+                + 'Phần còn lại '+fmt(total(o)-depAmt)+' mình thanh toán khi nhận hàng. Shop nhận được cọc sẽ nhắn xác nhận ngay. Cảm ơn '+o.name+' nhiều ạ!';
+            }
+          } else if(msgType==='debt'){
+            t = 'Chào '+o.name+', shop nhắn nhẹ về đơn '+o.product+' ạ.\n'
+              + 'Đơn tổng '+fmt(total(o))+', mình đã thanh toán '+fmt(o.paid)+', còn lại '+fmt(due(o))+',\n'
+              + 'khi nào tiện mình chuyển giúp shop nhé. Cảm ơn '+o.name+' đã mua hàng bên shop ạ!';
+          } else if(msgType==='arrived'){
+            t = 'Tin vui '+o.name+' ơi, hàng '+o.product+' của mình đã về tới shop rồi ạ!\n'
+              + 'Số tiền còn lại là '+fmt(due(o))+', shop gửi hàng ngay hôm nay, mình nhận hàng thanh toán phần còn lại giúp shop nhé.';
+          }
+          $('msgOut').textContent = t;
+        }
+
+        function renderAll(){ renderStats(); renderOrders(); renderDebt(); renderMsg(); }
+
+        function escapeHtml(s){
+          return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+          });
+        }
+
+        /* live remaining calc */
+        function num(id){ var v = parseFloat($(id).value); return isNaN(v)?0:v; }
+        function updateRemain(){
+          var t = num('fQty')*num('fPrice') + num('fShip');
+          var r = Math.max(0, t - num('fDeposit'));
+          $('remainVal').textContent = fmt(r);
+          $('remainBox').classList.toggle('ok', r===0 && t>0);
+          $('remainBox').querySelector('.lbl').textContent = (r===0 && t>0) ? 'Khách đã trả đủ ✓' : 'Khách còn phải trả';
+        }
+        ['fQty','fPrice','fShip','fDeposit'].forEach(function(id){
+          $(id).addEventListener('input', updateRemain);
+        });
+
+        $('orderForm').addEventListener('submit', function(e){
+          e.preventDefault();
+          var name = $('fName').value.trim();
+          var product = $('fProduct').value.trim();
+          if(!name || !product){ toast('Nhập tên khách và sản phẩm trước nhé.'); return; }
+          var o = {
+            id:++uid, name:name, phone:$('fPhone').value.trim(), channel:$('fChannel').value,
+            product:product, qty:Math.max(1,num('fQty')), price:num('fPrice'), ship:num('fShip'),
+            paid:num('fDeposit'), status:$('fStatus').value, demo:false
+          };
+          orders.unshift(o);
+          selectedId = o.id;
+          saveOrders();
+          renderAll();
+          toast('Đã thêm đơn của '+name+' — còn phải thu '+fmt(due(o))+'.');
+          $('fName').value=''; $('fPhone').value=''; $('fProduct').value='';
+          $('fPrice').value=''; $('fDeposit').value='0'; $('fShip').value='0'; $('fQty').value='1';
+          updateRemain();
+        });
+
+        $('filters').addEventListener('click', function(e){
+          var b = e.target.closest('[data-filter]'); if(!b) return;
+          filter = b.getAttribute('data-filter');
+          this.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c===b); });
+          renderOrders();
+        });
+
+        $('msgTabs').addEventListener('click', function(e){
+          var b = e.target.closest('[data-msg]'); if(!b) return;
+          msgType = b.getAttribute('data-msg');
+          this.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c===b); });
+          renderMsg();
+        });
+
+        $('orderList').addEventListener('click', function(e){
+          var b = e.target.closest('[data-act]'); if(!b) return;
+          var id = parseInt(b.getAttribute('data-id'),10);
+          var o = orders.filter(function(x){ return x.id===id; })[0];
+          if(!o) return;
+          var act = b.getAttribute('data-act');
+          if(act==='next'){
+            o.status = statusMeta[o.status].next || o.status;
+            toast('Đơn của '+o.name+': '+statusMeta[o.status].label+'.');
+          } else if(act==='paidfull'){
+            o.paid = total(o);
+            if(o.status!=='done') o.status='done';
+            toast('Đã thu đủ đơn của '+o.name+'. Đơn đã đóng.');
+          } else if(act==='collect'){
+            var box = $('collect-'+id);
+            if(box){
+              box.classList.add('open');
+              var inp = box.querySelector('input');
+              if(inp){ inp.value=''; inp.focus(); }
+            }
+            return;
+          } else if(act==='collect-cancel'){
+            renderOrders();
+            return;
+          } else if(act==='collect-ok'){
+            var inp2 = document.querySelector('[data-collect-input="'+id+'"]');
+            var add = inp2 ? parseFloat(inp2.value) : NaN;
+            if(isNaN(add) || add<=0){ toast('Nhập số tiền khách vừa trả trước nhé.'); return; }
+            add = Math.min(add, due(o));
+            o.paid += add;
+            if(due(o)===0 && o.status!=='done') o.status='done';
+            toast('Đã ghi thu thêm '+fmt(add)+' cho '+o.name+'. Còn lại '+fmt(due(o))+'.');
+            saveOrders();
+          } else if(act==='del'){
+            orders = orders.filter(function(x){ return x.id!==id; });
+            if(selectedId===id) selectedId = orders.length ? orders[0].id : 0;
+            saveOrders();
+            toast('Đã xóa đơn của '+o.name+'.');
+          } else if(act==='remind'){
+            selectedId = id; msgType='debt';
+            $('msgTabs').querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c.getAttribute('data-msg')==='debt'); });
+            renderMsg();
+            $('msgOut').scrollIntoView({behavior:'smooth', block:'center'});
+            toast('Đã soạn tin nhắc nợ cho '+o.name+' ở khung bên dưới.');
+            return;
+          } else if(act==='select'){
+            selectedId = id;
+            toast('Đã chọn đơn của '+o.name+' để soạn tin nhắn.');
+          }
+          saveOrders();
+          renderAll();
+        });
+
+        $('copyMsg').addEventListener('click', function(){
+          var text = $('msgOut').textContent;
+          function done(){ toast('Đã sao chép — dán vào Zalo/Facebook để gửi khách.'); }
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+          } else { fallback(); }
+          function fallback(){
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+            document.body.appendChild(ta); ta.select();
+            try{ document.execCommand('copy'); done(); }catch(err){ toast('Không sao chép tự động được — hãy bôi đen tin nhắn để copy.'); }
+            document.body.removeChild(ta);
+          }
+        });
+
+        updateRemain();
+        renderAll();
+      })();
+    </script>
+  </body>
+</html>
