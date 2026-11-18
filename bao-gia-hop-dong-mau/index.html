@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Báo Giá &amp; Hợp Đồng Mẫu — 29.000đ/tháng, dùng thử 3 ngày</title>
+    <meta name="description" content="Tạo báo giá PDF chuyên nghiệp trong 2 phút, lưu khách hàng, dùng lại mẫu và theo dõi trạng thái chốt đơn. Cho freelancer, thợ dịch vụ và đội thi công nhỏ. Dùng thử miễn phí 3 ngày, sau đó 29.000đ/tháng." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <!-- Bộ tạo PDF (html2pdf) được nạp lười khi bấm Tải PDF — trang vẫn chạy đủ tính năng khi CDN lỗi/mất mạng. -->
+    <style>
+      :root{
+        --bg:#f4f6f2; --surface:#ffffff; --surface2:#edf1ec; --ink:#15211c; --ink2:#43534b;
+        --line:#d8e0d7; --accent:#0b6b57; --accent-ink:#ffffff; --accent-soft:#e2f0ea;
+        --amber:#b97a16; --amber-soft:#faf0da; --danger:#b3372c; --blue:#2563a8; --blue-soft:#e3edf8;
+        --paper:#ffffff; --paper-ink:#1c2420;
+        --shadow:0 10px 30px rgba(21,33,28,.10);
+        color-scheme:light;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1311; --surface:#151d1a; --surface2:#1b2622; --ink:#e9f0eb; --ink2:#a7b8ae;
+          --line:#2a3831; --accent:#2fbf9b; --accent-ink:#06231b; --accent-soft:#17362c;
+          --amber:#e0a83f; --amber-soft:#2e2410; --danger:#e07a6d; --blue:#7db1e8; --blue-soft:#16283d;
+          --paper:#ffffff; --paper-ink:#1c2420;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+          color-scheme:dark;
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:16px;line-height:1.55}
+      button,[role="button"],select,input,textarea{font:inherit}
+      button,select,input:not([type="checkbox"]){min-height:44px}
+      textarea{min-height:44px}
+      a{color:var(--accent)}
+      .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+      /* ---------- Hero ---------- */
+      .hero{padding:40px 0 8px}
+      .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:start}
+      .audience{font-size:.85rem;font-weight:600;color:var(--accent);margin:0 0 10px}
+      h1{font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.18;margin:0 0 14px;font-weight:800;letter-spacing:-.01em}
+      h1 .hl{color:var(--accent)}
+      .hero p.lead{color:var(--ink2);font-size:1.05rem;margin:0 0 20px;max-width:56ch}
+      .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+      .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 18px;font-weight:600;cursor:pointer;text-decoration:none;min-height:48px}
+      .btn:hover{border-color:var(--accent)}
+      .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+      .btn.small{min-height:40px;padding:6px 14px;font-size:.9rem}
+      .btn.danger{color:var(--danger)}
+      .feat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+      .feat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+      .feat b{display:block;font-size:.95rem;margin-bottom:2px}
+      .feat span{font-size:.85rem;color:var(--ink2)}
+      .price-card{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+      .price-card .p-label{font-size:.85rem;color:var(--ink2);margin:0}
+      .price-big{font-size:2.2rem;font-weight:800;margin:4px 0 0;line-height:1.1}
+      .price-big small{font-size:1rem;font-weight:600;color:var(--ink2)}
+      .trial{display:inline-block;background:var(--amber-soft);color:var(--amber);font-weight:700;font-size:.85rem;border-radius:999px;padding:4px 12px;margin:10px 0 14px}
+      .price-card ul{margin:0 0 16px;padding-left:18px;color:var(--ink2);font-size:.93rem}
+      .price-card ul li{margin:5px 0}
+      .price-card .fine{font-size:.82rem;color:var(--ink2);margin:10px 0 0}
+      /* ---------- Tabs / workspace ---------- */
+      .workspace{padding:26px 0 10px}
+      .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+      .tab{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:10px 18px;font-weight:600;cursor:pointer;min-height:44px}
+      .tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+      .panel{display:none}
+      .panel.active{display:block}
+      .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+      .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+      .card h2{font-size:1.1rem;margin:0 0 4px}
+      .card h3{font-size:.98rem;margin:18px 0 8px}
+      .card .hint{font-size:.85rem;color:var(--ink2);margin:0 0 14px}
+      label.f{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
+      label.f:first-child{margin-top:0}
+      input[type="text"],input[type="tel"],input[type="number"],input[type="date"],select,textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:9px 11px}
+      textarea{resize:vertical}
+      .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+      /* item rows */
+      .item-row{display:grid;grid-template-columns:1fr 64px 74px 118px 118px 40px;gap:8px;margin-bottom:8px;align-items:end}
+      .item-row .lbl{font-size:.72rem;color:var(--ink2);display:block;margin-bottom:2px}
+      .item-row .amt{display:flex;align-items:center;min-height:44px;font-weight:600;font-size:.92rem;justify-content:flex-end;padding-right:2px}
+      .icon-btn{width:40px;height:44px;border:1px solid var(--line);background:var(--surface2);border-radius:8px;cursor:pointer;color:var(--danger);font-size:1.05rem}
+      .totals{border-top:1px dashed var(--line);margin-top:14px;padding-top:12px;font-size:.95rem}
+      .totals .row{display:flex;justify-content:space-between;padding:3px 0;color:var(--ink2)}
+      .totals .row.grand{color:var(--ink);font-weight:800;font-size:1.12rem;border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
+      .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+      .toast{display:none;margin-top:12px;background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:10px 14px;font-size:.9rem;font-weight:600}
+      .toast.show{display:block}
+      /* ---------- Paper preview ---------- */
+      .paper-wrap{position:sticky;top:14px}
+      .paper{background:var(--paper);color:var(--paper-ink);border-radius:6px;box-shadow:var(--shadow);padding:30px 30px 26px;font-size:.86rem;line-height:1.5}
+      .paper .doc-head{display:flex;justify-content:space-between;gap:14px;border-bottom:3px solid #0b6b57;padding-bottom:12px;margin-bottom:14px}
+      .paper .doc-head .biz b{font-size:1.02rem;display:block}
+      .paper .doc-head .biz span{color:#5a6660;font-size:.8rem;display:block}
+      .paper .doc-title{text-align:right}
+      .paper .doc-title b{font-size:1.25rem;letter-spacing:.02em;color:#0b6b57;display:block}
+      .paper .doc-title span{color:#5a6660;font-size:.8rem;display:block}
+      .paper table{width:100%;border-collapse:collapse;margin:10px 0}
+      .paper th{background:#eef4f0;text-align:left;padding:7px 8px;font-size:.78rem;border:1px solid #d5ddd6}
+      .paper td{padding:7px 8px;border:1px solid #d5ddd6;vertical-align:top}
+      .paper td.num,.paper th.num{text-align:right;white-space:nowrap}
+      .paper .sum{margin-left:auto;width:min(300px,100%)}
+      .paper .sum .row{display:flex;justify-content:space-between;padding:2px 0}
+      .paper .sum .grand{font-weight:800;font-size:1rem;border-top:2px solid #0b6b57;margin-top:6px;padding-top:7px;color:#0b6b57}
+      .paper .meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin-bottom:6px}
+      .paper .meta b{font-weight:600}
+      .paper .notes{white-space:pre-wrap;color:#3c4741;font-size:.8rem;background:#f6f8f6;border-radius:6px;padding:10px 12px;margin-top:12px}
+      .paper.contract{font-family:"Noto Serif",serif;font-size:.88rem;line-height:1.65}
+      .paper.contract h4{text-align:center;font-size:1.05rem;margin:0 0 2px}
+      .paper.contract .sub{text-align:center;color:#5a6660;font-size:.8rem;margin-bottom:14px}
+      .paper.contract p{margin:7px 0;text-align:justify}
+      .paper.contract .sign{display:grid;grid-template-columns:1fr 1fr;gap:20px;text-align:center;margin-top:26px}
+      .paper.contract .sign b{display:block;margin-bottom:56px}
+      /* ---------- Tracking / clients / templates ---------- */
+      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+      .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+      .stat b{font-size:1.35rem;display:block;line-height:1.15}
+      .stat span{font-size:.82rem;color:var(--ink2)}
+      .q-list{display:grid;gap:10px}
+      .q-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center}
+      .q-item .q-main b{font-size:1rem}
+      .q-item .q-main span{display:block;font-size:.85rem;color:var(--ink2)}
+      .q-item .q-total{font-weight:800;font-size:1.05rem;text-align:right}
+      .q-item select{width:auto;min-width:132px}
+      .badge{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 10px}
+      .badge.draft{background:var(--surface2);color:var(--ink2)}
+      .badge.sent{background:var(--blue-soft);color:var(--blue)}
+      .badge.won{background:var(--accent-soft);color:var(--accent)}
+      .badge.lost{background:#fbe9e6;color:var(--danger)}
+      @media (prefers-color-scheme: dark){ .badge.lost{background:#3a1712} }
+      .empty{border:1px dashed var(--line);border-radius:10px;padding:26px;text-align:center;color:var(--ink2);background:var(--surface)}
+      .tpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+      .tpl{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:left;cursor:pointer;width:100%}
+      .tpl:hover{border-color:var(--accent)}
+      .tpl b{display:block;margin-bottom:4px;font-size:.98rem}
+      .tpl span{font-size:.85rem;color:var(--ink2);display:block}
+      .tpl .tpl-price{margin-top:10px;font-weight:700;color:var(--accent);font-size:.9rem}
+      .client-list{display:grid;gap:8px;margin-top:12px}
+      .client-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--surface)}
+      .client-item b{display:block;font-size:.95rem}
+      .client-item span{font-size:.83rem;color:var(--ink2)}
+      /* ---------- Sections ---------- */
+      section.block{padding:34px 0}
+      section.block h2{font-size:1.45rem;margin:0 0 8px}
+      section.block .sub{color:var(--ink2);margin:0 0 20px;max-width:64ch}
+      .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+      .step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+      .step .n{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+      .step b{display:block;margin-bottom:4px}
+      .step p{margin:0;color:var(--ink2);font-size:.92rem}
+      .faq details{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:4px 16px}
+      .faq summary{font-weight:600;cursor:pointer;padding:12px 0;min-height:44px}
+      .faq details p{color:var(--ink2);margin:0 0 14px;font-size:.94rem}
+      footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--ink2);font-size:.88rem}
+      footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
+      .btn.armed{background:var(--danger);color:#fff;border-color:var(--danger)}
+      .copybox{width:100%;margin-top:10px;border:1px dashed var(--amber);border-radius:8px;background:var(--amber-soft);color:var(--ink);padding:10px 12px;font-size:.88rem}
+      .q-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+      .tpl .tpl-tag{display:inline-block;font-size:.72rem;font-weight:700;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+      .tpl .tpl-del{margin-top:10px}
+      /* ---------- Responsive ---------- */
+      @media (max-width:960px){
+        .hero-grid,.cols{grid-template-columns:1fr}
+        .paper-wrap{position:static}
+        .tpl-grid,.steps{grid-template-columns:1fr 1fr}
+        .stats{grid-template-columns:1fr 1fr}
+      }
+      @media (max-width:640px){
+        .feat-row,.tpl-grid,.steps,.grid2,.grid3{grid-template-columns:1fr}
+        .item-row{grid-template-columns:1fr 1fr 44px;grid-template-areas:"name name del" "unit qty amt" "price price amt"}
+        .item-row .f-name{grid-area:name}.item-row .f-unit{grid-area:unit}.item-row .f-qty{grid-area:qty}
+        .item-row .f-price{grid-area:price}.item-row .amt{grid-area:amt}.item-row .icon-btn{grid-area:del}
+        .paper{padding:20px 16px;font-size:.8rem}
+        .paper .doc-head{flex-direction:column}
+        .paper .doc-title{text-align:left}
+        .q-item{grid-template-columns:1fr}
+        .q-item .q-total{text-align:left}
+        .hero{padding-top:26px}
+      }
+      @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+    </style>
+  </head>
+  <body>
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="audience">Cho freelancer · thợ dịch vụ · đội thi công nhỏ</p>
+          <h1>Báo giá ra PDF trong 2 phút.<br /><span class="hl">Hợp đồng rõ ràng</span> ngay khi khách chốt.</h1>
+          <p class="lead">Không còn gõ báo giá trong Word rồi mất file, không còn quên khách nào đã gửi giá. Chọn mẫu theo nghề, điền số, xuất PDF gửi Zalo — và theo dõi báo giá nào đã chốt, báo giá nào cần nhắc lại.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#app">Tạo báo giá ngay — dùng thử 3 ngày</a>
+            <a class="btn" href="#app">Xem mẫu theo nghề</a>
+          </div>
+          <div class="feat-row">
+            <div class="feat"><b>Tạo báo giá PDF</b><span>Mẫu đẹp sẵn, tự tính tổng, chiết khấu, VAT, tạm ứng.</span></div>
+            <div class="feat"><b>Lưu khách hàng</b><span>Thêm một lần, lần sau chọn là tự điền — không gõ lại.</span></div>
+            <div class="feat"><b>Tái sử dụng mẫu</b><span>6 mẫu báo giá theo nghề + 3 mẫu hợp đồng sẵn nội dung.</span></div>
+            <div class="feat"><b>Theo dõi trạng thái</b><span>Nháp · Đã gửi · Đã chốt · Hết hạn — biết cần nhắc ai.</span></div>
+          </div>
+        </div>
+        <aside class="price-card" id="gia">
+          <p class="p-label">Báo Giá &amp; Hợp Đồng Mẫu</p>
+          <p class="price-big">29.000đ <small>/tháng</small></p>
+          <span class="trial">Dùng thử miễn phí 3 ngày · Sau đó 29.000đ/tháng</span>
+          <ul>
+            <li>Tạo báo giá không giới hạn, xuất PDF gửi Zalo/email</li>
+            <li>Lưu danh sách khách hàng, dùng lại cho mọi báo giá sau</li>
+            <li>6 mẫu báo giá theo nghề + 3 mẫu hợp đồng dịch vụ, thi công, đặt cọc</li>
+            <li>Theo dõi trạng thái và tổng giá trị đã chốt</li>
+            <li>Dùng tốt trên điện thoại — tạo báo giá ngay tại công trình</li>
+          </ul>
+          <a class="btn primary" href="#app" style="width:100%">Dùng thử 3 ngày miễn phí</a>
+          <p class="fine">Dùng thử 3 ngày dùng đủ tính năng, không cần thẻ. Hết 3 ngày, nếu tiếp tục dùng thì tính phí 29.000đ/tháng. Lưu ý để tránh hiểu nhầm: “0 đồng” trong kế hoạch làm sản phẩm là chi phí đầu tư ban đầu của bên làm ra sản phẩm này — dùng hạ tầng miễn phí như Cloudflare Pages nên không tốn vốn — chứ không phải giá cho khách. Khách vẫn dùng thử 3 ngày rồi trả phí như trên. Nói rõ thêm: bản demo trên trang này chưa tự khóa tính năng sau 3 ngày và chưa tự thu phí — thanh toán VietQR qua payOS sẽ mở khi ra mắt chính thức, ở đây không có nút thanh toán giả.</p>
+        </aside>
+      </div>
+    </header>
+
+    <!-- ================= APP ================= -->
+    <main class="workspace" id="app">
+      <div class="wrap">
+        <div class="tabs" role="tablist" aria-label="Khu vực làm việc">
+          <button class="tab" role="tab" aria-selected="true" data-tab="quote">1 · Tạo báo giá</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="contract">2 · Hợp đồng mẫu</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="library">3 · Khách hàng &amp; mẫu</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="track">4 · Theo dõi <span id="trackCount"></span></button>
+        </div>
+
+        <!-- ===== TAB: QUOTE ===== -->
+        <section class="panel active" id="panel-quote" role="tabpanel">
+          <div class="cols">
+            <div class="card">
+              <h2>Thông tin báo giá</h2>
+              <p class="hint">Điền bên này — bản PDF bên phải tự cập nhật theo từng con số.</p>
+
+              <h3>Người gửi (bạn)</h3>
+              <div class="grid2">
+                <div><label class="f" for="bizName">Tên / cửa hàng / đội thi công</label><input type="text" id="bizName" placeholder="VD: Đội thi công Minh Phát" /></div>
+                <div><label class="f" for="bizPhone">Số điện thoại</label><input type="tel" id="bizPhone" placeholder="09xx xxx xxx" /></div>
+              </div>
+              <label class="f" for="bizAddr">Địa chỉ</label>
+              <input type="text" id="bizAddr" placeholder="Số nhà, đường, quận/huyện, tỉnh" />
+
+              <h3>Khách hàng</h3>
+              <label class="f" for="clientPick">Chọn khách đã lưu</label>
+              <select id="clientPick"><option value="">— Khách mới / tự nhập bên dưới —</option></select>
+              <div class="grid2">
+                <div><label class="f" for="cName">Tên khách / công ty</label><input type="text" id="cName" placeholder="VD: Anh Tuấn — căn hộ 1204" /></div>
+                <div><label class="f" for="cPhone">SĐT khách</label><input type="tel" id="cPhone" placeholder="09xx xxx xxx" /></div>
+              </div>
+              <label class="f" for="cAddr">Địa chỉ / địa điểm thi công</label>
+              <input type="text" id="cAddr" placeholder="Nơi nhận báo giá hoặc địa điểm làm việc" />
+
+              <div class="grid3">
+                <div><label class="f" for="qNo">Số báo giá</label><input type="text" id="qNo" /></div>
+                <div><label class="f" for="qDate">Ngày báo giá</label><input type="date" id="qDate" /></div>
+                <div><label class="f" for="qValid">Hiệu lực (ngày)</label><input type="number" id="qValid" value="7" min="1" max="90" /></div>
+              </div>
+              <label class="f" for="qTitle">Tiêu đề công việc</label>
+              <input type="text" id="qTitle" placeholder="VD: Thi công nội thất căn hộ 2 phòng ngủ" />
+
+              <h3>Hạng mục</h3>
+              <div id="items"></div>
+              <button class="btn small" id="addItem" type="button">+ Thêm hạng mục</button>
+              <button class="btn small" id="saveTpl" type="button">Lưu hạng mục hiện tại thành mẫu riêng</button>
+              <p class="hint" style="margin-top:8px">Mẫu riêng được lưu trên thiết bị này và hiện ở thẻ “Khách hàng &amp; mẫu” để dùng lại cho khách sau. Form báo giá cũng tự lưu nháp trên thiết bị — mở lại trang không mất số đang điền.</p>
+
+              <div class="grid3">
+                <div><label class="f" for="discount">Chiết khấu (%)</label><input type="number" id="discount" value="0" min="0" max="100" step="0.5" /></div>
+                <div><label class="f" for="vat">VAT (%)</label><input type="number" id="vat" value="0" min="0" max="20" step="0.5" /></div>
+                <div><label class="f" for="deposit">Tạm ứng (%)</label><input type="number" id="deposit" value="30" min="0" max="100" step="5" /></div>
+              </div>
+
+              <div class="totals" id="totals"></div>
+
+              <label class="f" for="qNotes">Điều khoản &amp; ghi chú</label>
+              <textarea id="qNotes" rows="4">- Báo giá có hiệu lực trong thời gian ghi trên đầu báo giá.
+- Thanh toán: tạm ứng khi ký xác nhận, phần còn lại sau khi nghiệm thu.
+- Bảo hành công việc theo thỏa thuận hai bên.</textarea>
+
+              <div class="actions">
+                <button class="btn primary" id="saveQuote" type="button">Lưu vào danh sách theo dõi</button>
+                <button class="btn" id="pdfQuote" type="button">Tải PDF</button>
+                <button class="btn" id="copyQuote" type="button">Copy gửi Zalo</button>
+              </div>
+              <div class="toast" id="quoteToast" role="status"></div>
+              <textarea class="copybox" id="copyBoxQuote" rows="6" readonly hidden aria-label="Nội dung báo giá để copy thủ công"></textarea>
+            </div>
+
+            <div class="paper-wrap">
+              <div class="paper" id="quotePaper"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== TAB: CONTRACT ===== -->
+        <section class="panel" id="panel-contract" role="tabpanel">
+          <div class="cols">
+            <div class="card">
+              <h2>Tạo hợp đồng từ mẫu</h2>
+              <p class="hint">Chọn loại hợp đồng, điền thông tin — nội dung chuẩn tự ghép vào. Nên rà soát lại và nhờ tư vấn pháp lý với hợp đồng giá trị lớn.</p>
+              <div class="actions" style="margin-top:0;margin-bottom:6px">
+                <button class="btn small" id="fillFromQuote" type="button">Lấy thông tin từ báo giá hiện tại</button>
+              </div>
+              <label class="f" for="ctType">Loại hợp đồng</label>
+              <select id="ctType">
+                <option value="service">Hợp đồng dịch vụ (freelancer)</option>
+                <option value="construct">Hợp đồng thi công / sửa chữa</option>
+                <option value="deposit">Thỏa thuận đặt cọc</option>
+              </select>
+              <div class="grid2">
+                <div><label class="f" for="ctA">Bên A (khách hàng)</label><input type="text" id="ctA" placeholder="Họ tên / công ty" /></div>
+                <div><label class="f" for="ctAPhone">SĐT bên A</label><input type="tel" id="ctAPhone" placeholder="09xx xxx xxx" /></div>
+              </div>
+              <div class="grid2">
+                <div><label class="f" for="ctB">Bên B (bạn / đơn vị thi công)</label><input type="text" id="ctB" placeholder="Họ tên / cửa hàng / đội" /></div>
+                <div><label class="f" for="ctBPhone">SĐT bên B</label><input type="tel" id="ctBPhone" placeholder="09xx xxx xxx" /></div>
+              </div>
+              <label class="f" for="ctWork">Nội dung công việc</label>
+              <textarea id="ctWork" rows="3" placeholder="VD: Thi công tủ bếp và sơn lại phòng khách theo báo giá đính kèm"></textarea>
+              <div class="grid3">
+                <div><label class="f" for="ctValue">Giá trị hợp đồng (đ)</label><input type="number" id="ctValue" min="0" step="1000" placeholder="0" /></div>
+                <div><label class="f" for="ctStart">Ngày bắt đầu</label><input type="date" id="ctStart" /></div>
+                <div><label class="f" for="ctEnd">Ngày hoàn thành</label><input type="date" id="ctEnd" /></div>
+              </div>
+              <label class="f" for="ctPay">Đợt thanh toán</label>
+              <textarea id="ctPay" rows="3">Đợt 1: tạm ứng 30% khi ký hợp đồng. Đợt 2: 70% còn lại khi nghiệm thu bàn giao.</textarea>
+              <label class="f" for="ctWarranty">Bảo hành / cam kết</label>
+              <input type="text" id="ctWarranty" value="Bảo hành 12 tháng đối với phần việc do Bên B thực hiện." />
+              <div class="actions">
+                <button class="btn primary" id="copyContract" type="button">Copy toàn bộ hợp đồng</button>
+                <button class="btn" id="dlContract" type="button">Tải file hợp đồng</button>
+              </div>
+              <div class="toast" id="ctToast" role="status"></div>
+              <textarea class="copybox" id="copyBoxContract" rows="6" readonly hidden aria-label="Nội dung hợp đồng để copy thủ công"></textarea>
+            </div>
+            <div class="paper-wrap">
+              <div class="paper contract" id="contractPaper"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== TAB: LIBRARY ===== -->
+        <section class="panel" id="panel-library" role="tabpanel">
+          <div class="cols">
+            <div class="card">
+              <h2>Thêm khách hàng</h2>
+              <p class="hint">Lưu một lần — lần sau tạo báo giá chỉ cần chọn tên, thông tin tự điền.</p>
+              <label class="f" for="ncName">Tên khách / công ty</label>
+              <input type="text" id="ncName" placeholder="VD: Chị Lan — tiệm nail, Q.7" />
+              <div class="grid2">
+                <div><label class="f" for="ncPhone">Số điện thoại</label><input type="tel" id="ncPhone" placeholder="09xx xxx xxx" /></div>
+                <div><label class="f" for="ncAddr">Địa chỉ</label><input type="text" id="ncAddr" placeholder="Quận/huyện, tỉnh" /></div>
+              </div>
+              <div class="actions">
+                <button class="btn primary" id="addClient" type="button">Lưu khách hàng</button>
+              </div>
+              <div class="toast" id="clientToast" role="status"></div>
+              <h3>Khách đã lưu</h3>
+              <div class="client-list" id="clientList"></div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:16px">
+                <h2>Mẫu báo giá theo nghề</h2>
+                <p class="hint">Chạm vào một mẫu để nạp sẵn hạng mục và giá tham khảo vào form báo giá — sửa lại theo giá của bạn trước khi gửi.</p>
+                <div class="tpl-grid" id="tplGrid" style="grid-template-columns:1fr 1fr"></div>
+              </div>
+              <div class="card">
+                <h2>Mẫu hợp đồng có sẵn</h2>
+                <p class="hint">Cả 3 mẫu nằm ở thẻ “Hợp đồng mẫu”: hợp đồng dịch vụ cho freelancer, hợp đồng thi công/sửa chữa và thỏa thuận đặt cọc giữ lịch. Điền thông tin là có bản hoàn chỉnh để copy hoặc tải về.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== TAB: TRACK ===== -->
+        <section class="panel" id="panel-track" role="tabpanel">
+          <div class="stats">
+            <div class="stat"><b id="stTotal">0</b><span>Tổng báo giá đã lưu</span></div>
+            <div class="stat"><b id="stSent">0</b><span>Đang chờ khách (đã gửi)</span></div>
+            <div class="stat"><b id="stWon">0</b><span>Đã chốt</span></div>
+            <div class="stat"><b id="stValue">0đ</b><span>Giá trị đã chốt</span></div>
+          </div>
+          <div class="q-list" id="quoteList"></div>
+          <p class="hint" style="color:var(--ink2);font-size:.85rem;margin-top:12px">Khách hàng, báo giá đã lưu và mẫu riêng được lưu ngay trong trình duyệt trên thiết bị này — đóng trang mở lại vẫn còn, không gửi lên máy chủ. Dữ liệu sẽ mất nếu bạn xóa dữ liệu trình duyệt hoặc đổi máy, nên hãy tải bản sao lưu bên dưới (hoặc tải PDF từng báo giá) để giữ bản chính thức.</p>
+          <div class="actions">
+            <button class="btn small" id="exportData" type="button">Tải bản sao lưu dữ liệu (JSON)</button>
+            <label class="btn small" for="importFile" style="cursor:pointer">Nhập bản sao lưu</label>
+            <input type="file" id="importFile" accept="application/json,.json" hidden />
+            <button class="btn small danger" id="clearAll" type="button">Xóa toàn bộ dữ liệu đã lưu</button>
+          </div>
+          <div class="toast" id="trackToast" role="status"></div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ================= HOW ================= -->
+    <section class="block">
+      <div class="wrap">
+        <h2>Quy trình 3 bước, ngay tại công trình</h2>
+        <p class="sub">Khảo sát xong là có báo giá gửi khách trước khi rời khỏi nhà khách — không đợi về nhà mở máy tính.</p>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><b>Chọn mẫu theo nghề</b><p>6 mẫu có sẵn hạng mục thường gặp: thi công nội thất, điện nước, thiết kế, quay chụp, vệ sinh, làm web. Sửa giá theo mặt bằng của bạn.</p></div>
+          <div class="step"><div class="n">2</div><b>Điền số, xuất PDF</b><p>Cộng tổng, chiết khấu, VAT và tạm ứng tự tính. Một chạm ra file PDF đẹp, gửi thẳng qua Zalo cho khách.</p></div>
+          <div class="step"><div class="n">3</div><b>Chốt thì ra hợp đồng</b><p>Khách đồng ý giá, chuyển sang mẫu hợp đồng tương ứng, thông tin hai bên đã có sẵn. Theo dõi trạng thái đến khi nghiệm thu.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="block" style="padding-top:6px">
+      <div class="wrap faq">
+        <h2>Câu hỏi thường gặp</h2>
+        <p class="sub">Những điều freelancer và đội thi công nhỏ hay hỏi trước khi dùng.</p>
+        <details>
+          <summary>Dùng thử 3 ngày thế nào? Sau 3 ngày tính phí ra sao?</summary>
+          <p>Bạn dùng thử miễn phí 3 ngày với đầy đủ tính năng, không cần thẻ. Hết 3 ngày, nếu tiếp tục dùng thì phí là 29.000đ/tháng. “0 đồng” mà bên làm sản phẩm nhắc tới là chi phí đầu tư ban đầu của họ — họ dùng hạ tầng miễn phí nên vốn bỏ ra là 0đ — không phải là khách được dùng miễn phí mãi mãi.</p>
+        </details>
+        <details>
+          <summary>Tôi không rành máy tính, chỉ dùng điện thoại thì có làm được không?</summary>
+          <p>Được — trang này thiết kế cho điện thoại trước. Form chia ô lớn, dễ chạm, bản xem trước PDF cập nhật ngay khi bạn gõ số, gửi thẳng qua Zalo.</p>
+        </details>
+        <details>
+          <summary>Mẫu hợp đồng có dùng thay cho hợp đồng luật sư soạn không?</summary>
+          <p>Mẫu phù hợp cho các việc dịch vụ, thi công nhỏ phổ biến và giúp hai bên ghi rõ công việc, giá và đợt thanh toán. Với hợp đồng giá trị lớn hoặc có điều khoản đặc biệt, bạn nên nhờ luật sư rà soát thêm.</p>
+        </details>
+        <details>
+          <summary>Giá của tôi khác giá trong mẫu thì sao?</summary>
+          <p>Giá trong mẫu chỉ là khung tham khảo theo hạng mục thường gặp. Mọi con số đều sửa được. Khi đã sửa xong một bộ hạng mục ưng ý, bấm “Lưu hạng mục hiện tại thành mẫu riêng” ở thẻ Tạo báo giá — mẫu riêng sẽ nằm trong danh sách mẫu ở thẻ “Khách hàng &amp; mẫu”, lưu trên thiết bị này để dùng lại cho khách sau.</p>
+        </details>
+        <details>
+          <summary>Dữ liệu khách hàng và báo giá của tôi được lưu ở đâu?</summary>
+          <p>Khách hàng, báo giá đã lưu, mẫu riêng và bản nháp đang điền được lưu trong trình duyệt trên chính thiết bị của bạn (bộ nhớ cục bộ của trình duyệt), không gửi lên máy chủ — đóng trang mở lại vẫn còn. Đổi máy hoặc xóa dữ liệu trình duyệt sẽ mất, vì vậy hãy tải bản sao lưu ở thẻ “Theo dõi”, tải PDF báo giá hoặc copy nội dung gửi khách để giữ bản chính thức trong Zalo/email của mình. Tài khoản đồng bộ nhiều máy sẽ có ở bản chính thức.</p>
+        </details>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <span><b>Báo Giá &amp; Hợp Đồng Mẫu</b> — một trong 6 công cụ cho người bán và làm dịch vụ tại Việt Nam.</span>
+        <span>29.000đ/tháng · Dùng thử miễn phí 3 ngày · Sau 3 ngày thu phí</span>
+      </div>
+    </footer>
+
+    <script>
+      "use strict";
+      var fmt = function (n) { return Math.round(Number(n) || 0).toLocaleString("vi-VN") + "đ"; };
+      var fmtNum = function (n) { return Math.round(Number(n) || 0).toLocaleString("vi-VN"); };
+      var $ = function (id) { return document.getElementById(id); };
+      var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+      var todayISO = function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+      var fmtDate = function (iso) { if (!iso) return "…"; var p = iso.split("-"); return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : iso; };
+
+      /* ---------------- State + on-device storage ----------------
+         Khách, báo giá, mẫu riêng và bản nháp được lưu trong trình duyệt
+         trên thiết bị này (localStorage) — mở lại trang vẫn còn.
+         Không có đồng bộ máy chủ: đổi máy / xóa dữ liệu trình duyệt sẽ mất,
+         trang có nút tải bản sao lưu JSON ở thẻ Theo dõi để giữ bản chính thức. */
+      var LS_KEY = "bghdm-data-v1";
+      var DRAFT_KEY = "bghdm-draft-v1";
+      var CT_KEY = "bghdm-contract-v1";
+      var state = {
+        clients: [],
+        quotes: [],
+        quoteSeq: 128,
+        customTemplates: []
+      };
+      function persist() {
+        try {
+          localStorage.setItem(LS_KEY, JSON.stringify({
+            clients: state.clients, quotes: state.quotes,
+            quoteSeq: state.quoteSeq, customTemplates: state.customTemplates
+          }));
+        } catch (e) {}
+      }
+      function loadStored() {
+        try {
+          var d = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+          if (!d) return;
+          if (Array.isArray(d.clients)) state.clients = d.clients;
+          if (Array.isArray(d.quotes)) state.quotes = d.quotes;
+          if (Array.isArray(d.customTemplates)) state.customTemplates = d.customTemplates;
+          if (typeof d.quoteSeq === "number" && d.quoteSeq >= 128) state.quoteSeq = d.quoteSeq;
+        } catch (e) {}
+      }
+      function nextQuoteNo() { return "BG-" + new Date().getFullYear() + "-" + state.quoteSeq; }
+      function armButton(btn, label, fn) {
+        if (btn.getAttribute("data-armed") === "1") {
+          btn.removeAttribute("data-armed"); btn.classList.remove("armed"); fn(); return;
+        }
+        var old = btn.textContent;
+        btn.setAttribute("data-armed", "1"); btn.classList.add("armed");
+        btn.textContent = label;
+        setTimeout(function () {
+          btn.removeAttribute("data-armed"); btn.classList.remove("armed"); btn.textContent = old;
+        }, 4000);
+      }
+
+      /* ---------------- Templates ---------------- */
+      var TEMPLATES = [
+        { name: "Thi công nội thất căn hộ", desc: "Sơn, tủ bếp, sàn gỗ, điện — cho đội thi công & thợ nội thất.", items: [
+          ["Sơn tường nội thất (2 lớp)", "m²", 85, 55000], ["Đóng tủ bếp laminate", "m dài", 1, 4500000],
+          ["Lát sàn gỗ công nghiệp", "m²", 40, 320000], ["Lắp đặt thiết bị điện & đèn", "gói", 1, 3500000],
+          ["Vận chuyển vật tư & dọn vệ sinh bàn giao", "gói", 1, 1500000] ] },
+        { name: "Thiết kế freelancer", desc: "Logo, nhận diện, ấn phẩm — cho designer & freelancer sáng tạo.", items: [
+          ["Thiết kế logo (3 phương án)", "gói", 1, 2500000], ["Bộ nhận diện cơ bản (card, letterhead)", "gói", 1, 1800000],
+          ["Thiết kế 10 bài đăng mạng xã hội", "bài", 10, 150000], ["Bàn giao file gốc & hướng dẫn sử dụng", "gói", 1, 500000] ] },
+        { name: "Sửa chữa điện nước", desc: "Khảo sát, thay thiết bị, đi lại đường ống — cho thợ điện nước.", items: [
+          ["Công khảo sát & báo giá tại nhà", "lần", 1, 200000], ["Thay vòi & thiết bị vệ sinh", "bộ", 2, 450000],
+          ["Đi lại đường ống nước âm tường", "m", 8, 280000], ["Lắp máy nước nóng", "cái", 1, 600000] ] },
+        { name: "Quay chụp sự kiện", desc: "Chụp ảnh, quay phim, hậu kỳ — cho thợ ảnh & team media nhỏ.", items: [
+          ["Chụp ảnh sự kiện (bán ngày)", "buổi", 1, 2500000], ["Quay video highlight 3–5 phút", "gói", 1, 4000000],
+          ["Hậu kỳ & giao 200 ảnh chọn lọc", "gói", 1, 1200000], ["Thiết bị đèn & phụ kiện đi kèm", "gói", 1, 800000] ] },
+        { name: "Vệ sinh & dọn nhà", desc: "Tổng vệ sinh, sau xây dựng, định kỳ — cho đội vệ sinh.", items: [
+          ["Tổng vệ sinh căn hộ sau xây dựng", "m²", 90, 45000], ["Vệ sinh sofa & thảm", "bộ", 1, 600000],
+          ["Lau kính mặt trong", "m²", 20, 30000], ["Khử mùi & diệt khuẩn", "gói", 1, 500000] ] },
+        { name: "Làm website / landing page", desc: "Trang bán hàng, giới thiệu dịch vụ — cho freelancer web.", items: [
+          ["Thiết kế & dựng landing page", "trang", 1, 3500000], ["Trang giới thiệu + form liên hệ", "gói", 1, 2500000],
+          ["Cài đặt tên miền & hosting năm đầu", "gói", 1, 1200000], ["Hướng dẫn tự cập nhật nội dung", "buổi", 1, 500000] ] }
+      ];
+
+      /* ---------------- Tabs ---------------- */
+      var tabs = document.querySelectorAll(".tab");
+      tabs.forEach(function (t) {
+        t.addEventListener("click", function () { switchTab(t.getAttribute("data-tab")); });
+      });
+      function switchTab(name) {
+        tabs.forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-tab") === name ? "true" : "false"); });
+        document.querySelectorAll(".panel").forEach(function (p) { p.classList.toggle("active", p.id === "panel-" + name); });
+        if (name === "contract") fillContractFromQuote(true);
+      }
+
+      /* ---------------- Quote items ---------------- */
+      function addItemRow(name, unit, qty, price) {
+        var row = document.createElement("div");
+        row.className = "item-row";
+        row.innerHTML =
+          '<div class="f-name"><span class="lbl">Hạng mục</span><input type="text" class="i-name" placeholder="Tên hạng mục" value="' + esc(name || "") + '" /></div>' +
+          '<div class="f-unit"><span class="lbl">Đơn vị</span><input type="text" class="i-unit" value="' + esc(unit || "gói") + '" /></div>' +
+          '<div class="f-qty"><span class="lbl">SL</span><input type="number" class="i-qty" min="0" step="0.5" value="' + (qty == null ? 1 : qty) + '" /></div>' +
+          '<div class="f-price"><span class="lbl">Đơn giá (đ)</span><input type="number" class="i-price" min="0" step="1000" value="' + (price == null ? 0 : price) + '" /></div>' +
+          '<div class="amt">0đ</div>' +
+          '<button type="button" class="icon-btn" title="Xóa hạng mục" aria-label="Xóa hạng mục">×</button>';
+        row.querySelector(".icon-btn").addEventListener("click", function () { row.remove(); renderQuote(); });
+        row.querySelectorAll("input").forEach(function (inp) { inp.addEventListener("input", renderQuote); });
+        $("items").appendChild(row);
+      }
+      $("addItem").addEventListener("click", function () { addItemRow("", "gói", 1, 0); });
+
+      function readItems() {
+        var out = [];
+        document.querySelectorAll("#items .item-row").forEach(function (row) {
+          var name = row.querySelector(".i-name").value.trim();
+          var unit = row.querySelector(".i-unit").value.trim() || "gói";
+          var qty = parseFloat(row.querySelector(".i-qty").value) || 0;
+          var price = parseFloat(row.querySelector(".i-price").value) || 0;
+          out.push({ name: name, unit: unit, qty: qty, price: price, amount: qty * price });
+          row.querySelector(".amt").textContent = fmt(qty * price);
+        });
+        return out;
+      }
+
+      function calcQuote() {
+        var items = readItems();
+        var sub = items.reduce(function (s, i) { return s + i.amount; }, 0);
+        var discPct = Math.min(100, Math.max(0, parseFloat($("discount").value) || 0));
+        var vatPct = Math.max(0, parseFloat($("vat").value) || 0);
+        var depPct = Math.min(100, Math.max(0, parseFloat($("deposit").value) || 0));
+        var disc = sub * discPct / 100;
+        var vat = (sub - disc) * vatPct / 100;
+        var total = sub - disc + vat;
+        var deposit = total * depPct / 100;
+        return { items: items, sub: sub, discPct: discPct, disc: disc, vatPct: vatPct, vat: vat, total: total, depPct: depPct, deposit: deposit };
+      }
+
+      function quoteData() {
+        var c = calcQuote();
+        return {
+          no: $("qNo").value.trim(), date: $("qDate").value, valid: $("qValid").value || "7",
+          biz: $("bizName").value.trim(), bizPhone: $("bizPhone").value.trim(), bizAddr: $("bizAddr").value.trim(),
+          client: $("cName").value.trim(), cPhone: $("cPhone").value.trim(), cAddr: $("cAddr").value.trim(),
+          title: $("qTitle").value.trim(), notes: $("qNotes").value,
+          items: c.items, sub: c.sub, discPct: c.discPct, disc: c.disc, vatPct: c.vatPct, vat: c.vat,
+          total: c.total, depPct: c.depPct, deposit: c.deposit
+        };
+      }
+
+      function renderQuote() {
+        var q = quoteData();
+        var rows = q.items.filter(function (i) { return i.name || i.amount; }).map(function (i, idx) {
+          return "<tr><td>" + (idx + 1) + "</td><td>" + esc(i.name || "—") + "</td><td>" + esc(i.unit) + "</td>" +
+            '<td class="num">' + i.qty + '</td><td class="num">' + fmt(i.price) + '</td><td class="num">' + fmt(i.amount) + "</td></tr>";
+        }).join("");
+        if (!rows) rows = '<tr><td colspan="6" style="text-align:center;color:#8a968e">Chưa có hạng mục nào</td></tr>';
+        var sumRows =
+          '<div class="row"><span>Tạm tính</span><span>' + fmt(q.sub) + "</span></div>" +
+          (q.disc ? '<div class="row"><span>Chiết khấu ' + q.discPct + '%</span><span>−' + fmt(q.disc) + "</span></div>" : "") +
+          (q.vat ? '<div class="row"><span>VAT ' + q.vatPct + '%</span><span>' + fmt(q.vat) + "</span></div>" : "") +
+          '<div class="row grand"><span>TỔNG CỘNG</span><span>' + fmt(q.total) + "</span></div>" +
+          (q.depPct ? '<div class="row"><span>Tạm ứng ' + q.depPct + '%</span><span>' + fmt(q.deposit) + "</span></div>" +
+          '<div class="row"><span>Còn lại khi nghiệm thu</span><span>' + fmt(q.total - q.deposit) + "</span></div>" : "");
+        $("quotePaper").innerHTML =
+          '<div class="doc-head"><div class="biz"><b>' + esc(q.biz || "Tên của bạn / cửa hàng") + "</b>" +
+          (q.bizPhone ? "<span>ĐT: " + esc(q.bizPhone) + "</span>" : "") + (q.bizAddr ? "<span>" + esc(q.bizAddr) + "</span>" : "") +
+          '</div><div class="doc-title"><b>BÁO GIÁ</b><span>Số: ' + esc(q.no) + "</span><span>Ngày: " + fmtDate(q.date) + "</span></div></div>" +
+          '<div class="meta"><span><b>Kính gửi:</b> ' + esc(q.client || "…") + "</span><span><b>SĐT:</b> " + esc(q.cPhone || "…") + "</span>" +
+          "<span><b>Địa điểm:</b> " + esc(q.cAddr || "…") + '</span><span><b>Hiệu lực:</b> ' + esc(q.valid) + " ngày</span></div>" +
+          (q.title ? '<p style="margin:8px 0 2px"><b>Công việc:</b> ' + esc(q.title) + "</p>" : "") +
+          '<table><thead><tr><th style="width:30px">STT</th><th>Hạng mục</th><th>ĐVT</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+          '<div class="sum">' + sumRows + "</div>" +
+          (q.notes ? '<div class="notes">' + esc(q.notes) + "</div>" : "") +
+          '<p style="margin-top:16px;color:#5a6660;font-size:.78rem">Báo giá được tạo bằng công cụ Báo Giá &amp; Hợp Đồng Mẫu. Vui lòng xác nhận lại qua điện thoại/Zalo trước khi tiến hành.</p>';
+        $("totals").innerHTML =
+          '<div class="row"><span>Tạm tính</span><span>' + fmt(q.sub) + "</span></div>" +
+          (q.disc ? '<div class="row"><span>Chiết khấu (' + q.discPct + '%)</span><span>−' + fmt(q.disc) + "</span></div>" : "") +
+          (q.vat ? '<div class="row"><span>VAT (' + q.vatPct + '%)</span><span>' + fmt(q.vat) + "</span></div>" : "") +
+          '<div class="row grand"><span>Tổng cộng</span><span>' + fmt(q.total) + "</span></div>" +
+          (q.depPct ? '<div class="row"><span>Tạm ứng ' + q.depPct + '% · Còn lại ' + fmt(q.total - q.deposit) + "</span><span>" + fmt(q.deposit) + "</span></div>" : "");
+        persistDraft(q);
+      }
+
+      var QUOTE_FIELDS = ["bizName", "bizPhone", "bizAddr", "cName", "cPhone", "cAddr", "qNo", "qDate", "qValid", "qTitle", "discount", "vat", "deposit", "qNotes"];
+      function persistDraft(q) {
+        try {
+          var f = {};
+          QUOTE_FIELDS.forEach(function (id) { var el = $(id); if (el) f[id] = el.value; });
+          localStorage.setItem(DRAFT_KEY, JSON.stringify({
+            fields: f,
+            items: (q ? q.items : []).map(function (i) { return { name: i.name, unit: i.unit, qty: i.qty, price: i.price }; })
+          }));
+        } catch (e) {}
+      }
+
+      ["bizName", "bizPhone", "bizAddr", "cName", "cPhone", "cAddr", "qNo", "qDate", "qValid", "qTitle", "discount", "vat", "deposit", "qNotes"].forEach(function (id) {
+        $(id).addEventListener("input", renderQuote);
+        $(id).addEventListener("change", renderQuote);
+      });
+
+      function toast(id, msg) { var t = $(id); if (!t) return; t.textContent = msg; t.classList.add("show"); setTimeout(function () { t.classList.remove("show"); }, 5200); }
+      function copyText(text, id, msg, boxId) {
+        /* Chỉ báo “Đã copy” khi copy thật sự thành công. Nếu cả hai cách đều
+           bị trình duyệt chặn, hiện nội dung trong ô copybox để copy thủ công
+           và nói rõ là chưa copy được — không báo thành công giả. */
+        function done() { toast(id, msg); }
+        function fail() {
+          var box = boxId ? $(boxId) : null;
+          if (box) { box.value = text; box.hidden = false; box.focus(); box.select(); }
+          toast(id, "Chưa copy được (trình duyệt đã chặn). Nội dung đã hiện trong ô viền vàng bên dưới — bôi đen và copy thủ công.");
+        }
+        function fallback() {
+          var ta = document.createElement("textarea");
+          ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select();
+          var ok = false;
+          try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          if (ok) done(); else fail();
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else { fallback(); }
+      }
+
+      function quotePlainText(q) {
+        var lines = ["BÁO GIÁ " + q.no + " — " + (q.biz || ""), "Ngày: " + fmtDate(q.date) + " · Hiệu lực: " + q.valid + " ngày",
+          "Kính gửi: " + (q.client || "") + (q.cPhone ? " (" + q.cPhone + ")" : ""), ""];
+        q.items.filter(function (i) { return i.name || i.amount; }).forEach(function (i, idx) {
+          lines.push((idx + 1) + ". " + i.name + " — " + i.qty + " " + i.unit + " × " + fmt(i.price) + " = " + fmt(i.amount));
+        });
+        lines.push("", "Tạm tính: " + fmt(q.sub));
+        if (q.disc) lines.push("Chiết khấu " + q.discPct + "%: −" + fmt(q.disc));
+        if (q.vat) lines.push("VAT " + q.vatPct + "%: " + fmt(q.vat));
+        lines.push("TỔNG CỘNG: " + fmt(q.total));
+        if (q.depPct) lines.push("Tạm ứng " + q.depPct + "%: " + fmt(q.deposit) + " · Còn lại: " + fmt(q.total - q.deposit));
+        if (q.notes) lines.push("", q.notes);
+        return lines.join("\n");
+      }
+
+      $("copyQuote").addEventListener("click", function () {
+        copyText(quotePlainText(quoteData()), "quoteToast", "Đã copy nội dung báo giá — dán vào Zalo để gửi khách.", "copyBoxQuote");
+      });
+
+      /* Bộ tạo PDF được nạp lười từ CDN khi cần. Nếu CDN lỗi, mất mạng hoặc
+         quá 7 giây chưa nạp xong, tự tải bản HTML thay thế — nút Tải PDF
+         không còn phụ thuộc cứng vào CDN như trước. */
+      var h2pPromise = null;
+      function loadH2P() {
+        if (window.html2pdf) return Promise.resolve(true);
+        if (h2pPromise) return h2pPromise;
+        h2pPromise = new Promise(function (res) {
+          var done = false;
+          var s = document.createElement("script");
+          s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+          var timer = setTimeout(function () { if (!done) { done = true; res(false); } }, 7000);
+          s.onload = function () { if (!done) { done = true; clearTimeout(timer); res(!!window.html2pdf); } };
+          s.onerror = function () { if (!done) { done = true; clearTimeout(timer); res(false); } };
+          document.head.appendChild(s);
+        });
+        return h2pPromise;
+      }
+      function downloadQuoteHTML(el, q) {
+        var blob = new Blob(["<!doctype html><html lang='vi'><head><meta charset='utf-8'><title>Báo giá " + esc(q.no) + "</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#1c2420}table{width:100%;border-collapse:collapse}th,td{border:1px solid #d5ddd6;padding:7px 8px;text-align:left}th{background:#eef4f0}.num{text-align:right}</style></head><body>" + el.innerHTML + "</body></html>"], { type: "text/html" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "Bao-gia-" + (q.no || "moi") + ".html"; a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      }
+      $("pdfQuote").addEventListener("click", function () {
+        var el = $("quotePaper");
+        var q = quoteData();
+        toast("quoteToast", "Đang chuẩn bị file PDF…");
+        loadH2P().then(function (ok) {
+          if (!ok) {
+            downloadQuoteHTML(el, q);
+            toast("quoteToast", "Chưa nạp được bộ tạo PDF (mạng/CDN lỗi) — đã tải bản HTML thay thế, mở lên và chọn In → Lưu thành PDF.");
+            return;
+          }
+          window.html2pdf().set({
+            margin: 10, filename: "Bao-gia-" + (q.no || "moi") + ".pdf",
+            image: { type: "jpeg", quality: 0.96 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+          }).from(el).save().then(function () {
+            toast("quoteToast", "Đã tải PDF báo giá " + q.no + ".");
+          }).catch(function () {
+            downloadQuoteHTML(el, q);
+            toast("quoteToast", "Chưa tạo được PDF — đã tải bản HTML thay thế, mở lên và chọn In → Lưu thành PDF.");
+          });
+        });
+      });
+
+      /* ---------------- Save & track quotes ---------------- */
+      var STATUS = { draft: "Nháp", sent: "Đã gửi", won: "Đã chốt", lost: "Hết hạn / Không chốt" };
+      $("saveQuote").addEventListener("click", function () {
+        var q = quoteData();
+        state.quotes.unshift({
+          no: q.no, client: q.client || "(Chưa nhập tên khách)", title: q.title || "Báo giá dịch vụ",
+          date: q.date, total: q.total, status: "sent", data: q
+        });
+        /* Nếu khách chưa có trong danh sách và đã nhập tên, lưu luôn để lần sau chọn lại được. */
+        if (q.client && !state.clients.some(function (c) { return c.name === q.client; })) {
+          state.clients.push({ name: q.client, phone: q.cPhone, addr: q.cAddr });
+          renderClients();
+        }
+        state.quoteSeq++;
+        $("qNo").value = nextQuoteNo();
+        persist();
+        renderQuote(); renderTrack();
+        toast("quoteToast", "Đã lưu báo giá " + q.no + " vào danh sách theo dõi (trạng thái: Đã gửi) — đã ghi xuống thiết bị này, mở lại trang vẫn còn.");
+      });
+
+      function loadQuoteIntoForm(x) {
+        var d = x.data; if (!d) return;
+        $("bizName").value = d.biz || ""; $("bizPhone").value = d.bizPhone || ""; $("bizAddr").value = d.bizAddr || "";
+        $("cName").value = d.client || ""; $("cPhone").value = d.cPhone || ""; $("cAddr").value = d.cAddr || "";
+        $("qNo").value = d.no || x.no; $("qDate").value = d.date || x.date || todayISO(); $("qValid").value = d.valid || "7";
+        $("qTitle").value = d.title || ""; $("qNotes").value = d.notes || "";
+        $("discount").value = d.discPct || 0; $("vat").value = d.vatPct || 0; $("deposit").value = d.depPct == null ? 30 : d.depPct;
+        $("items").innerHTML = "";
+        (d.items && d.items.length ? d.items : [{ name: "", unit: "gói", qty: 1, price: 0 }]).forEach(function (i) {
+          addItemRow(i.name, i.unit, i.qty, i.price);
+        });
+        switchTab("quote"); renderQuote();
+        toast("quoteToast", "Đã mở lại báo giá " + x.no + " vào form — sửa xong nhớ bấm Lưu để tạo bản theo dõi mới hoặc Tải PDF gửi khách.");
+      }
+
+      function renderTrack() {
+        var list = $("quoteList");
+        $("trackCount").textContent = state.quotes.length ? "(" + state.quotes.length + ")" : "";
+        var sent = state.quotes.filter(function (x) { return x.status === "sent"; }).length;
+        var wonList = state.quotes.filter(function (x) { return x.status === "won"; });
+        var wonVal = wonList.reduce(function (s, x) { return s + x.total; }, 0);
+        $("stTotal").textContent = state.quotes.length;
+        $("stSent").textContent = sent;
+        $("stWon").textContent = wonList.length;
+        $("stValue").textContent = fmt(wonVal);
+        if (!state.quotes.length) {
+          list.innerHTML = '<div class="empty">Chưa có báo giá nào được lưu.<br/>Tạo một báo giá ở thẻ “Tạo báo giá” rồi bấm <b>Lưu vào danh sách theo dõi</b> — nó sẽ hiện ở đây, được lưu trên thiết bị này để bạn đổi trạng thái khi khách phản hồi.</div>';
+          return;
+        }
+        list.innerHTML = "";
+        state.quotes.forEach(function (x, idx) {
+          var div = document.createElement("div");
+          div.className = "q-item";
+          var opts = Object.keys(STATUS).map(function (k) {
+            return '<option value="' + k + '"' + (x.status === k ? " selected" : "") + ">" + STATUS[k] + "</option>";
+          }).join("");
+          div.innerHTML =
+            '<div class="q-main"><b>' + esc(x.no) + " · " + esc(x.client) + '</b><span>' + esc(x.title) + " — " + fmtDate(x.date) + '</span></div>' +
+            '<div class="q-total">' + fmt(x.total) + '</div>' +
+            '<div><span class="badge ' + x.status + '">' + STATUS[x.status] + "</span></div>" +
+            '<div class="q-actions"><select aria-label="Đổi trạng thái báo giá ' + esc(x.no) + '">' + opts + "</select></div>";
+          var actions = div.querySelector(".q-actions");
+          if (x.data) {
+            var openBtn = document.createElement("button");
+            openBtn.className = "btn small"; openBtn.type = "button"; openBtn.textContent = "Mở lại";
+            openBtn.addEventListener("click", function () { loadQuoteIntoForm(state.quotes[idx]); });
+            actions.appendChild(openBtn);
+          }
+          var delBtn = document.createElement("button");
+          delBtn.className = "btn small danger"; delBtn.type = "button"; delBtn.textContent = "Xóa";
+          delBtn.setAttribute("aria-label", "Xóa báo giá " + x.no);
+          delBtn.addEventListener("click", function () {
+            armButton(delBtn, "Bấm lại để xác nhận xóa", function () {
+              state.quotes.splice(idx, 1); persist(); renderTrack();
+              toast("trackToast", "Đã xóa báo giá " + x.no + " khỏi danh sách theo dõi.");
+            });
+          });
+          actions.appendChild(delBtn);
+          div.querySelector("select").addEventListener("change", function (e) {
+            state.quotes[idx].status = e.target.value; persist(); renderTrack();
+          });
+          list.appendChild(div);
+        });
+      }
+
+      /* ---------------- Backup / restore / clear ---------------- */
+      $("exportData").addEventListener("click", function () {
+        var payload = {
+          app: "bao-gia-hop-dong-mau", version: 1, exportedAt: new Date().toISOString(),
+          clients: state.clients, quotes: state.quotes,
+          quoteSeq: state.quoteSeq, customTemplates: state.customTemplates
+        };
+        var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "Sao-luu-bao-gia.json"; a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+        toast("trackToast", "Đã tải bản sao lưu — giữ file này để khôi phục khi đổi máy hoặc lỡ xóa dữ liệu trình duyệt.");
+      });
+      $("importFile").addEventListener("change", function () {
+        var file = this.files && this.files[0];
+        this.value = "";
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var d = JSON.parse(String(reader.result || ""));
+            if (!d || (!Array.isArray(d.clients) && !Array.isArray(d.quotes))) throw new Error("bad");
+            state.clients = Array.isArray(d.clients) ? d.clients : [];
+            state.quotes = Array.isArray(d.quotes) ? d.quotes : [];
+            state.customTemplates = Array.isArray(d.customTemplates) ? d.customTemplates : [];
+            if (typeof d.quoteSeq === "number" && d.quoteSeq >= 128) state.quoteSeq = d.quoteSeq;
+            persist(); renderClients(); renderTemplates(); renderTrack();
+            toast("trackToast", "Đã nhập bản sao lưu: " + state.clients.length + " khách, " + state.quotes.length + " báo giá.");
+          } catch (e) {
+            toast("trackToast", "File sao lưu không đọc được — hãy chọn đúng file JSON đã tải từ trang này.");
+          }
+        };
+        reader.readAsText(file);
+      });
+      $("clearAll").addEventListener("click", function () {
+        var btn = this;
+        armButton(btn, "Bấm lại để XÓA HẾT dữ liệu đã lưu", function () {
+          state.clients = []; state.quotes = []; state.customTemplates = []; state.quoteSeq = 128;
+          try {
+            localStorage.removeItem(LS_KEY); localStorage.removeItem(DRAFT_KEY); localStorage.removeItem(CT_KEY);
+          } catch (e) {}
+          $("qNo").value = nextQuoteNo();
+          renderClients(); renderTemplates(); renderTrack(); renderQuote();
+          toast("trackToast", "Đã xóa toàn bộ khách, báo giá và mẫu riêng đã lưu trên thiết bị này. Nội dung đang hiển thị trong form vẫn giữ nguyên để bạn tiếp tục làm.");
+        });
+      });
+
+      /* ---------------- Clients ---------------- */
+      function renderClients() {
+        var pick = $("clientPick");
+        var current = pick.value;
+        pick.innerHTML = '<option value="">— Khách mới / tự nhập bên dưới —</option>' +
+          state.clients.map(function (c, i) { return '<option value="' + i + '">' + esc(c.name) + "</option>"; }).join("");
+        pick.value = current;
+        var list = $("clientList");
+        if (!state.clients.length) {
+          list.innerHTML = '<div class="empty">Chưa lưu khách nào. Thêm khách đầu tiên ở form bên trên — từ lần báo giá sau, chỉ cần chọn tên là xong.</div>';
+          return;
+        }
+        list.innerHTML = "";
+        state.clients.forEach(function (c, i) {
+          var div = document.createElement("div");
+          div.className = "client-item";
+          div.innerHTML = "<div><b>" + esc(c.name) + "</b><span>" + esc(c.phone || "") + (c.addr ? " · " + esc(c.addr) : "") + "</span></div>";
+          var wrap = document.createElement("div");
+          wrap.className = "q-actions";
+          var b = document.createElement("button");
+          b.className = "btn small"; b.type = "button"; b.textContent = "Dùng cho báo giá";
+          b.addEventListener("click", function () { applyClient(i); });
+          wrap.appendChild(b);
+          var del = document.createElement("button");
+          del.className = "btn small danger"; del.type = "button"; del.textContent = "Xóa";
+          del.setAttribute("aria-label", "Xóa khách " + c.name);
+          del.addEventListener("click", function () {
+            armButton(del, "Bấm lại để xác nhận xóa", function () {
+              state.clients.splice(i, 1); persist(); renderClients();
+              toast("clientToast", "Đã xóa khách " + c.name + " khỏi danh sách đã lưu.");
+            });
+          });
+          wrap.appendChild(del);
+          div.appendChild(wrap);
+          list.appendChild(div);
+        });
+      }
+      function applyClient(i) {
+        var c = state.clients[i]; if (!c) return;
+        $("cName").value = c.name; $("cPhone").value = c.phone || ""; $("cAddr").value = c.addr || "";
+        $("clientPick").value = String(i);
+        renderQuote(); switchTab("quote");
+        toast("quoteToast", "Đã điền thông tin khách " + c.name + " vào báo giá.");
+      }
+      $("clientPick").addEventListener("change", function () {
+        if (this.value !== "") applyClient(parseInt(this.value, 10));
+      });
+      $("addClient").addEventListener("click", function () {
+        var name = $("ncName").value.trim();
+        if (!name) { toast("clientToast", "Nhập tên khách trước khi lưu."); return; }
+        state.clients.push({ name: name, phone: $("ncPhone").value.trim(), addr: $("ncAddr").value.trim() });
+        $("ncName").value = ""; $("ncPhone").value = ""; $("ncAddr").value = "";
+        persist();
+        renderClients();
+        toast("clientToast", "Đã lưu khách " + name + " trên thiết bị này — mở lại trang vẫn còn.");
+      });
+
+      /* ---------------- Templates grid ---------------- */
+      function applyTemplateItems(name, items) {
+        $("items").innerHTML = "";
+        items.forEach(function (i) { addItemRow(i[0], i[1], i[2], i[3]); });
+        if (!$("qTitle").value.trim()) $("qTitle").value = name;
+        switchTab("quote"); renderQuote();
+        toast("quoteToast", "Đã nạp mẫu “" + name + "” — nhớ sửa giá theo mặt bằng của bạn.");
+      }
+      function renderTemplates() {
+        var grid = $("tplGrid");
+        grid.innerHTML = "";
+        TEMPLATES.forEach(function (t) {
+          var total = t.items.reduce(function (s, i) { return s + i[2] * i[3]; }, 0);
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "tpl";
+          b.innerHTML = "<b>" + esc(t.name) + "</b><span>" + esc(t.desc) + '</span><span class="tpl-price">Tổng mẫu: ' + fmt(total) + " · " + t.items.length + " hạng mục</span>";
+          b.addEventListener("click", function () { applyTemplateItems(t.name, t.items); });
+          grid.appendChild(b);
+        });
+        state.customTemplates.forEach(function (t, idx) {
+          var total = t.items.reduce(function (s, i) { return s + i[2] * i[3]; }, 0);
+          var box = document.createElement("div");
+          box.className = "tpl";
+          box.innerHTML = "<b>" + esc(t.name) + '<span class="tpl-tag">Mẫu riêng</span></b><span>' + esc(t.desc || "Mẫu bạn tự lưu từ hạng mục đã sửa.") + '</span><span class="tpl-price">Tổng mẫu: ' + fmt(total) + " · " + t.items.length + " hạng mục</span>";
+          var use = document.createElement("button");
+          use.type = "button"; use.className = "btn small"; use.textContent = "Dùng mẫu này"; use.style.marginTop = "10px";
+          use.addEventListener("click", function () { applyTemplateItems(t.name, t.items); });
+          box.appendChild(use);
+          var del = document.createElement("button");
+          del.type = "button"; del.className = "btn small danger tpl-del"; del.textContent = "Xóa mẫu";
+          del.addEventListener("click", function () {
+            armButton(del, "Bấm lại để xác nhận xóa", function () {
+              state.customTemplates.splice(idx, 1); persist(); renderTemplates();
+              toast("quoteToast", "Đã xóa mẫu riêng “" + t.name + "”.");
+            });
+          });
+          box.appendChild(del);
+          grid.appendChild(box);
+        });
+      }
+      $("saveTpl").addEventListener("click", function () {
+        var items = readItems().filter(function (i) { return i.name; });
+        if (!items.length) { toast("quoteToast", "Chưa có hạng mục nào có tên — nhập ít nhất 1 hạng mục trước khi lưu thành mẫu riêng."); return; }
+        var name = $("qTitle").value.trim() || ("Mẫu riêng " + new Date().toLocaleDateString("vi-VN"));
+        state.customTemplates.unshift({
+          name: name, desc: "Mẫu bạn tự lưu từ hạng mục đã sửa.",
+          items: items.map(function (i) { return [i.name, i.unit, i.qty, i.price]; })
+        });
+        persist(); renderTemplates();
+        toast("quoteToast", "Đã lưu mẫu riêng “" + name + "” trên thiết bị này — xem và dùng lại ở thẻ “Khách hàng & mẫu”.");
+      });
+
+      /* ---------------- Contract ---------------- */
+      var CT_NAMES = { service: "HỢP ĐỒNG DỊCH VỤ", construct: "HỢP ĐỒNG THI CÔNG / SỬA CHỮA", deposit: "THỎA THUẬN ĐẶT CỌC" };
+      function contractData() {
+        return {
+          type: $("ctType").value, a: $("ctA").value.trim(), aPhone: $("ctAPhone").value.trim(),
+          b: $("ctB").value.trim(), bPhone: $("ctBPhone").value.trim(),
+          work: $("ctWork").value.trim(), value: parseFloat($("ctValue").value) || 0,
+          start: $("ctStart").value, end: $("ctEnd").value,
+          pay: $("ctPay").value, warranty: $("ctWarranty").value.trim()
+        };
+      }
+      function contractBody(c, html) {
+        var br = html ? "<br/>" : "\n";
+        var pay = html ? esc(c.pay || "…").replace(/\n/g, br) : (c.pay || "…");
+        /* Mọi chữ người dùng gõ phải được escape khi ghép vào bản HTML,
+           nếu không ký tự < > sẽ làm vỡ bản xem trước hợp đồng. */
+        var work = html ? esc(c.work || "…") : (c.work || "…");
+        var warr = html ? esc(c.warranty || "") : (c.warranty || "");
+        var clauses;
+        if (c.type === "deposit") {
+          clauses = [
+            "Điều 1. Bên A đặt cọc cho Bên B số tiền " + fmt(c.value) + " để giữ lịch thực hiện công việc: " + work + ".",
+            "Điều 2. Thời gian dự kiến thực hiện: từ " + fmtDate(c.start) + " đến " + fmtDate(c.end) + ". Số tiền cọc sẽ được trừ vào giá trị hợp đồng/báo giá khi hai bên tiến hành công việc.",
+            "Điều 3. Nếu Bên A hủy lịch không vì lỗi của Bên B, tiền cọc được xử lý theo thỏa thuận ghi tại đây. Nếu Bên B không thực hiện được công việc như cam kết, Bên B hoàn lại 100% tiền cọc cho Bên A.",
+            "Điều 4. Thanh toán: " + pay,
+            "Điều 5. " + (warr || "Hai bên cam kết thực hiện đúng thỏa thuận này.")
+          ];
+        } else if (c.type === "construct") {
+          clauses = [
+            "Điều 1. Bên B nhận thi công cho Bên A công việc: " + work + ", theo báo giá đã được hai bên xác nhận.",
+            "Điều 2. Giá trị hợp đồng: " + fmt(c.value) + ". Phát sinh ngoài báo giá chỉ thực hiện khi có xác nhận của Bên A.",
+            "Điều 3. Thời gian thi công: từ " + fmtDate(c.start) + " đến " + fmtDate(c.end) + ", trừ trường hợp bất khả kháng hoặc do Bên A chậm bàn giao mặt bằng/vật tư.",
+            "Điều 4. Thanh toán: " + pay,
+            "Điều 5. Nghiệm thu & bảo hành: Hai bên nghiệm thu khi hoàn thành từng giai đoạn. " + warr,
+            "Điều 6. Bên B chịu trách nhiệm an toàn lao động và vệ sinh khu vực thi công trong suốt quá trình thực hiện."
+          ];
+        } else {
+          clauses = [
+            "Điều 1. Bên B cung cấp cho Bên A dịch vụ: " + work + ", theo nội dung và báo giá đã thống nhất.",
+            "Điều 2. Giá trị hợp đồng: " + fmt(c.value) + ".",
+            "Điều 3. Thời gian thực hiện: từ " + fmtDate(c.start) + " đến " + fmtDate(c.end) + ". Bên B thông báo sớm cho Bên A nếu có thay đổi tiến độ.",
+            "Điều 4. Thanh toán: " + pay,
+            "Điều 5. Quyền sở hữu sản phẩm bàn giao thuộc về Bên A sau khi Bên A thanh toán đầy đủ. " + warr,
+            "Điều 6. Hai bên cam kết bảo mật thông tin trao đổi trong quá trình thực hiện hợp đồng."
+          ];
+        }
+        return clauses;
+      }
+      function renderContract() {
+        var c = contractData();
+        var clauses = contractBody(c, true);
+        $("contractPaper").innerHTML =
+          "<h4>" + CT_NAMES[c.type] + "</h4>" +
+          '<p class="sub">Hôm nay, hai bên gồm:</p>' +
+          "<p><b>Bên A (khách hàng):</b> " + esc(c.a || "…") + (c.aPhone ? " — ĐT: " + esc(c.aPhone) : "") + "</p>" +
+          "<p><b>Bên B (đơn vị thực hiện):</b> " + esc(c.b || "…") + (c.bPhone ? " — ĐT: " + esc(c.bPhone) : "") + "</p>" +
+          "<p>Hai bên thỏa thuận như sau:</p>" +
+          clauses.map(function (x) { return "<p>" + x + "</p>"; }).join("") +
+          "<p>Hợp đồng/thỏa thuận này được lập thành 02 bản, mỗi bên giữ 01 bản và có giá trị như nhau.</p>" +
+          '<div class="sign"><div><b>ĐẠI DIỆN BÊN A</b><span>(Ký, ghi rõ họ tên)</span></div><div><b>ĐẠI DIỆN BÊN B</b><span>(Ký, ghi rõ họ tên)</span></div></div>';
+        try {
+          var cf = {};
+          ["ctType", "ctA", "ctAPhone", "ctB", "ctBPhone", "ctWork", "ctValue", "ctStart", "ctEnd", "ctPay", "ctWarranty"].forEach(function (id) { cf[id] = $(id).value; });
+          localStorage.setItem(CT_KEY, JSON.stringify(cf));
+        } catch (e) {}
+      }
+      function fillContractFromQuote(onlyEmpty) {
+        var q = quoteData();
+        function set(id, val) {
+          var el = $(id); if (!el || !val) return;
+          if (onlyEmpty && el.value.trim()) return;
+          el.value = val;
+        }
+        set("ctA", q.client); set("ctAPhone", q.cPhone);
+        set("ctB", q.biz); set("ctBPhone", q.bizPhone);
+        set("ctWork", q.title);
+        if (q.total && (!onlyEmpty || !$("ctValue").value)) $("ctValue").value = q.total;
+        renderContract();
+      }
+      $("fillFromQuote").addEventListener("click", function () {
+        fillContractFromQuote(false);
+        toast("ctToast", "Đã lấy thông tin hai bên, công việc và tổng tiền từ báo giá hiện tại — kiểm tra lại trước khi copy/tải hợp đồng.");
+      });
+      ["ctType", "ctA", "ctAPhone", "ctB", "ctBPhone", "ctWork", "ctValue", "ctStart", "ctEnd", "ctPay", "ctWarranty"].forEach(function (id) {
+        $(id).addEventListener("input", renderContract);
+        $(id).addEventListener("change", renderContract);
+      });
+      $("copyContract").addEventListener("click", function () {
+        var c = contractData();
+        var text = CT_NAMES[c.type] + "\n\nBên A (khách hàng): " + (c.a || "…") + (c.aPhone ? " — ĐT: " + c.aPhone : "") +
+          "\nBên B (đơn vị thực hiện): " + (c.b || "…") + (c.bPhone ? " — ĐT: " + c.bPhone : "") +
+          "\n\n" + contractBody(c, false).join("\n") +
+          "\n\nHợp đồng/thỏa thuận này được lập thành 02 bản, mỗi bên giữ 01 bản.\n\nĐẠI DIỆN BÊN A\t\tĐẠI DIỆN BÊN B";
+        copyText(text, "ctToast", "Đã copy toàn bộ hợp đồng — dán vào Word/Zalo để gửi hoặc in ký.", "copyBoxContract");
+      });
+      $("dlContract").addEventListener("click", function () {
+        var blob = new Blob(["<!doctype html><html lang='vi'><head><meta charset='utf-8'><title>" + CT_NAMES[contractData().type] + "</title><style>body{font-family:'Times New Roman',serif;line-height:1.6;max-width:720px;margin:40px auto;padding:0 20px}</style></head><body>" + $("contractPaper").innerHTML + "</body></html>"], { type: "text/html" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); a.download = "Hop-dong-mau.html"; a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+        toast("ctToast", "Đã tải file hợp đồng — mở lên, in hoặc lưu PDF để ký.");
+      });
+
+      /* ---------------- Init: khôi phục dữ liệu đã lưu trên thiết bị ---------------- */
+      loadStored();
+      $("qDate").value = todayISO();
+      $("ctStart").value = todayISO();
+      try {
+        var ctDraft = JSON.parse(localStorage.getItem(CT_KEY) || "null");
+        if (ctDraft) {
+          ["ctType", "ctA", "ctAPhone", "ctB", "ctBPhone", "ctWork", "ctValue", "ctStart", "ctEnd", "ctPay", "ctWarranty"].forEach(function (id) {
+            if (ctDraft[id] != null && $(id)) $(id).value = ctDraft[id];
+          });
+        }
+      } catch (e) {}
+      var draft = null;
+      try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null"); } catch (e) {}
+      if (draft && draft.fields) {
+        QUOTE_FIELDS.forEach(function (id) {
+          if (draft.fields[id] != null && $(id)) $(id).value = draft.fields[id];
+        });
+      }
+      if (!$("qNo").value.trim()) $("qNo").value = nextQuoteNo();
+      if (draft && Array.isArray(draft.items) && draft.items.length) {
+        draft.items.forEach(function (i) { addItemRow(i.name, i.unit, i.qty, i.price); });
+      } else {
+        addItemRow("Khảo sát & tư vấn tại nhà", "lần", 1, 0);
+        addItemRow("", "gói", 1, 0);
+      }
+      renderQuote(); renderContract(); renderClients(); renderTemplates(); renderTrack();
+    </script>
+  </body>
+</html>
