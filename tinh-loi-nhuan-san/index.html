@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Tính Lợi Nhuận Sàn — Tính lãi/lỗ Shopee &amp; TikTok Shop</title>
+    <meta name="description" content="Công cụ tính lãi/lỗ sau giá vốn, phí sàn, quảng cáo, vận chuyển, đóng gói, hoàn/hủy và affiliate cho người bán Shopee, TikTok Shop. Dùng thử 3 ngày miễn phí, sau đó 29.000đ/tháng, lưu sản phẩm ngay trên máy của bạn." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.75rem; }
+      * { box-sizing: border-box; }
+      :root{
+        --bg:#eef2f0; --surface:#ffffff; --surface-2:#e3ebe7; --ink:#12211b; --ink-2:#43564d;
+        --line:#cfdcd4; --accent:#0b7a55; --accent-ink:#ffffff; --accent-soft:#d9efe4;
+        --warn:#b3540a; --warn-soft:#fbeedd; --danger:#c22f2f; --danger-soft:#fbe7e7;
+        --good:#0b7a55; --good-soft:#d9efe4; --gold:#8a6d00;
+        --shadow:0 10px 30px rgba(18,33,27,.10);
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1311; --surface:#16201b; --surface-2:#1e2b24; --ink:#e9f2ec; --ink-2:#a9bcb1;
+          --line:#2b3d34; --accent:#2fbf8f; --accent-ink:#06231a; --accent-soft:#173d2d;
+          --warn:#f0a35e; --warn-soft:#3a2a16; --danger:#ff7a6b; --danger-soft:#3d1d1a;
+          --good:#2fbf8f; --good-soft:#173d2d; --gold:#e3c34d;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      html{ scroll-behavior:smooth; }
+      body{ margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size:16px; line-height:1.55; }
+      .num{ font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+      .wrap{ max-width:1180px; margin:0 auto; padding:0 16px; }
+      a{ color:var(--accent); }
+
+      /* ---------- Hero ---------- */
+      .hero{ padding:34px 0 8px; }
+      .hero h1{ font-size:clamp(30px,5.2vw,52px); line-height:1.12; font-weight:900; letter-spacing:-.01em; margin:0 0 12px; max-width:820px; }
+      .hero h1 .hl{ color:var(--accent); }
+      .hero p.lede{ font-size:clamp(16px,2.2vw,19px); color:var(--ink-2); max-width:720px; margin:0 0 18px; }
+      .hero-points{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 6px; padding:0; list-style:none; }
+      .hero-points li{ background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-size:14px; font-weight:600; }
+      .hero-points li b{ color:var(--accent); }
+
+      /* ---------- Calculator layout ---------- */
+      .calc{ display:grid; grid-template-columns:1fr; gap:18px; margin:22px 0 10px; }
+      @media (min-width:960px){
+        .calc{ grid-template-columns:minmax(0,7fr) minmax(0,5fr); align-items:start; }
+        .panel-result{ position:sticky; top:14px; }
+      }
+      .panel{ background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:20px; }
+      .panel h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+      .panel .sub{ color:var(--ink-2); font-size:14px; margin:0 0 16px; }
+
+      .tabs{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
+      .tab{ border:1.5px solid var(--line); background:var(--surface-2); color:var(--ink);
+        border-radius:10px; padding:10px 6px; font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-height:52px; }
+      .tab small{ display:block; font-weight:500; font-size:12px; color:var(--ink-2); }
+      .tab[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); }
+      .tab[aria-pressed="true"] small{ color:var(--ink-2); }
+
+      fieldset{ border:0; margin:0 0 18px; padding:0; }
+      legend{ font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2); margin-bottom:10px; padding:0; }
+      .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      @media (max-width:520px){ .grid{ grid-template-columns:1fr; } }
+      .field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+      .field .hint{ font-size:12.5px; color:var(--ink-2); margin-top:4px; }
+      .inwrap{ display:flex; align-items:stretch; border:1.5px solid var(--line); border-radius:10px; overflow:hidden; background:var(--surface); }
+      .inwrap:focus-within{ border-color:var(--accent); }
+      .inwrap input{ flex:1; min-width:0; border:0; background:transparent; color:var(--ink);
+        font:inherit; font-family:"IBM Plex Mono", ui-monospace, monospace; font-weight:600; font-size:16px; padding:10px 12px; outline:none; }
+      .inwrap .unit{ display:flex; align-items:center; padding:0 12px; background:var(--surface-2); color:var(--ink-2); font-size:13px; font-weight:700; white-space:nowrap; }
+      .fee-note{ background:var(--warn-soft); border-radius:10px; padding:10px 12px; font-size:13.5px; margin:0 0 16px; }
+      .fee-note b{ color:var(--warn); }
+
+      /* ---------- Result panel ---------- */
+      .verdict{ border-radius:12px; padding:16px; margin-bottom:16px; }
+      .verdict.good{ background:var(--good-soft); }
+      .verdict.bad{ background:var(--danger-soft); }
+      .verdict .vlabel{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-2); }
+      .verdict .vprofit{ font-size:clamp(32px,6vw,44px); font-weight:700; line-height:1.1; margin:2px 0; }
+      .verdict.good .vprofit{ color:var(--good); }
+      .verdict.bad .vprofit{ color:var(--danger); }
+      .verdict .vnote{ font-size:14.5px; margin:0; }
+      .kpis{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+      .kpi{ background:var(--surface-2); border-radius:10px; padding:12px; }
+      .kpi .k{ font-size:12.5px; font-weight:700; color:var(--ink-2); text-transform:uppercase; letter-spacing:.04em; }
+      .kpi .v{ font-size:21px; font-weight:700; margin-top:2px; }
+      .kpi .d{ font-size:12.5px; color:var(--ink-2); }
+
+      .bar{ display:flex; height:16px; border-radius:8px; overflow:hidden; margin:6px 0 8px; background:var(--surface-2); }
+      .bar span{ display:block; height:100%; }
+      .bar-legend{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:var(--ink-2); margin-bottom:16px; }
+      .bar-legend i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; }
+
+      table.break{ width:100%; border-collapse:collapse; font-size:14.5px; }
+      table.break th, table.break td{ padding:7px 4px; border-bottom:1px solid var(--line); text-align:right; }
+      table.break th:first-child, table.break td:first-child{ text-align:left; }
+      table.break thead th{ color:var(--ink-2); font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; }
+      table.break tr.total td{ font-weight:800; border-bottom:0; border-top:2px solid var(--ink); }
+      table.break tr.sub td{ color:var(--ink-2); font-size:13.5px; }
+
+      .scen{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+      .scen .sc{ border:1.5px solid var(--line); border-radius:10px; padding:10px; text-align:center; }
+      .scen .sc.cur{ border-color:var(--accent); background:var(--accent-soft); }
+      .scen .sp{ font-size:13px; color:var(--ink-2); font-weight:600; }
+      .scen .sv{ font-size:17px; font-weight:700; }
+      .pos{ color:var(--good); } .neg{ color:var(--danger); }
+
+      .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer;
+        font:inherit; font-weight:700; border-radius:10px; padding:12px 20px; min-height:48px; text-decoration:none; }
+      .btn-primary{ background:var(--accent); color:var(--accent-ink); }
+      .btn-ghost{ background:var(--surface-2); color:var(--ink); border:1.5px solid var(--line); }
+      .btn-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+      .copy-ok{ font-size:13.5px; color:var(--good); font-weight:600; align-self:center; }
+      .copy-ok.fail{ color:var(--danger); }
+      .copy-fallback{ margin-top:12px; }
+      .copy-fallback label{ display:block; font-size:13.5px; font-weight:600; margin-bottom:6px; }
+      .copy-fallback textarea{ width:100%; border:1.5px solid var(--warn); border-radius:10px; background:var(--surface); color:var(--ink); font:inherit; font-size:13.5px; padding:10px 12px; resize:vertical; }
+      .bar-note{ font-size:12.5px; color:var(--ink-2); margin:-8px 0 16px; }
+      .btn-sm{ padding:8px 14px; min-height:40px; font-size:14px; border-radius:8px; }
+      .save-bar{ background:var(--accent-soft); border-radius:10px; padding:14px; margin-bottom:18px; }
+      .save-bar label{ display:block; font-size:14px; font-weight:700; margin-bottom:6px; }
+      .save-bar .row{ display:flex; gap:8px; flex-wrap:wrap; }
+      .save-bar input[type="text"]{ flex:1; min-width:180px; border:1.5px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); font:inherit; font-size:15px; padding:10px 12px; outline:none; }
+      .save-bar input[type="text"]:focus{ border-color:var(--accent); }
+      .save-bar .hint{ font-size:12.5px; color:var(--ink-2); margin-top:6px; }
+      .saved-panel{ margin:0 0 10px; }
+      .saved-list{ display:grid; gap:10px; margin-top:14px; }
+      .saved-item{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; background:var(--surface); }
+      .saved-item .meta{ min-width:0; }
+      .saved-item .name{ font-weight:800; font-size:15.5px; word-break:break-word; }
+      .saved-item .detail{ font-size:13px; color:var(--ink-2); }
+      .saved-item .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+      .saved-empty{ border:1.5px dashed var(--line); border-radius:10px; padding:16px; color:var(--ink-2); font-size:14.5px; text-align:center; background:var(--surface-2); }
+      .free-badge{ display:inline-block; background:var(--accent); color:var(--accent-ink); font-weight:800; font-size:13px; letter-spacing:.04em; text-transform:uppercase; border-radius:999px; padding:5px 12px; margin-bottom:12px; }
+
+      /* ---------- Sections ---------- */
+      section.block{ padding:38px 0 6px; }
+      section.block h2{ font-size:clamp(23px,3.6vw,32px); font-weight:900; margin:0 0 8px; letter-spacing:-.01em; }
+      section.block .intro{ color:var(--ink-2); max-width:760px; margin:0 0 20px; }
+      .table-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+      table.fees{ width:100%; border-collapse:collapse; font-size:14.5px; min-width:560px; }
+      table.fees th, table.fees td{ padding:11px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+      table.fees thead th{ background:var(--surface-2); font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-2); }
+      table.fees tr:last-child td{ border-bottom:0; }
+      @media (max-width:640px){
+        table.fees{ min-width:0; }
+        table.fees thead{ display:none; }
+        table.fees, table.fees tbody, table.fees tr, table.fees td{ display:block; width:100%; }
+        table.fees tr{ padding:10px 0; }
+        table.fees td{ border-bottom:0; padding:4px 14px; }
+        table.fees td::before{ content:attr(data-label); display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-2); margin-bottom:2px; }
+        table.fees td:first-child{ font-size:15.5px; }
+        table.fees td:first-child::before{ display:none; }
+      }
+      .tag{ display:inline-block; font-size:12px; font-weight:700; border-radius:999px; padding:2px 9px; background:var(--warn-soft); color:var(--warn); white-space:nowrap; }
+      .tag.ok{ background:var(--good-soft); color:var(--good); }
+      .src-note{ font-size:13.5px; color:var(--ink-2); margin-top:12px; }
+
+      .feat{ display:grid; grid-template-columns:1fr; gap:14px; }
+      @media (min-width:760px){ .feat{ grid-template-columns:1fr 1fr; } }
+      .feat .f{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; }
+      .feat .f h3{ margin:0 0 6px; font-size:17px; font-weight:800; }
+      .feat .f p{ margin:0; color:var(--ink-2); font-size:15px; }
+
+      .price-card{ background:var(--surface); border:2px solid var(--accent); border-radius:16px; padding:26px; box-shadow:var(--shadow);
+        display:grid; grid-template-columns:1fr; gap:20px; }
+      @media (min-width:760px){ .price-card{ grid-template-columns:5fr 7fr; } }
+      .price-big{ font-size:46px; font-weight:900; line-height:1; }
+      .price-big small{ font-size:17px; font-weight:600; color:var(--ink-2); }
+      .price-card ul{ margin:0; padding:0; list-style:none; display:grid; gap:9px; font-size:15.5px; }
+      .price-card ul li{ padding-left:26px; position:relative; }
+      .price-card ul li::before{ content:"✓"; position:absolute; left:0; color:var(--accent); font-weight:900; }
+      .trial{ background:var(--accent-soft); border-radius:10px; padding:12px 14px; font-size:14.5px; margin-top:14px; }
+
+      details.faq{ background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; }
+      details.faq summary{ cursor:pointer; font-weight:700; padding:14px 18px; min-height:48px; display:flex; align-items:center; }
+      details.faq .a{ padding:0 18px 16px; color:var(--ink-2); font-size:15px; }
+      details.faq .a p{ margin:0; }
+
+      footer{ margin-top:44px; border-top:1px solid var(--line); padding:22px 0 40px; color:var(--ink-2); font-size:13.5px; }
+      footer p{ margin:0 0 8px; max-width:820px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <h1>Bán 200.000đ trên sàn, <span class="hl">lãi thật còn bao nhiêu?</span></h1>
+        <p class="lede">Nhập giá bán và giá vốn — công cụ trừ hết phí sàn, phí giao dịch, quảng cáo, affiliate, vận chuyển, đóng gói và cả phần lỗ vì hoàn/hủy, rồi cho bạn lãi ròng, biên lợi nhuận, giá hòa vốn và ROAS hòa vốn cho từng đơn.</p>
+        <ul class="hero-points">
+          <li>Phí Shopee &amp; TikTok Shop <b>cập nhật 11/2026</b></li>
+          <li><b>Dùng thử 3 ngày</b> miễn phí — không cần thẻ</li>
+          <li>Sau dùng thử chỉ <b>29.000đ/tháng</b></li>
+          <li>Lưu sản phẩm <b>ngay trên máy của bạn</b></li>
+        </ul>
+      </header>
+
+      <!-- ================= CALCULATOR ================= -->
+      <div class="calc" id="calc">
+        <!-- Inputs -->
+        <div class="panel panel-input">
+          <h2>Nhập số của sản phẩm</h2>
+          <p class="sub">Chọn sàn để nạp biểu phí mặc định, sau đó sửa lại cho khớp ngành hàng của bạn. Mọi con số tính theo <b>1 đơn hàng</b>. Số bạn nhập được tự lưu trên máy này — mở lại trang vẫn còn.</p>
+
+          <div class="save-bar">
+            <label for="inProductName">Tên sản phẩm (để lưu lại)</label>
+            <div class="row">
+              <input type="text" id="inProductName" placeholder="Ví dụ: Áo thun trơn, Serum vitamin C…" autocomplete="off" />
+              <button type="button" class="btn btn-primary btn-sm" id="btnSaveProduct">Lưu sản phẩm này</button>
+            </div>
+            <div class="hint" id="saveHint">Lưu trên trình duyệt của máy này, không cần tài khoản. Bấm “Lưu” là mở lại lần sau vẫn xem được ở mục Sản phẩm đã lưu bên dưới.</div>
+          </div>
+
+          <div class="tabs" role="group" aria-label="Chọn sàn bán hàng">
+            <button type="button" class="tab" id="tab-shopee" aria-pressed="true">Shopee<small>Shop thường</small></button>
+            <button type="button" class="tab" id="tab-tiktok" aria-pressed="false">TikTok Shop<small>Shop thường</small></button>
+            <button type="button" class="tab" id="tab-custom" aria-pressed="false">Sàn khác<small>Tự nhập phí</small></button>
+          </div>
+
+          <p class="fee-note" id="feeNote"></p>
+
+          <fieldset>
+            <legend>Doanh thu &amp; giá vốn</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="inPrice">Giá bán (khách trả)</label>
+                <div class="inwrap"><input id="inPrice" aria-label="Giá bán (khách trả)" class="vnd" inputmode="numeric" value="200.000" /><span class="unit">đ/đơn</span></div>
+              </div>
+              <div class="field">
+                <label for="inCogs">Giá vốn sản phẩm</label>
+                <div class="inwrap"><input id="inCogs" aria-label="Giá vốn sản phẩm" class="vnd" inputmode="numeric" value="90.000" /><span class="unit">đ/đơn</span></div>
+                <div class="hint">Giá nhập + chi phí đưa hàng về kho.</div>
+              </div>
+              <div class="field">
+                <label for="inOrders">Số đơn dự kiến / tháng</label>
+                <div class="inwrap"><input id="inOrders" aria-label="Số đơn dự kiến / tháng" class="vnd" inputmode="numeric" value="300" /><span class="unit">đơn</span></div>
+                <div class="hint">Chỉ dùng để ước tính lãi cả tháng.</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Phí sàn &amp; thuế sàn</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="inCommission">Phí cố định / hoa hồng sàn</label>
+                <div class="inwrap"><input id="inCommission" aria-label="Phí cố định / hoa hồng sàn" class="pct" inputmode="decimal" value="10" /><span class="unit">%</span></div>
+              </div>
+              <div class="field">
+                <label for="inTransaction">Phí giao dịch / thanh toán</label>
+                <div class="inwrap"><input id="inTransaction" aria-label="Phí giao dịch / thanh toán" class="pct" inputmode="decimal" value="6" /><span class="unit">%</span></div>
+              </div>
+              <div class="field">
+                <label for="inProgram">Phí chương trình (Voucher/Freeship Xtra…)</label>
+                <div class="inwrap"><input id="inProgram" aria-label="Phí chương trình (Voucher/Freeship Xtra)" class="pct" inputmode="decimal" value="4" /><span class="unit">%</span></div>
+                <div class="hint">Chỉ nhập nếu shop có tham gia chương trình.</div>
+              </div>
+              <div class="field">
+                <label for="inTax">Thuế sàn khấu trừ (GTGT + TNCN)</label>
+                <div class="inwrap"><input id="inTax" aria-label="Thuế sàn khấu trừ (GTGT + TNCN)" class="pct" inputmode="decimal" value="1,5" /><span class="unit">%</span></div>
+              </div>
+              <div class="field">
+                <label for="inFixedFee">Phí cố định theo đơn (hạ tầng / xử lý đơn)</label>
+                <div class="inwrap"><input id="inFixedFee" aria-label="Phí cố định theo đơn (hạ tầng / xử lý đơn)" class="vnd" inputmode="numeric" value="3.000" /><span class="unit">đ/đơn</span></div>
+                <div class="hint">Khoản này thu theo từng đơn, không tính theo % giá bán — đơn giá càng nhỏ, khoản này chiếm tỷ lệ càng lớn.</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Chi phí bán hàng</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="inAds">Quảng cáo (Shopee Ads / GMV Max…)</label>
+                <div class="inwrap"><input id="inAds" aria-label="Quảng cáo (% giá bán)" class="pct" inputmode="decimal" value="8" /><span class="unit">% giá bán</span></div>
+              </div>
+              <div class="field">
+                <label for="inAffiliate">Hoa hồng affiliate / tiếp thị liên kết</label>
+                <div class="inwrap"><input id="inAffiliate" aria-label="Hoa hồng affiliate (% giá bán)" class="pct" inputmode="decimal" value="5" /><span class="unit">% giá bán</span></div>
+              </div>
+              <div class="field">
+                <label for="inShipping">Vận chuyển shop chịu</label>
+                <div class="inwrap"><input id="inShipping" aria-label="Vận chuyển shop chịu" class="vnd" inputmode="numeric" value="0" /><span class="unit">đ/đơn</span></div>
+                <div class="hint">Phần ship shop phải bù sau khi trừ hỗ trợ của sàn.</div>
+              </div>
+              <div class="field">
+                <label for="inPackaging">Đóng gói (hộp, băng keo, in đơn…)</label>
+                <div class="inwrap"><input id="inPackaging" aria-label="Đóng gói" class="vnd" inputmode="numeric" value="3.000" /><span class="unit">đ/đơn</span></div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hoàn / hủy đơn</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="inReturnRate">Tỷ lệ đơn hoàn / hủy</label>
+                <div class="inwrap"><input id="inReturnRate" aria-label="Tỷ lệ đơn hoàn / hủy" class="pct" inputmode="decimal" value="3" /><span class="unit">%</span></div>
+                <div class="hint">Thời trang thường 5–15%, ngành khác 1–5%.</div>
+              </div>
+              <div class="field">
+                <label for="inReturnShip">Phí ship hoàn cho mỗi đơn bị hoàn</label>
+                <div class="inwrap"><input id="inReturnShip" aria-label="Phí ship hoàn cho mỗi đơn bị hoàn" class="vnd" inputmode="numeric" value="18.000" /><span class="unit">đ/đơn</span></div>
+                <div class="hint">Đơn hoàn giả định hàng còn bán lại được; phần mất là ship hoàn + đóng gói đã dùng.</div>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-ghost" id="btnReset">Đặt lại số mặc định</button>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="panel panel-result" aria-live="polite">
+          <h2>Kết quả</h2>
+          <p class="sub">Đã tính theo tỷ lệ hoàn/hủy — đây là lãi kỳ vọng trên mỗi đơn khách đặt.</p>
+
+          <div class="verdict good" id="verdict">
+            <div class="vlabel">Lãi ròng / đơn</div>
+            <div class="vprofit num" id="outProfit">—</div>
+            <p class="vnote" id="outVerdict">—</p>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi"><div class="k">Biên lợi nhuận</div><div class="v num" id="outMargin">—</div><div class="d">Lãi ròng ÷ giá bán</div></div>
+            <div class="kpi"><div class="k">Giá bán hòa vốn</div><div class="v num" id="outBreakeven">—</div><div class="d">Bán dưới giá này là lỗ (chưa tính hoàn)</div></div>
+            <div class="kpi"><div class="k">ROAS hòa vốn</div><div class="v num" id="outRoas">—</div><div class="d">ROAS quảng cáo tối thiểu để không lỗ</div></div>
+            <div class="kpi"><div class="k">Lãi dự kiến / tháng</div><div class="v num" id="outMonthly">—</div><div class="d" id="outMonthlyNote">—</div></div>
+          </div>
+
+          <div>
+            <div style="font-weight:700; font-size:14.5px;">Mỗi 100đ doanh thu đi đâu?</div>
+            <div class="bar" id="allocBar"></div>
+            <div class="bar-legend" id="allocLegend"></div>
+            <p class="bar-note">Thanh này tính trên 1 đơn giao thành công. Con số lãi ròng ở trên đã trừ thêm phần lỗ kỳ vọng vì hoàn/hủy nên sẽ thấp hơn phần “Lãi (đơn thành công)” ở đây.</p>
+          </div>
+
+          <table class="break">
+            <thead><tr><th>Khoản mục</th><th>Số tiền</th><th>% giá bán</th></tr></thead>
+            <tbody id="breakBody"></tbody>
+          </table>
+
+          <div style="font-weight:700; font-size:14.5px; margin-top:18px;">Nếu đổi giá bán thì sao?</div>
+          <div class="scen" id="scenRow"></div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="btnCopy">Sao chép kết quả</button>
+            <span class="copy-ok" id="copyOk" hidden>Đã sao chép ✓</span>
+          </div>
+          <div class="copy-fallback" id="copyFallback" hidden>
+            <label for="copyTextBox">Sao chép tự động không được — đây là toàn bộ kết quả, hãy chọn hết trong ô rồi sao chép thủ công:</label>
+            <textarea id="copyTextBox" readonly rows="8"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SAVED PRODUCTS ================= -->
+      <section class="block saved-panel" id="san-pham-da-luu" aria-label="Sản phẩm đã lưu">
+        <div class="panel">
+          <h2 style="font-size:20px; margin:0 0 4px; font-weight:800;">Sản phẩm đã lưu trên máy này</h2>
+          <p style="color:var(--ink-2); font-size:14px; margin:0;">Mỗi sản phẩm lưu kèm toàn bộ số đã nhập và kết quả lãi lúc lưu. Bấm “Mở lại” để nạp số lên máy tính, “Xóa” để bỏ khỏi danh sách. Dữ liệu chỉ nằm trên trình duyệt của bạn — xóa dữ liệu trình duyệt hoặc đổi máy sẽ không còn.</p>
+          <div class="saved-list" id="savedList"></div>
+        </div>
+      </section>
+
+      <!-- ================= FEE TABLE ================= -->
+      <section class="block" id="bieu-phi">
+        <h2>Biểu phí tham chiếu — kiểm chứng tháng 11/2026</h2>
+        <p class="intro">Phí sàn thay đổi theo ngành hàng và từng đợt điều chỉnh. Bảng dưới là mức tham chiếu cho shop thường để bạn đối chiếu khi nhập số — mức phí áp dụng cho shop của bạn luôn lấy theo Seller Center tại thời điểm bán.</p>
+        <div class="table-scroll">
+          <table class="fees">
+            <thead><tr><th>Khoản phí</th><th>Shopee</th><th>TikTok Shop</th><th>Ghi chú</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>Phí cố định / hoa hồng</b></td>
+                <td data-label="Shopee">1,5–17% theo ngành hàng; Shopee Mall tới 20,8%</td>
+                <td data-label="TikTok Shop">Công cụ đang để mặc định 14% (mức tham chiếu, không phải mức sàn công bố cho mọi ngành); TikTok Shop Mall 16%</td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span></td>
+              </tr>
+              <tr>
+                <td><b>Phí giao dịch / thanh toán</b></td>
+                <td data-label="Shopee">6%</td>
+                <td data-label="TikTok Shop">6% (5% nếu đạt điều kiện GMV Max)</td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span></td>
+              </tr>
+              <tr>
+                <td><b>Phí cố định theo đơn</b></td>
+                <td data-label="Shopee">3.000đ/đơn (phí hạ tầng)</td>
+                <td data-label="TikTok Shop">3.000đ/đơn (phí xử lý đơn hàng)</td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span></td>
+              </tr>
+              <tr>
+                <td><b>Thuế sàn khấu trừ</b></td>
+                <td colspan="2" data-label="Cả hai sàn">1,5% doanh thu (GTGT 1% + TNCN 0,5%), sàn khấu trừ trước khi thanh toán</td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span></td>
+              </tr>
+              <tr>
+                <td><b>Phí chương trình</b> (Voucher Xtra, Freeship Xtra…)</td>
+                <td data-label="Shopee">Khoảng 4–5,5% nếu tham gia</td>
+                <td data-label="TikTok Shop">Theo chương trình shop đăng ký</td>
+                <td data-label="Ghi chú"><span class="tag">Chưa chốt — kiểm tra Seller Center</span></td>
+              </tr>
+              <tr>
+                <td><b>Tổng phí sàn + thuế</b> (chưa tính quảng cáo &amp; affiliate)</td>
+                <td colspan="2" data-label="Cả hai sàn">Cộng từ chính các khoản ở trên, theo bộ số mặc định của công cụ cho 1 đơn 200.000đ: <b>46.000đ ≈ 23% giá bán ở cả hai sàn</b>. Shopee: hoa hồng 10% (20.000đ) + giao dịch 6% (12.000đ) + chương trình 4% (8.000đ) + thuế 1,5% (3.000đ) + phí hạ tầng 3.000đ. TikTok Shop: hoa hồng 14% (28.000đ) + giao dịch 6% (12.000đ) + thuế 1,5% (3.000đ) + phí xử lý đơn 3.000đ. Vì có khoản cố định 3.000đ/đơn nên đơn giá trị càng nhỏ, tỷ lệ % tổng phí càng cao — đây là lý do nhiều shop “bán chạy mà không thấy lãi”.</td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã cộng từ các khoản trên</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="src-note">Nguồn: biểu phí công bố trên Shopee Seller Centre và TikTok Shop Seller Center, đối chiếu tháng 11/2026. Hoa hồng TikTok Shop theo từng ngành hàng có các nguồn ghi khác nhau nên trang này dùng mức mặc định 14% và để bạn tự sửa theo ngành của mình.</p>
+      </section>
+
+      <!-- ================= FEATURES ================= -->
+      <section class="block">
+        <h2>Khác gì các công cụ tính phí miễn phí?</h2>
+        <p class="intro">Trên thị trường đã có công cụ tính phí sàn miễn phí, nhưng phần lớn chỉ trừ phí sàn rồi dừng lại. Lãi thật của bạn còn bị ăn bởi quảng cáo, affiliate và đơn hoàn — đó là phần quyết định lỗ hay lãi.</p>
+        <div class="feat">
+          <div class="f">
+            <h3>Tính đủ 9 khoản chi</h3>
+            <p>Giá vốn, hoa hồng sàn, phí giao dịch, phí chương trình, thuế khấu trừ, quảng cáo, affiliate, vận chuyển, đóng gói — cộng thêm phần lỗ kỳ vọng từ tỷ lệ hoàn/hủy. Thiếu một khoản là biên lãi bạn nhìn thấy chỉ là biên ảo.</p>
+          </div>
+          <div class="f">
+            <h3>Giá hòa vốn &amp; ROAS hòa vốn</h3>
+            <p>Biết chính xác bán dưới giá nào thì lỗ, và quảng cáo phải đạt ROAS bao nhiêu mới không âm tiền. Hai con số này dùng ngay khi set giá và khi cài ngân sách ads, thay vì đoán.</p>
+          </div>
+          <div class="f">
+            <h3>Thử giá trước khi chạy chiến dịch</h3>
+            <p>Kéo thử giá bán ±10% và xem lãi/đơn đổi thế nào trước khi tham gia flash sale hay trợ giá. Nhiều shop lỗ không phải vì phí cao mà vì giảm giá trên một biên vốn đã quá mỏng.</p>
+          </div>
+          <div class="f">
+            <h3>Lưu sản phẩm &amp; mở lại bất cứ lúc nào</h3>
+            <p>Đặt tên và lưu từng sản phẩm kèm toàn bộ số đã nhập ngay trên máy của bạn. Lần sau mở lại trang, bấm “Mở lại” là tính tiếp, thử giá mới hoặc so sánh lãi giữa các sản phẩm — không cần nhập lại từ đầu, không cần tài khoản.</p>
+          </div>
+          <div class="f">
+            <h3>Biểu phí có ngày hiệu lực</h3>
+            <p>Phí sàn đổi liên tục theo ngành và theo đợt. Biểu phí trong công cụ ghi rõ ngày kiểm chứng, khoản nào chưa chốt được thì ghi “chưa xác minh” thay vì đưa số bừa — để bạn không tính lãi trên một biểu phí đã cũ.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PRICING ================= -->
+      <section class="block" id="bang-gia">
+        <h2>Dùng thử 3 ngày — sau đó 29.000đ/tháng</h2>
+        <p class="intro">Khách hàng vẫn dùng thử trước rồi mới trả phí — không phải miễn phí mãi. Phần “0 đồng” là chi phí đầu tư của đội ngũ: sản phẩm chạy trên hạ tầng miễn phí (GitHub + Cloudflare Pages) nên không tốn tiền máy chủ, tên miền hay quảng cáo ban đầu, và nhờ đó giữ được mức giá thấp này cho người bán.</p>
+        <div class="price-card">
+          <div>
+            <span class="free-badge">Dùng thử 3 ngày miễn phí</span>
+            <div class="price-big num">29.000đ<small>/tháng</small></div>
+            <p style="color:var(--ink-2); margin:10px 0 0;">Dùng thử đủ 3 ngày với đầy đủ tính năng tính toán, không cần thẻ. Hết 3 ngày mới thu phí 29.000đ/tháng — rẻ hơn một đơn hàng lỗ vì tính sai phí sàn.</p>
+            <div class="trial"><b>Lưu ngay trên máy của bạn:</b> số đang nhập và danh sách sản phẩm đã lưu được giữ trong trình duyệt của máy này, mở lại trang vẫn còn trong thời gian dùng thử và khi đã trả phí trên cùng máy.</div>
+            <div class="btn-row">
+              <a class="btn btn-primary" href="#calc">Dùng thử 3 ngày — tính ngay</a>
+            </div>
+          </div>
+          <div>
+            <ul>
+              <li>Tính lãi/lỗ không giới hạn cho Shopee, TikTok Shop và các sàn khác</li>
+              <li>Giá hòa vốn và ROAS hòa vốn cho từng sản phẩm</li>
+              <li>Mô phỏng lãi theo số đơn/tháng và theo kịch bản giá ±10%</li>
+              <li>Lưu danh sách sản phẩm ngay trên máy — mở lại, sửa tiếp, so sánh lãi từng sản phẩm</li>
+              <li>Tự lưu số đang nhập, không mất khi lỡ đóng trang</li>
+              <li>Sao chép kết quả gửi qua Zalo/Facebook cho cộng tác viên hoặc kế toán</li>
+              <li>Dùng tốt trên điện thoại — tính ngay trong lúc set giá, chạy ads</li>
+            </ul>
+            <p style="color:var(--ink-2); font-size:13.5px; margin:12px 0 0;">Giá trên là phí khách hàng trả sau 3 ngày dùng thử. Chi phí đầu tư 0đ của đội ngũ không có nghĩa là miễn phí cho khách — đó là cách giữ giá 29.000đ/tháng mà vẫn ưu tiên chất lượng sản phẩm và người dùng thật trước. Dữ liệu sản phẩm chỉ lưu trên trình duyệt của máy bạn đang dùng.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="block">
+        <h2>Câu hỏi thường gặp</h2>
+        <details class="faq">
+          <summary>Phí sàn trong công cụ có đúng với shop của tôi không?</summary>
+          <div class="a"><p>Phí mặc định là mức tham chiếu đã kiểm chứng tháng 11/2026 cho shop thường. Phí thật phụ thuộc ngành hàng, hạng shop (thường/Mall) và các chương trình bạn tham gia, nên mọi ô phí đều sửa được. Hãy đối chiếu một lần với Seller Center của shop bạn, sau đó dùng đúng bộ số đó cho các lần tính sau.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Vì sao phải trừ cả thuế 1,5%?</summary>
+          <div class="a"><p>Từ 2025, sàn khấu trừ thuế GTGT và TNCN (tổng 1,5% doanh thu với hộ/cá nhân kinh doanh) trước khi thanh toán tiền về cho shop. Đây là tiền bạn không nhận được, nên muốn biết lãi thật thì phải trừ — rất nhiều shop bỏ sót khoản này và tưởng mình lãi hơn thực tế.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Đơn hoàn được tính lỗ thế nào?</summary>
+          <div class="a"><p>Công cụ tính lãi kỳ vọng: mỗi đơn đặt hàng có xác suất bị hoàn bằng tỷ lệ bạn nhập. Đơn hoàn được giả định hàng còn bán lại được, phần mất là phí ship hoàn cộng chi phí đóng gói đã dùng. Nếu ngành của bạn hàng hoàn thường hỏng/không bán lại được, hãy cộng thêm phần hao hụt đó vào ô phí ship hoàn để ra số sát hơn.</p></div>
+        </details>
+        <details class="faq">
+          <summary>ROAS hòa vốn dùng để làm gì?</summary>
+          <div class="a"><p>Đó là ROAS tối thiểu để quảng cáo không làm bạn lỗ. Ví dụ ROAS hòa vốn là 8 thì cứ chi 1đ quảng cáo phải thu về ít nhất 8đ doanh thu. Khi ROAS thực tế của chiến dịch thấp hơn con số này, bạn đang mua doanh thu bằng tiền lỗ — nên giảm ngân sách, tăng giá hoặc cắt sản phẩm đó khỏi ads.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Dùng thử và trả phí thế nào?</summary>
+          <div class="a"><p>Bạn dùng thử miễn phí 3 ngày với đầy đủ tính năng: tính không giới hạn, giá hòa vốn, ROAS hòa vốn, mô phỏng theo kịch bản giá và lưu sản phẩm trên máy, không cần thẻ khi bắt đầu dùng thử. Hết 3 ngày, phí là 29.000đ/tháng để tiếp tục dùng. “0 đồng” mà đội ngũ nhắc tới là chi phí đầu tư ban đầu của đội ngũ (hạ tầng miễn phí), không phải giá cho khách hàng.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Vì sao giá chỉ 29.000đ/tháng?</summary>
+          <div class="a"><p>Vì sản phẩm được xây trên hạ tầng miễn phí — lưu code trên GitHub, chạy trang trên Cloudflare Pages — nên chi phí đầu tư và vận hành ban đầu là 0đ. Đội ngũ dồn phần tiết kiệm đó vào việc giữ giá thấp và làm sản phẩm cho đúng nhu cầu người bán, thay vì đội giá lên để bù chi phí máy chủ.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Dữ liệu sản phẩm của tôi lưu ở đâu?</summary>
+          <div class="a"><p>Số bạn đang nhập và các sản phẩm bạn bấm “Lưu sản phẩm này” được lưu trong bộ nhớ của trình duyệt trên chính máy bạn đang dùng (localStorage), trang không gửi lên máy chủ. Vì vậy mở lại cùng trình duyệt trên cùng máy vẫn còn, nhưng đổi máy, đổi trình duyệt hoặc xóa dữ liệu trình duyệt thì sẽ mất. Với số quan trọng, hãy bấm “Sao chép kết quả” để giữ thêm một bản ở nơi khác.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Tôi tính trên điện thoại rồi muốn xem lại trên máy tính thì sao?</summary>
+          <div class="a"><p>Vì dữ liệu chỉ lưu trên từng máy, danh sách đã lưu không tự đồng bộ sang máy khác. Bạn có thể bấm “Sao chép kết quả” rồi gửi qua Zalo/Facebook cho chính mình để nhập lại nhanh trên máy tính.</p></div>
+        </details>
+      </section>
+
+      <footer>
+        <p><b>Tính Lợi Nhuận Sàn</b> — công cụ tính lãi/lỗ cho người bán Shopee, TikTok Shop và các marketplace tại Việt Nam. Dùng thử 3 ngày miễn phí, sau đó 29.000đ/tháng. Kết quả là ước tính dựa trên số bạn nhập và biểu phí tham chiếu; số liệu quyết toán cuối cùng lấy theo sao kê của sàn. Sản phẩm đã lưu chỉ nằm trên trình duyệt của máy bạn.</p>
+        <p>Biểu phí tham chiếu kiểm chứng tháng 11/2026 từ Shopee Seller Centre và TikTok Shop Seller Center. Các khoản ghi “chưa xác minh” cần được đối chiếu trong Seller Center của shop bạn trước khi dùng để ra quyết định giá.</p>
+      </footer>
+    </div>
+
+    <script>
+      (function(){
+        "use strict";
+        var $ = function(id){ return document.getElementById(id); };
+
+        var PRESETS = {
+          shopee: { commission:10, transaction:6, program:4, tax:1.5, fixedFee:3000,
+            note:"<b>Shopee (shop thường):</b> phí cố định 1,5–17% tùy ngành hàng (mặc định để 10% — hãy sửa theo ngành của bạn), phí giao dịch 6%, phí hạ tầng 3.000đ/đơn, thuế khấu trừ 1,5%. Phí Voucher Xtra khoảng 4–5,5% <b>chưa chốt được con số chính thức</b> — kiểm tra trong Seller Center nếu shop có tham gia." },
+          tiktok: { commission:14, transaction:6, program:0, tax:1.5, fixedFee:3000,
+            note:"<b>TikTok Shop (shop thường):</b> hoa hồng mặc định 14% (Mall 16%), phí giao dịch 6% — còn 5% nếu đạt điều kiện GMV Max, phí xử lý đơn 3.000đ/đơn, thuế khấu trừ 1,5%. Hoa hồng theo từng ngành hàng có nguồn ghi khác nhau — đối chiếu Seller Center của shop bạn." },
+          custom: { commission:0, transaction:0, program:0, tax:1.5, fixedFee:0,
+            note:"<b>Sàn khác / tự nhập:</b> điền biểu phí của sàn bạn bán (Lazada, Tiki, bán qua website…) theo hợp đồng và sao kê thực tế. Thuế khấu trừ 1,5% chỉ áp dụng khi sàn khấu trừ thay — nếu bạn tự kê khai thuế, đặt về 0." }
+        };
+        var DEFAULTS = { price:200000, cogs:90000, orders:300, ads:8, affiliate:5, shipping:0, packaging:3000, returnRate:3, returnShip:18000 };
+
+        function parseNum(str){
+          if(str == null) return 0;
+          var s = String(str).replace(/\./g,"").replace(",",".").replace(/[^0-9.\-]/g,"");
+          var n = parseFloat(s);
+          return isNaN(n) ? 0 : n;
+        }
+        function fmtVND(n){
+          var neg = n < 0; var v = Math.round(Math.abs(n));
+          var s = String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          return (neg ? "−" : "") + s + "đ";
+        }
+        function fmtPct(n, dec){
+          if(!isFinite(n)) return "—";
+          return n.toFixed(dec == null ? 1 : dec).replace(".", ",") + "%";
+        }
+        function getVND(id){ return parseNum($(id).value); }
+        function getPct(id){ return parseNum($(id).value); }
+
+        function compute(price){
+          var cogs = getVND("inCogs");
+          var commission = getPct("inCommission"), transaction = getPct("inTransaction"),
+              program = getPct("inProgram"), tax = getPct("inTax"),
+              ads = getPct("inAds"), affiliate = getPct("inAffiliate");
+          var fixedFee = getVND("inFixedFee"), shipping = getVND("inShipping"), packaging = getVND("inPackaging");
+          var rRate = Math.min(getPct("inReturnRate"), 100) / 100;
+          var returnShip = getVND("inReturnShip");
+
+          var rows = [
+            ["Giá vốn sản phẩm", cogs],
+            ["Phí cố định / hoa hồng sàn (" + fmtPct(commission) + ")", price * commission / 100],
+            ["Phí giao dịch (" + fmtPct(transaction) + ")", price * transaction / 100],
+            ["Phí chương trình (" + fmtPct(program) + ")", price * program / 100],
+            ["Thuế sàn khấu trừ (" + fmtPct(tax) + ")", price * tax / 100],
+            ["Affiliate (" + fmtPct(affiliate) + ")", price * affiliate / 100],
+            ["Quảng cáo (" + fmtPct(ads) + ")", price * ads / 100],
+            ["Vận chuyển shop chịu", shipping],
+            ["Đóng gói", packaging],
+            ["Phí cố định theo đơn", fixedFee]
+          ];
+          var totalCost = 0;
+          rows.forEach(function(r){ totalCost += r[1]; });
+          var profitSuccess = price - totalCost;
+          var returnLoss = returnShip + packaging;
+          var profit = profitSuccess * (1 - rRate) - rRate * returnLoss;
+          var margin = price > 0 ? profit / price * 100 : 0;
+
+          var pctTotal = commission + transaction + program + tax + affiliate + ads;
+          var denom = 1 - pctTotal / 100;
+          var fixedTotal = cogs + shipping + packaging + fixedFee;
+          var breakeven = denom > 0 ? fixedTotal / denom : null;
+
+          var preAdProfit = profitSuccess + price * ads / 100;
+          var roas = preAdProfit > 0 ? price / preAdProfit : null;
+
+          return { rows:rows, totalCost:totalCost, profitSuccess:profitSuccess, profit:profit,
+                   margin:margin, breakeven:breakeven, roas:roas, returnLoss:returnLoss, rRate:rRate };
+        }
+
+        function render(){
+          var price = getVND("inPrice");
+          var orders = getVND("inOrders");
+          var res = compute(price);
+
+          // Verdict
+          var v = $("verdict");
+          v.className = "verdict " + (res.profit >= 0 ? "good" : "bad");
+          $("outProfit").textContent = fmtVND(res.profit);
+          var note;
+          if (price <= 0) note = "Nhập giá bán để xem kết quả.";
+          else if (res.profit < 0) note = "Đơn này đang lỗ " + fmtVND(-res.profit) + " sau khi trừ đủ chi phí và phần hoàn/hủy. Cần tăng giá, giảm giá vốn hoặc cắt bớt quảng cáo/affiliate.";
+          else if (res.margin < 5) note = "Có lãi nhưng biên rất mỏng (" + fmtPct(res.margin) + "). Chỉ cần sàn tăng phí hoặc tỷ lệ hoàn nhích lên là chuyển sang lỗ.";
+          else if (res.margin < 15) note = "Biên " + fmtPct(res.margin) + " — mức trung bình của bán lẻ trên sàn. Theo dõi sát chi phí quảng cáo, đây là khoản dễ ăn hết lãi nhất.";
+          else note = "Biên " + fmtPct(res.margin) + " — biên khỏe so với mặt bằng bán sàn. Có dư địa để đẩy quảng cáo hoặc trợ giá thêm.";
+          $("outVerdict").textContent = note;
+
+          $("outMargin").textContent = price > 0 ? fmtPct(res.margin) : "—";
+          $("outBreakeven").textContent = res.breakeven != null ? fmtVND(res.breakeven) : "Không hòa vốn được";
+          $("outRoas").textContent = res.roas != null ? res.roas.toFixed(1).replace(".", ",") : "—";
+          var monthly = res.profit * orders;
+          $("outMonthly").textContent = fmtVND(monthly);
+          $("outMonthlyNote").textContent = "Với " + String(Math.round(orders)).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " đơn/tháng, lãi " + fmtVND(res.profit) + "/đơn";
+
+          // Allocation bar (per successful order, % of price).
+          // Each segment contains exactly what its label says:
+          // "Phí sàn + thuế" = commission + transaction + program + tax + fixed per-order fee only.
+          // Affiliate, ads and shipping+packaging are their own segments.
+          var segs = [];
+          var lossShare = 0;
+          if (price > 0){
+            var platformFee = price * (getPct("inCommission") + getPct("inTransaction") + getPct("inProgram") + getPct("inTax")) / 100 + getVND("inFixedFee");
+            var profitShare = res.profitSuccess / price * 100;
+            lossShare = profitShare < 0 ? -profitShare : 0;
+            segs = [
+              { label:"Giá vốn", v:getVND("inCogs") / price * 100, c:"#8a6d00" },
+              { label:"Phí sàn + thuế", v:platformFee / price * 100, c:"#b3540a" },
+              { label:"Affiliate", v:getPct("inAffiliate"), c:"#885053" },
+              { label:"Quảng cáo", v:getPct("inAds"), c:"#5b7f95" },
+              { label:"Vận chuyển + đóng gói", v:(getVND("inShipping") + getVND("inPackaging")) / price * 100, c:"#5f6c37" }
+            ];
+            if (profitShare >= 0) segs.push({ label:"Lãi (đơn thành công)", v:profitShare, c:"#0b7a55" });
+            segs = segs.filter(function(s){ return s.v > 0; });
+          }
+          // Widths: with a profit the shares sum to exactly 100% of price.
+          // With a loss the cost shares sum to over 100%, so scale them
+          // proportionally to fill the bar; the legend keeps the true %.
+          var costSum = 0;
+          segs.forEach(function(s){ costSum += s.v; });
+          var scale = costSum > 100 ? 100 / costSum : 1;
+          $("allocBar").innerHTML = segs.map(function(s){ return '<span style="width:' + (s.v * scale) + '%;background:' + s.c + '"></span>'; }).join("");
+          var legendHtml = segs.map(function(s){ return '<span><i style="background:' + s.c + '"></i>' + s.label + " " + fmtPct(s.v) + "</span>"; }).join("");
+          if (lossShare > 0) legendHtml += '<span><i style="background:#c22f2f"></i>Phần lỗ ' + fmtPct(lossShare) + " — chi phí vượt doanh thu</span>";
+          $("allocLegend").innerHTML = legendHtml;
+
+          // Breakdown table
+          var html = "";
+          res.rows.forEach(function(r){
+            html += "<tr><td>" + r[0] + "</td><td class='num'>" + fmtVND(r[1]) + "</td><td class='num'>" + (price > 0 ? fmtPct(r[1] / price * 100) : "—") + "</td></tr>";
+          });
+          html += "<tr class='sub'><td>Tổng chi phí (đơn giao thành công)</td><td class='num'>" + fmtVND(res.totalCost) + "</td><td class='num'>" + (price > 0 ? fmtPct(res.totalCost / price * 100) : "—") + "</td></tr>";
+          html += "<tr class='sub'><td>Lãi nếu đơn giao thành công</td><td class='num'>" + fmtVND(res.profitSuccess) + "</td><td class='num'>" + (price > 0 ? fmtPct(res.profitSuccess / price * 100) : "—") + "</td></tr>";
+          if (res.rRate > 0){
+            html += "<tr class='sub'><td>Trừ lỗ kỳ vọng vì hoàn/hủy (" + fmtPct(res.rRate * 100) + " đơn hoàn)</td><td class='num'>−" + fmtVND(res.profitSuccess * res.rRate + res.rRate * res.returnLoss).replace("−","") + "</td><td class='num'>—</td></tr>";
+          }
+          html += "<tr class='total'><td>Lãi ròng kỳ vọng / đơn đặt</td><td class='num'>" + fmtVND(res.profit) + "</td><td class='num'>" + (price > 0 ? fmtPct(res.margin) : "—") + "</td></tr>";
+          $("breakBody").innerHTML = html;
+
+          // Price scenarios
+          var scen = [0.9, 1, 1.1].map(function(m){
+            var p = price * m; var r2 = compute(p);
+            var cls = r2.profit >= 0 ? "pos" : "neg";
+            var tag = m === 1 ? "Giá hiện tại" : (m < 1 ? "Giảm 10%" : "Tăng 10%");
+            return "<div class='sc" + (m === 1 ? " cur" : "") + "'><div class='sp'>" + tag + " · " + fmtVND(p) + "</div><div class='sv num " + cls + "'>" + fmtVND(r2.profit) + "/đơn</div><div class='sp'>biên " + fmtPct(r2.margin) + "</div></div>";
+          }).join("");
+          $("scenRow").innerHTML = scen;
+          persistState();
+        }
+
+        function fmtVNDInput(el){
+          var n = parseNum(el.value);
+          el.value = n === 0 && el.value.replace(/[^0-9]/g,"") === "" ? el.value : String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        var currentPlatform = "shopee";
+        var STATE_KEY = "tlns-state-v1";
+        var PRODUCTS_KEY = "tlns-products-v1";
+        var FIELD_IDS = ["inPrice","inCogs","inOrders","inCommission","inTransaction","inProgram","inTax","inFixedFee","inAds","inAffiliate","inShipping","inPackaging","inReturnRate","inReturnShip","inProductName"];
+        var restoring = false;
+
+        function setPlatformUI(key){
+          currentPlatform = key;
+          var p = PRESETS[key];
+          if (p) $("feeNote").innerHTML = p.note;
+          ["tab-shopee","tab-tiktok","tab-custom"].forEach(function(id){ $(id).setAttribute("aria-pressed","false"); });
+          var tab = $("tab-" + key); if (tab) tab.setAttribute("aria-pressed","true");
+        }
+        function applyPreset(key){
+          var p = PRESETS[key];
+          setPlatformUI(key);
+          $("inCommission").value = String(p.commission).replace(".", ",");
+          $("inTransaction").value = String(p.transaction).replace(".", ",");
+          $("inProgram").value = String(p.program).replace(".", ",");
+          $("inTax").value = String(p.tax).replace(".", ",");
+          $("inFixedFee").value = String(p.fixedFee).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          render();
+        }
+        function collectState(){
+          var s = { platform: currentPlatform, fields:{} };
+          FIELD_IDS.forEach(function(id){ var el = $(id); if (el) s.fields[id] = el.value; });
+          return s;
+        }
+        function persistState(){
+          if (restoring) return;
+          try { localStorage.setItem(STATE_KEY, JSON.stringify(collectState())); } catch(e){}
+        }
+        function applyState(s){
+          if (!s || !s.fields) return false;
+          restoring = true;
+          if (s.platform && PRESETS[s.platform]) setPlatformUI(s.platform);
+          FIELD_IDS.forEach(function(id){ if (s.fields[id] != null && $(id)) $(id).value = s.fields[id]; });
+          restoring = false;
+          render();
+          return true;
+        }
+        function loadProducts(){
+          try { var raw = localStorage.getItem(PRODUCTS_KEY); var arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; } catch(e){ return []; }
+        }
+        function storeProducts(arr){
+          // Returns true only when the write is verified by reading it back,
+          // so the UI never claims "saved" when the browser blocked storage.
+          try {
+            var payload = JSON.stringify(arr);
+            localStorage.setItem(PRODUCTS_KEY, payload);
+            return localStorage.getItem(PRODUCTS_KEY) === payload;
+          } catch(e){ return false; }
+        }
+        function platformLabel(key){ return key === "tiktok" ? "TikTok Shop" : (key === "custom" ? "Sàn khác" : "Shopee"); }
+        function renderSaved(){
+          var list = $("savedList"); if (!list) return;
+          list.innerHTML = "";
+          var products = loadProducts();
+          if (!products.length){
+            var empty = document.createElement("div"); empty.className = "saved-empty";
+            empty.textContent = "Chưa có sản phẩm nào được lưu. Nhập số ở trên, đặt tên rồi bấm “Lưu sản phẩm này” — lần sau mở lại trang vẫn còn ở đây.";
+            list.appendChild(empty); return;
+          }
+          products.forEach(function(prod){
+            var item = document.createElement("div"); item.className = "saved-item";
+            var meta = document.createElement("div"); meta.className = "meta";
+            var nm = document.createElement("div"); nm.className = "name"; nm.textContent = prod.name;
+            var dt = document.createElement("div"); dt.className = "detail";
+            var profitCls = prod.profit >= 0 ? "pos" : "neg";
+            dt.innerHTML = platformLabel(prod.state && prod.state.platform) + " · Giá bán <span class='num'>" + fmtVND(prod.price || 0) + "</span> · Lãi <span class='num " + profitCls + "'>" + fmtVND(prod.profit || 0) + "/đơn</span> · Biên " + fmtPct(prod.margin || 0) + (prod.savedAt ? " · Lưu " + prod.savedAt : "");
+            meta.appendChild(nm); meta.appendChild(dt);
+            var actions = document.createElement("div"); actions.className = "actions";
+            var btnLoad = document.createElement("button"); btnLoad.type = "button"; btnLoad.className = "btn btn-primary btn-sm"; btnLoad.textContent = "Mở lại";
+            btnLoad.addEventListener("click", function(){ applyState(prod.state); persistState(); window.scrollTo({ top:0, behavior:"smooth" }); var c = document.getElementById("calc"); if (c) c.scrollIntoView({ behavior:"smooth", block:"start" }); });
+            var btnDel = document.createElement("button"); btnDel.type = "button"; btnDel.className = "btn btn-ghost btn-sm"; btnDel.textContent = "Xóa";
+            btnDel.addEventListener("click", function(){ var arr = loadProducts().filter(function(x){ return x.id !== prod.id; }); storeProducts(arr); renderSaved(); });
+            actions.appendChild(btnLoad); actions.appendChild(btnDel);
+            item.appendChild(meta); item.appendChild(actions);
+            list.appendChild(item);
+          });
+        }
+
+        ["tab-shopee","tab-tiktok","tab-custom"].forEach(function(id){
+          $(id).addEventListener("click", function(){ applyPreset(id.replace("tab-","")); });
+        });
+
+        document.querySelectorAll("input").forEach(function(el){
+          el.addEventListener("input", render);
+          if (el.classList.contains("vnd")){
+            el.addEventListener("blur", function(){ fmtVNDInput(el); render(); });
+          }
+        });
+
+        $("btnReset").addEventListener("click", function(){
+          $("inProductName").value = "";
+          $("inPrice").value = "200.000"; $("inCogs").value = "90.000"; $("inOrders").value = "300";
+          $("inAds").value = "8"; $("inAffiliate").value = "5"; $("inShipping").value = "0";
+          $("inPackaging").value = "3.000"; $("inReturnRate").value = "3"; $("inReturnShip").value = "18.000";
+          applyPreset("shopee");
+        });
+
+        $("btnSaveProduct").addEventListener("click", function(){
+          var name = $("inProductName").value.trim();
+          var hint = $("saveHint");
+          if (!name){
+            hint.textContent = "Hãy nhập tên sản phẩm ở ô trên trước khi lưu — ví dụ tên món hàng bạn đang tính.";
+            $("inProductName").focus();
+            return;
+          }
+          var price = getVND("inPrice"); var res = compute(price);
+          var now = new Date();
+          var savedAt = now.toLocaleDateString("vi-VN") + " " + now.toLocaleTimeString("vi-VN", { hour:"2-digit", minute:"2-digit" });
+          var products = loadProducts();
+          var existing = -1;
+          for (var i = 0; i < products.length; i++){ if (products[i].name.toLowerCase() === name.toLowerCase()){ existing = i; break; } }
+          var prod = { id: existing >= 0 ? products[existing].id : ("p" + now.getTime()), name:name, price:price, profit:res.profit, margin:res.margin, savedAt:savedAt, state:collectState() };
+          if (existing >= 0) products[existing] = prod; else products.unshift(prod);
+          var savedOk = storeProducts(products);
+          renderSaved();
+          if (!savedOk){
+            hint.textContent = "Chưa lưu được trên máy này — trình duyệt đang chặn lưu trữ (ví dụ đang mở ở chế độ riêng tư) hoặc đã hết dung lượng. Hãy bấm “Sao chép kết quả” để giữ lại số của sản phẩm này.";
+            return;
+          }
+          hint.textContent = existing >= 0 ? "Đã cập nhật sản phẩm “" + name + "” trong danh sách đã lưu bên dưới." : "Đã lưu “" + name + "” — xem ở mục Sản phẩm đã lưu bên dưới, mở lại trang vẫn còn.";
+          var sec = document.getElementById("san-pham-da-luu"); if (sec) sec.scrollIntoView({ behavior:"smooth", block:"start" });
+        });
+
+        function copyTextFallback(text){
+          return new Promise(function(resolve){
+            try {
+              var ta = document.createElement("textarea");
+              ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0"; ta.style.opacity = "0.01";
+              document.body.appendChild(ta);
+              ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
+              var ok = false;
+              try { ok = document.execCommand("copy"); } catch(e){ ok = false; }
+              document.body.removeChild(ta);
+              resolve(ok);
+            } catch(e){ resolve(false); }
+          });
+        }
+        function copyText(text){
+          if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext !== false){
+            return navigator.clipboard.writeText(text).then(function(){ return true; }, function(){ return copyTextFallback(text); });
+          }
+          return copyTextFallback(text);
+        }
+
+        $("btnCopy").addEventListener("click", function(){
+          var price = getVND("inPrice"); var res = compute(price);
+          var name = $("inProductName").value.trim();
+          var lines = [
+            "KẾT QUẢ TÍNH LỢI NHUẬN SÀN" + (name ? " — " + name : ""),
+            "Sàn: " + platformLabel(currentPlatform),
+            "Giá bán: " + fmtVND(price) + "/đơn",
+            "Lãi ròng kỳ vọng: " + fmtVND(res.profit) + "/đơn (biên " + fmtPct(res.margin) + ")",
+            "Lãi nếu giao thành công: " + fmtVND(res.profitSuccess) + "/đơn",
+            "Giá bán hòa vốn: " + (res.breakeven != null ? fmtVND(res.breakeven) : "không hòa vốn được"),
+            "ROAS hòa vốn: " + (res.roas != null ? res.roas.toFixed(1).replace(".", ",") : "—"),
+            "Tổng chi phí/đơn: " + fmtVND(res.totalCost)
+          ];
+          var text = lines.join("\n");
+          var okEl = $("copyOk");
+          var fb = $("copyFallback");
+          copyText(text).then(function(ok){
+            okEl.textContent = ok ? "Đã sao chép ✓" : "Chưa sao chép tự động được — kết quả đã hiện ở ô bên dưới để bạn sao chép thủ công";
+            okEl.className = "copy-ok" + (ok ? "" : " fail");
+            okEl.hidden = false;
+            if (ok){
+              fb.hidden = true;
+              setTimeout(function(){ okEl.hidden = true; }, 3000);
+            } else {
+              // Only claim success when the copy really happened; on failure
+              // show the full text in a selectable box for manual copying.
+              var box = $("copyTextBox");
+              box.value = text;
+              fb.hidden = false;
+              box.focus(); box.select();
+            }
+          });
+        });
+
+        // Init: restore last inputs if saved on this device, otherwise defaults
+        var restored = false;
+        try {
+          var rawState = localStorage.getItem(STATE_KEY);
+          if (rawState){ restored = applyState(JSON.parse(rawState)); }
+        } catch(e){ restored = false; }
+        if (!restored) applyPreset("shopee");
+        renderSaved();
+      })();
+    </script>
+  </body>
+</html>
