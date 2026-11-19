@@ -83,6 +83,7 @@
 
       /* ---------- Calculator layout ---------- */
       .calc{ display:grid; grid-template-columns:1fr; gap:20px; margin:26px 0 14px; }
+      .calc > *{ min-width:0; }
       @media (min-width:960px){
         .calc{ grid-template-columns:minmax(0,7fr) minmax(0,5fr); align-items:start; }
         .panel-result{ position:sticky; top:14px; }
@@ -100,9 +101,10 @@
       .tab[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); box-shadow:inset 0 -3px 0 var(--gold-bright); }
       .tab[aria-pressed="true"] small{ color:var(--ink-2); }
 
-      fieldset{ border:0; margin:0 0 18px; padding:0; }
+      fieldset{ border:0; margin:0 0 18px; padding:0; min-width:0; }
       legend{ font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2); margin-bottom:10px; padding:0; }
-      .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+      .grid > .field{ min-width:0; }
       @media (max-width:520px){ .grid{ grid-template-columns:1fr; } }
       .field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
       .field .hint{ font-size:12.5px; color:var(--ink-2); margin-top:4px; }
@@ -201,7 +203,8 @@
       .save-bar{ background:var(--accent-soft); border-radius:10px; border-left:4px solid var(--gold-bright); padding:14px; margin-bottom:18px; }
       .save-bar label{ display:block; font-size:14px; font-weight:700; margin-bottom:6px; }
       .save-bar .row{ display:flex; gap:8px; flex-wrap:wrap; }
-      .save-bar input[type="text"]{ flex:1; min-width:180px; border:1.5px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); font:inherit; font-size:15px; padding:10px 12px; outline:none; }
+      .save-bar input[type="text"]{ flex:1 1 0; min-width:0; border:1.5px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); font:inherit; font-size:15px; padding:10px 12px; outline:none; }
+      .save-bar .row .btn{ flex:0 1 auto; max-width:100%; }
       .save-bar input[type="text"]:focus{ border-color:var(--accent); }
       .save-bar .hint{ font-size:12.5px; color:var(--ink-2); margin-top:6px; }
       .saved-panel{ margin:0 0 10px; }
