@@ -9,7 +9,13 @@ name: Dub Worker (free auto dubbing)
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    # Chạy mỗi 5 phút, lệch 2 phút so với mốc giờ chẵn (:00, :05, :10...)
+    # vì GitHub ghi rõ lịch trình có thể bị trễ/rớt khi tải cao, nhất là
+    # đầu mỗi giờ — lệch phút giảm nguy cơ bị rớt lượt chạy.
+    # LƯU Ý 19/11/2026: lịch '*/5 * * * *' cũ KHÔNG HỀ kích hoạt lần nào
+    # từ lúc tạo workflow (~15 lượt chạy bị mất tới 14:45) dù chạy tay vẫn
+    # tốt — commit thay đổi dòng cron này cũng đăng ký lại lịch với GitHub.
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
   workflow_dispatch:
 
 # Không cho 2 lượt chạy chồng lên nhau (job đang xử lý dở sẽ bị chạy lại).
