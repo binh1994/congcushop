@@ -721,6 +721,7 @@
   var mode = "signin";
   var client = null;   // supabase client (tạo ở init)
   var accessCache = null;
+  var authReady = false; // true khi onAuthStateChange đã chạy — tức Supabase đã khôi phục xong phiên đăng nhập đã lưu
 
   function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
   function fmtDate(iso) {
@@ -844,8 +845,12 @@
       case "rpc_error":
         statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
         break;
+      case "login_required":
+        statusEl.innerHTML = "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.";
+        break;
       default:
-        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        // Không bao giờ hiện mã lỗi thô cho người dùng.
+        statusEl.innerHTML = "Đang kiểm tra tài khoản…";
     }
   }
 
@@ -954,7 +959,14 @@
     return client.auth.getSession().then(function (r) {
       var session = r.data.session;
       if (!session) {
-        // Chưa đăng nhập: khóa công cụ + hiện paywall ngay, không để lộ [data-requires-access].
+        if (!authReady) {
+          // Supabase chưa kịp khôi phục phiên đăng nhập đã lưu — getSession()
+          // trả null tạm thời. KHÔNG khóa vội: giữ trạng thái chờ trung tính
+          // ("Đang kiểm tra quyền dùng…") và chờ onAuthStateChange chạy lại.
+          return;
+        }
+        // Đã chắc chắn không có phiên đăng nhập: khóa công cụ + hiện paywall
+        // ngay, không để lộ [data-requires-access].
         applyAccess({ access: false, reason: "login_required" });
         show("guest");
         return;
@@ -965,6 +977,15 @@
         statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
         say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
       });
+    }).catch(function (err) {
+      if (!authReady) {
+        // Lỗi tạm thời trong lúc chờ khôi phục phiên — giữ trạng thái chờ,
+        // onAuthStateChange sẽ chạy lại refresh().
+        return;
+      }
+      // Đã sẵn sàng mà vẫn lỗi: fail-closed, khóa như chưa đăng nhập.
+      applyAccess({ access: false, reason: "login_required" });
+      show("guest");
     });
   }
   function handlePayReturn() {
@@ -1009,7 +1030,13 @@
         return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
       }
     }).then(function () {
-      client.auth.onAuthStateChange(function () { refresh(); });
+      client.auth.onAuthStateChange(function () { authReady = true; refresh(); });
+      // Dự phòng: nếu sau 5 giây sự kiện auth vẫn chưa chạy (authReady vẫn
+      // false), coi như đã sẵn sàng và kiểm tra lại để trang không kẹt mãi
+      // ở trạng thái chờ.
+      setTimeout(function () {
+        if (!authReady) { authReady = true; refresh(); }
+      }, 5000);
       handlePayReturn();
       return refresh();
     }).catch(function (err) {
@@ -1933,7 +1960,7 @@
           var max = 0; days.forEach(function (d) { max = Math.max(max, d.thu, d.chi); });
           if (max === 0) { chartEl.innerHTML = '<p class="chart-empty">Chưa có khoản nào trong 7 ngày gần nhất — biểu đồ dòng tiền sẽ hiện ở đây khi bạn bắt đầu ghi.</p>'; return; }
           var axisMax = niceCeil(max);
-          var W = 660, H = 262, base = 216, top = 30, plotH = base - top; var groupW = W / 7, barW = 24; var parts = [];
+          var W = 660, H = 262, base = 216, top = 30, plotH = base - top; var groupW = (W - 74) / 7, barW = 24; var parts = [];
           [0, 0.5, 1].forEach(function (f) { var y = base - plotH * f; parts.push('<line x1="44" y1="' + y + '" x2="' + (W - 6) + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/>'); parts.push('<text x="38" y="' + (y + 4) + '" text-anchor="end" font-size="12" fill="var(--ink-3)">' + (f === 0 ? "0" : fmtShort(axisMax * f)) + "</text>"); });
           days.forEach(function (d, idx) { var cx = 44 + groupW * idx + groupW / 2 - 6; var th = axisMax ? (d.thu / axisMax) * plotH : 0; var ch = axisMax ? (d.chi / axisMax) * plotH : 0; parts.push('<rect x="' + (cx - barW - 3) + '" y="' + (base - th) + '" width="' + barW + '" height="' + Math.max(th, d.thu ? 2 : 0) + '" rx="4" fill="var(--thu)"><title>Thu ' + d.dm + ": " + fmt(d.thu) + "</title></rect>"); parts.push('<rect x="' + (cx + 3) + '" y="' + (base - ch) + '" width="' + barW + '" height="' + Math.max(ch, d.chi ? 2 : 0) + '" rx="4" fill="var(--chi)"><title>Chi ' + d.dm + ": " + fmt(d.chi) + "</title></rect>"); if (d.thu > 0) parts.push('<text x="' + (cx - 15) + '" y="' + (base - th - 7) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--thu)">' + fmtShort(d.thu) + "</text>"); if (d.chi > 0) parts.push('<text x="' + (cx + 15) + '" y="' + (base - ch - 7) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--chi)">' + fmtShort(d.chi) + "</text>"); parts.push('<text x="' + cx + '" y="' + (base + 21) + '" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink-2)">' + d.label + "</text>"); parts.push('<text x="' + cx + '" y="' + (base + 38) + '" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">' + d.dm + "</text>"); });
           parts.push('<line x1="44" y1="' + base + '" x2="' + (W - 6) + '" y2="' + base + '" stroke="var(--line-strong)" stroke-width="1.5"/>');
