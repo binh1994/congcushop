@@ -696,18 +696,21 @@ footer{padding:34px 0 50px;color:var(--muted);font-size:.85rem}
         <div><label for="t1-pack">Đóng gói (đ)</label><input id="t1-pack" type="number" value="3000" min="0" inputmode="numeric"></div>
         <div><label for="t1-fixed">Phí cố định / hoa hồng (%)</label><input id="t1-fixed" type="number" value="14" step="0.1" min="0"></div>
         <div><label for="t1-trans">Phí giao dịch (%)</label><input id="t1-trans" type="number" value="6" step="0.1" min="0"></div>
+        <div><label for="t1-program">Phí chương trình — Voucher Xtra / giảm giá (%)</label><input id="t1-program" type="number" value="0" step="0.1" min="0"></div>
         <div><label for="t1-flat">Phí hạ tầng / xử lý mỗi đơn (đ)</label><input id="t1-flat" type="number" value="3000" min="0"></div>
         <div><label for="t1-tax">Thuế khấu trừ tại nguồn (%)</label><input id="t1-tax" type="number" value="1.5" step="0.1" min="0"></div>
         <div><label for="t1-ads">Quảng cáo (% trên giá bán)</label><input id="t1-ads" type="number" value="8" step="0.5" min="0"></div>
         <div><label for="t1-aff">Affiliate / tiếp thị liên kết (%)</label><input id="t1-aff" type="number" value="5" step="0.5" min="0"></div>
         <div><label for="t1-ret">Tỷ lệ hoàn / hủy dự kiến (%)</label><input id="t1-ret" type="number" value="3" step="0.5" min="0" max="90"></div>
+        <div><label for="t1-retship">Phí ship hoàn cho mỗi đơn bị hoàn (đ)</label><input id="t1-retship" type="number" value="18000" min="0" inputmode="numeric"></div>
+        <div style="grid-column:1/-1"><label for="t1-retship-on" style="display:flex;gap:8px;align-items:flex-start;font-weight:400;cursor:pointer"><input id="t1-retship-on" type="checkbox" style="width:auto;margin-top:3px;flex:none"><span>Tính thêm phí ship hoàn (đơn đặt từ 07/12/2026 — shop thường chịu 100%, Mall 50%)</span></label></div>
       </div>
       <div class="btnrow"><button class="btn primary" id="t1-calc" type="button">Tính lãi ngay</button></div>
-      <p class="note">Cách tính minh bạch: Lãi/đơn thành công = Giá bán − Giá vốn − Vận chuyển − Đóng gói − (phí % × giá bán) − phí cố định/đơn. Lãi kỳ vọng đã trừ dự phòng hoàn: nhân phần doanh thu &amp; phí theo tỷ lệ đơn thành công, và trừ thêm phí ship chiều về ước tính bằng phí ship đi × tỷ lệ hoàn.</p>
+      <p class="note">Cách tính minh bạch: Lãi/đơn thành công = Giá bán − Giá vốn − Vận chuyển − Đóng gói − (phí % × giá bán) − phí cố định/đơn. Lãi kỳ vọng sau hoàn/hủy = Lãi/đơn thành công × tỷ lệ đơn thành công − tỷ lệ hoàn × (hoa hồng + phí chương trình + phí xử lý mỗi đơn + quảng cáo + ship đi + đóng gói [+ phí ship hoàn nếu bật ô tính thêm phí ship hoàn]). Khi đơn bị hoàn toàn bộ, phí giao dịch, thuế và affiliate được hoàn/thu hồi nên không tính vào phần lỗ; hàng hoàn về bán lại được nên cũng không mất giá vốn — phần lỗ của một đơn hoàn chỉ gồm hoa hồng, phí chương trình, phí xử lý, quảng cáo đã chạy, ship chiều đi và đóng gói. Từ 01/04/2026 TikTok Shop vẫn tính hoa hồng + phí Voucher Extra trên đơn đã giao thành công kể cả sau đó bị hoàn; phí giao dịch được loại vì cơ sở tính trừ phần hoàn tiền, còn phí chương trình tính theo % giá bán như hoa hồng nên mất luôn khi đơn hoàn.</p>
     </div>
     <div>
       <div class="result" id="t1-result" aria-live="polite"></div>
-      <div class="warn">Kết quả là <strong>ước tính</strong> theo số bạn nhập. Biểu phí sàn thay đổi thường xuyên — luôn đối chiếu Seller Center trước khi quyết định giá. Hai số <strong>chưa xác minh dứt điểm</strong>: phí Voucher Xtra của Shopee (nguồn ghi 4%, nguồn khác 5,5%) và hoa hồng TikTok theo từng ngành hàng — công cụ không tự điền hai số này.</div>
+      <div class="warn">Kết quả là <strong>ước tính</strong> theo số bạn nhập. Biểu phí sàn thay đổi thường xuyên — luôn đối chiếu Seller Center trước khi quyết định giá. Phí Voucher Xtra của Shopee được điền sẵn 4% nhưng nguồn khác ghi 5,5% — <strong>chưa xác minh dứt điểm</strong>, đối chiếu Seller Center; hoa hồng TikTok theo từng ngành hàng cũng vậy — công cụ không tự điền số này.</div>
     </div>
   </div>
   <h4 style="margin:20px 0 8px">Thư viện biểu phí tham chiếu (đã kiểm chứng, tháng 11/2026)</h4>
@@ -1193,26 +1196,27 @@ function download(name, content, type){
 
 /* ---------- TOOL 1: Profit calculator ---------- */
 var presets = {
-  shopee:{fixed:10, trans:6, flat:3000, tax:1.5},
-  shopeeMall:{fixed:15, trans:6, flat:3000, tax:1.5},
-  tiktok:{fixed:14, trans:6, flat:3000, tax:1.5},
-  tiktokMall:{fixed:16, trans:6, flat:3000, tax:1.5},
-  chat:{fixed:0, trans:0, flat:0, tax:0}
+  shopee:{fixed:10, trans:6, flat:3000, tax:1.5, program:4},
+  shopeeMall:{fixed:15, trans:6, flat:3000, tax:1.5, program:4},
+  tiktok:{fixed:14, trans:6, flat:3000, tax:1.5, program:0},
+  tiktokMall:{fixed:16, trans:6, flat:3000, tax:1.5, program:0},
+  chat:{fixed:0, trans:0, flat:0, tax:0, program:0}
 };
 $('t1-platform').addEventListener('change', function(){
   var p = presets[this.value];
-  $('t1-fixed').value = p.fixed; $('t1-trans').value = p.trans; $('t1-flat').value = p.flat; $('t1-tax').value = p.tax;
+  $('t1-fixed').value = p.fixed; $('t1-trans').value = p.trans; $('t1-flat').value = p.flat; $('t1-tax').value = p.tax; $('t1-program').value = p.program;
   calc1();
 });
 function num(id){ var v = parseFloat($(id).value); return isNaN(v)?0:v; }
 function calc1(){
   var P=num('t1-price'), von=num('t1-cost'), ship=num('t1-ship'), pack=num('t1-pack');
-  var pct = (num('t1-fixed')+num('t1-trans')+num('t1-tax')+num('t1-ads')+num('t1-aff'))/100;
+  var pct = (num('t1-fixed')+num('t1-trans')+num('t1-tax')+num('t1-ads')+num('t1-aff')+num('t1-program'))/100;
   var flat=num('t1-flat'), r=num('t1-ret')/100;
   var fees = P*pct + flat;
   var profit = P - von - ship - pack - fees;
   var margin = P>0 ? profit/P*100 : 0;
-  var expected = (1-r)*(P - fees) - von - ship - pack - r*ship;
+  var returnLoss = P*(num('t1-fixed')+num('t1-ads')+num('t1-program'))/100 + flat + ship + pack + ($('t1-retship-on').checked ? num('t1-retship') : 0);
+  var expected = profit*(1-r) - r*returnLoss;
   var denom = 1 - pct;
   var be = denom>0 ? (von+ship+pack+flat)/denom : 0;
   var marginBeforeAds = P>0 ? (P - von - ship - pack - (P*(pct - num('t1-ads')/100) + flat))/P : 0;
@@ -1229,15 +1233,16 @@ function calc1(){
     (profit<0 ? '<p class="note" style="margin-top:10px">⚠️ Đang <b>lỗ</b> ở cấu hình này. Thử tăng giá bán lên ít nhất '+fmt(be)+'đ, giảm % quảng cáo, hoặc đàm phán lại giá vốn.</p>' : '<p class="note" style="margin-top:10px">Đang có lãi. Muốn chắc hơn, hãy thử tăng % quảng cáo lên mức ngày chạy ads mạnh và xem lãi kỳ vọng còn dương không.</p>');
 }
 $('t1-calc').addEventListener('click', calc1);
-var T1FIELDS=['t1-price','t1-cost','t1-ship','t1-pack','t1-fixed','t1-trans','t1-flat','t1-tax','t1-ads','t1-aff','t1-ret'];
+var T1FIELDS=['t1-price','t1-cost','t1-ship','t1-pack','t1-fixed','t1-trans','t1-program','t1-flat','t1-tax','t1-ads','t1-aff','t1-ret','t1-retship'];
 var t1saved = storeGet('hub_t1_saved', []);
 (function(){
   var savedInputs = storeGet('hub_t1_inputs', null);
-  if(savedInputs){ T1FIELDS.forEach(function(id){ if(savedInputs[id]!=null) $(id).value=savedInputs[id]; }); if(savedInputs.platform) $('t1-platform').value=savedInputs.platform; if(savedInputs.pname) $('t1-pname').value=savedInputs.pname; }
+  if(savedInputs){ T1FIELDS.forEach(function(id){ if(savedInputs[id]!=null) $(id).value=savedInputs[id]; }); if(savedInputs['t1-retship-on']!=null) $('t1-retship-on').checked=!!savedInputs['t1-retship-on']; if(savedInputs.platform) $('t1-platform').value=savedInputs.platform; if(savedInputs.pname) $('t1-pname').value=savedInputs.pname; }
 })();
 function t1Persist(){
   var o={platform:$('t1-platform').value, pname:$('t1-pname').value};
   T1FIELDS.forEach(function(id){ o[id]=$(id).value; });
+  o['t1-retship-on']=$('t1-retship-on').checked;
   storeSet('hub_t1_inputs', o);
 }
 function t1ResultText(){
@@ -1252,12 +1257,12 @@ function renderT1Saved(){
     return '<div class="listitem"><div class="t"><b>'+esc(s.name)+'</b><span>'+esc(s.platform)+' · '+esc(s.date)+'</span></div><div style="font-size:.88rem;color:var(--muted)">Giá bán '+fmt(s.price)+'đ · Lãi/đơn '+fmt(s.profit)+'đ · Biên '+s.margin+'%</div><div class="btnrow"><button class="btn mini-btn" type="button" data-t1open="'+i+'">Mở lại</button><button class="btn mini-btn danger" type="button" data-t1del="'+i+'">Xóa</button></div></div>';
   }).join('') : '';
   Array.prototype.forEach.call(document.querySelectorAll('[data-t1del]'), function(b){ b.addEventListener('click', function(){ t1saved.splice(+this.getAttribute('data-t1del'),1); storeSet('hub_t1_saved', t1saved); renderT1Saved(); }); });
-  Array.prototype.forEach.call(document.querySelectorAll('[data-t1open]'), function(b){ b.addEventListener('click', function(){ var s=t1saved[+this.getAttribute('data-t1open')]; if(!s) return; T1FIELDS.forEach(function(id){ if(s.inputs[id]!=null) $(id).value=s.inputs[id]; }); $('t1-platform').value=s.platformValue; $('t1-pname').value=s.name; calc1(); t1Persist(); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-t1open]'), function(b){ b.addEventListener('click', function(){ var s=t1saved[+this.getAttribute('data-t1open')]; if(!s) return; T1FIELDS.forEach(function(id){ if(s.inputs[id]!=null) $(id).value=s.inputs[id]; }); if(s.inputs['t1-retship-on']!=null) $('t1-retship-on').checked=!!s.inputs['t1-retship-on']; $('t1-platform').value=s.platformValue; $('t1-pname').value=s.name; calc1(); t1Persist(); }); });
 }
 $('t1-save').addEventListener('click', function(){
   var P=num('t1-price'); var pct=(num('t1-fixed')+num('t1-trans')+num('t1-tax')+num('t1-ads')+num('t1-aff'))/100;
   var fees=P*pct+num('t1-flat'); var profit=P-num('t1-cost')-num('t1-ship')-num('t1-pack')-fees;
-  var inputs={}; T1FIELDS.forEach(function(id){ inputs[id]=$(id).value; });
+  var inputs={}; T1FIELDS.forEach(function(id){ inputs[id]=$(id).value; }); inputs['t1-retship-on']=$('t1-retship-on').checked;
   t1saved.unshift({name:$('t1-pname').value.trim()||'Sản phẩm chưa đặt tên', platform:$('t1-platform').options[$('t1-platform').selectedIndex].text, platformValue:$('t1-platform').value, price:P, profit:profit, margin:P>0?(profit/P*100).toFixed(1):'0', date:new Date().toLocaleDateString('vi-VN'), inputs:inputs});
   var ok=storeSet('hub_t1_saved', t1saved); renderT1Saved();
   setStatus('t1-status', ok?'Đã lưu sản phẩm trên máy này.':'Không lưu được — trình duyệt đã chặn lưu trữ.', ok);
@@ -1266,6 +1271,7 @@ $('t1-copy').addEventListener('click', function(){
   copyText(t1ResultText()).then(function(ok){ setStatus('t1-status', ok?'Đã sao chép kết quả (kèm tên sản phẩm + sàn).':'Sao chép thất bại — hãy bôi đen kết quả và copy thủ công.', ok); });
 });
 T1FIELDS.forEach(function(id){ $(id).addEventListener('input', function(){ calc1(); t1Persist(); }); });
+$('t1-retship-on').addEventListener('change', function(){ calc1(); t1Persist(); });
 $('t1-platform').addEventListener('change', t1Persist);
 $('t1-pname').addEventListener('input', t1Persist);
 renderT1Saved();
