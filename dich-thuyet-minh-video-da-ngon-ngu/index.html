@@ -670,7 +670,7 @@
       document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
       document.querySelectorAll("[data-paywall]").forEach(function (el) { el.style.display = locked ? "" : "none"; });
       document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
-        el.textContent = (access.reason === "trial" && access.days_left != null)
+        el.textContent = ((access.reason === "trial" || access.reason === "bundle_trial") && access.days_left != null)
           ? ("Còn " + access.days_left + " ngày dùng thử") : "";
       });
       document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
@@ -684,10 +684,18 @@
     if (!statusEl) return;
     var days = (a.days_left != null) ? a.days_left : null;
     trialBtn.hidden = true;
-    payBtn.hidden = true;
+    // SỬA LỖI mục 13(a) — nút "Gia hạn bằng VietQR" phải HIỆN mỗi khi đã đăng
+    // nhập (đang trial, đã trả phí, bundle...) để khách trả tiền sớm được.
+    // Trước đây nút chỉ hiện khi hết hạn, nên khách đang trial không tới
+    // được payOS. Chỉ ẩn khi chưa đăng nhập (lúc đó khối tài khoản cũng
+    // đang ẩn nên nút không nhìn thấy được).
+    payBtn.hidden = (a.reason === "login_required");
     switch (a.reason) {
       case "trial":
         statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "bundle_trial":
+        statusEl.innerHTML = "<b>Đang dùng thử Gói Bundle</b> — còn <b>" + days + " ngày</b> dùng thử cả 10 công cụ.";
         break;
       case "paid":
         statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
@@ -704,11 +712,9 @@
         break;
       case "trial_expired":
         statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
-        payBtn.hidden = false;
         break;
       case "subscription_expired":
         statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
-        payBtn.hidden = false;
         break;
       case "verification_required":
         statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
@@ -719,7 +725,6 @@
         break;
       default:
         statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
-        if (!a.access) payBtn.hidden = false;
     }
   }
 
@@ -1810,6 +1815,39 @@
       }
       function clearVideoError() { videoError.textContent = ""; videoError.hidden = true; }
 
+      /* Huy hiệu thời lượng video: đồng bộ với quyền Pro hiện tại (state.proAccess).
+         Khi đã có quyền Pro, video 3:00–15:00 hiện "Gói Pro" (không còn "Cần Gói Pro"
+         trái chiều với dòng "Gói Pro của bạn xử lý được…" của evaluateGate).
+         Gọi lại sau mỗi lần đổi video và mỗi lần cửa ải đánh giá lại. */
+      function updateDurationBadge() {
+        if (!state.video) {
+          durationBadge.textContent = "";
+          durationBadge.className = "badge";
+          videoPlanNote.textContent = "";
+          return;
+        }
+        var d = state.video.durationSec;
+        if (d <= MAX_STD_SEC) {
+          durationBadge.textContent = "Gói Chuẩn";
+          durationBadge.className = "badge";
+          videoPlanNote.textContent = "Trong giới hạn 3 phút — dùng Gói Chuẩn 49.000đ/tháng.";
+        } else if (d <= MAX_PRO_SEC) {
+          if (state.proAccess) {
+            durationBadge.textContent = "Gói Pro";
+            durationBadge.className = "badge pro";
+            videoPlanNote.textContent = "Gói Pro của bạn xử lý được video tới 15 phút.";
+          } else {
+            durationBadge.textContent = "Cần Gói Pro";
+            durationBadge.className = "badge pro";
+            videoPlanNote.textContent = "Vượt 3 phút — cần Gói Pro 99.000đ/tháng (video tới 15 phút).";
+          }
+        } else {
+          durationBadge.textContent = "Vượt 15 phút";
+          durationBadge.className = "badge err";
+          videoPlanNote.textContent = "Hiện chưa hỗ trợ video dài hơn 15 phút.";
+        }
+      }
+
       /* Cửa ải cốt lõi: <= 3:00 mở luồng thường; > 3:00 khóa luồng thường, hiện upsell Pro;
          > 15:00 thì cả Pro cũng chưa xử lý được. Gọi lại sau mỗi lần đổi video/ngôn ngữ/quyền Pro. */
       function evaluateGate() {
@@ -1822,6 +1860,7 @@
         if (!state.video) { dubHint.textContent = "Hãy tải video lên trước để bắt đầu."; return; }
         var d = state.video.durationSec;
         var dur = fmtMMSS(d);
+        updateDurationBadge();
         if (d > MAX_PRO_SEC) {
           proUpsellTitle.textContent = "Video dài hơn 15 phút — hiện chưa hỗ trợ";
           proUpsellText.textContent = "Video của bạn dài " + dur + ", vượt cả giới hạn 15 phút của Gói Pro. Hãy cắt ngắn video xuống dưới 15 phút rồi tải lên lại.";
@@ -1899,19 +1938,7 @@
         }
         state.video = { name: videoName.textContent, size: videoSize.textContent, durationSec: d };
         videoDuration.textContent = fmtMMSS(d);
-        if (d <= MAX_STD_SEC) {
-          durationBadge.textContent = "Gói Chuẩn";
-          durationBadge.className = "badge";
-          videoPlanNote.textContent = "Trong giới hạn 3 phút — dùng Gói Chuẩn 49.000đ/tháng.";
-        } else if (d <= MAX_PRO_SEC) {
-          durationBadge.textContent = "Cần Gói Pro";
-          durationBadge.className = "badge pro";
-          videoPlanNote.textContent = "Vượt 3 phút — cần Gói Pro 99.000đ/tháng (video tới 15 phút).";
-        } else {
-          durationBadge.textContent = "Vượt 15 phút";
-          durationBadge.className = "badge err";
-          videoPlanNote.textContent = "Hiện chưa hỗ trợ video dài hơn 15 phút.";
-        }
+        updateDurationBadge();
         evaluateGate();
         /* Video mới nạp xong: nếu chưa có quyền Pro thì kiểm tra lại — phiên
            đăng nhập có thể chỉ sẵn sàng sau khi trang tải, và cửa ải video dài
@@ -2005,7 +2032,10 @@
       /* ================= GỬI JOB THẬT (SUPABASE) =================
          Luồng thật thay cho lưu localStorage cũ:
          đăng nhập -> sinh job_id -> nén (Chuẩn) / chia chunk (Pro) ->
-         upload Storage -> insert dubbing_jobs -> poll 10s tới done/failed.
+         upload Storage -> insert dubbing_jobs -> ĐỌC LẠI job từ bảng để
+         xác nhận có thật -> mới hiện "Đã gửi" -> poll 10s tới done/failed.
+         Lỗi ở bước nào thì hiện nguyên văn lỗi ở bước đó và lưu bản nháp
+         "chưa gửi được" — không bao giờ báo đã gửi khi bảng chưa có job.
          Job localStorage cũ vẫn hiển thị kèm bên dưới, đánh dấu bản nháp cũ. */
       var SUPABASE_URL_JOB = "https://azsaucfdgplkxvqseheh.supabase.co";
       var SUPABASE_ANON_KEY_JOB = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq";
@@ -2038,13 +2068,56 @@
         try { localStorage.setItem(LS_JOB_META, JSON.stringify(meta)); } catch (e) {}
       }
 
+      /* ---------- Bản nháp CHƯA gửi được (lần gửi thất bại) ----------
+         Chỉ để khách thấy lần gửi hỏng của mình + lý do thật; KHÔNG phải
+         job đã gửi và không bao giờ hiển thị như job đã gửi. */
+      var LS_FAILED_DRAFTS = "ccs_p9_failed_drafts";
+      function loadFailedDrafts() {
+        try { return JSON.parse(localStorage.getItem(LS_FAILED_DRAFTS) || "[]"); }
+        catch (e) { return []; }
+      }
+      function saveFailedDrafts(list) {
+        try { localStorage.setItem(LS_FAILED_DRAFTS, JSON.stringify(list)); } catch (e) {}
+      }
+
+      /* Gộp thông tin lỗi THẬT từ Supabase (message + code + details + hint)
+         để hiện cho người dùng thay vì nuốt lỗi sau một câu chung chung. */
+      function errText(err) {
+        if (!err) return "lỗi không rõ";
+        var parts = [];
+        if (err.message) parts.push(err.message);
+        if (err.code) parts.push("mã " + err.code);
+        if (err.details) parts.push(err.details);
+        if (err.hint) parts.push(err.hint);
+        return parts.length ? parts.join(" · ") : String(err);
+      }
+
+      /* Lấy phiên đăng nhập AN TOÀN: CongCuShop.getSession() có thể THROW
+         đồng bộ khi checkAccess.js chưa khởi tạo xong client (client còn
+         null — lỗi "Cannot read properties of null (reading 'auth')").
+         Bọc trong Promise.resolve().then() để lỗi rơi vào .catch của chuỗi
+         promise thay vì thoát khỏi handler và làm nút gửi kẹt disabled. */
+      function safeGetSession() {
+        return Promise.resolve().then(function () {
+          if (!window.CongCuShop || !window.CongCuShop.getSession) throw new Error("login_required");
+          return window.CongCuShop.getSession();
+        });
+      }
+
       /* ---------- Client Supabase đã xác thực cho job ----------
-         Dùng lại mẫu của khối hỗ trợ (sp-script): đọc URL/key anon, nạp UMD
-         supabase-js nếu chưa có, rồi auth.setSession() bằng token từ
-         CongCuShop.getSession() để Storage upload + insert job thỏa RLS
-         (auth.uid() = user_id). Ưu tiên client sẵn có window.client nếu có. */
+         SỬA TẬN GỐC lỗi "báo Đã gửi nhưng không có job trong bảng":
+         trước đây client được tạo + setSession MỘT LẦN lúc tải trang (do
+         loadServerJobs chạy ngay khi trang mở) rồi CACHE VĨNH VIỄN — phiên
+         ghim lúc đó có thể chưa đăng nhập xong hoặc đã cũ, và refresh token
+         (chỉ dùng được 1 lần) bị các client đăng nhập khác trên cùng trang
+         xoay vòng mất, nên tới lúc bấm gửi thì upload/insert chạy bằng
+         phiên chết. Nay theo đúng mẫu của trang Podcast P10 (đã insert
+         được thật vào cùng bảng): MỖI lần gọi đều lấy phiên MỚI NHẤT từ
+         CongCuShop.getSession() rồi setSession lại lên client job RIÊNG
+         (không dùng chung window.client của khối đăng nhập) ngay trước
+         khi upload/insert, để RLS auth.uid() = user_id luôn khớp. */
       var jobClient = null;
-      var jobClientReady = null;
+      var jobClientUid = null;
       function loadSupabaseUmdJob() {
         return new Promise(function (resolve, reject) {
           if (window.supabase && window.supabase.createClient) return resolve();
@@ -2056,32 +2129,29 @@
         });
       }
       function getJobClient() {
-        if (jobClient) return Promise.resolve(jobClient);
-        if (jobClientReady) return jobClientReady;
-        jobClientReady = new Promise(function (resolve, reject) {
-          if (!window.CongCuShop || !window.CongCuShop.getSession) { reject(new Error("login_required")); return; }
-          window.CongCuShop.getSession().then(function (session) {
-            if (!session || !session.user || !session.access_token) { reject(new Error("login_required")); return; }
-            var useClient = function (client) {
-              if (session.refresh_token) {
-                client.auth.setSession({ access_token: session.access_token, refresh_token: session.refresh_token }).then(function (r) {
-                  if (r && r.error) { reject(new Error("set_session_failed")); return; }
-                  jobClient = client;
-                  resolve(client);
-                }).catch(function () { reject(new Error("set_session_failed")); });
-              } else {
-                jobClient = client;
-                resolve(client);
-              }
-            };
-            if (window.client && window.client.from) return useClient(window.client);
-            loadSupabaseUmdJob().then(function () {
-              useClient(window.supabase.createClient(SUPABASE_URL_JOB, SUPABASE_ANON_KEY_JOB));
-            }).catch(function (err) { reject(err); });
-          }).catch(function (err) { reject(err); });
+        return safeGetSession().then(function (session) {
+          if (!session || !session.user || !session.access_token) throw new Error("login_required");
+          var uid = session.user.id;
+          var ensure = (jobClient && jobClientUid === uid)
+            ? Promise.resolve(jobClient)
+            : loadSupabaseUmdJob().then(function () {
+                jobClient = window.supabase.createClient(SUPABASE_URL_JOB, SUPABASE_ANON_KEY_JOB);
+                jobClientUid = uid;
+                return jobClient;
+              });
+          return ensure.then(function (client) {
+            if (!session.refresh_token) return client;
+            return client.auth.setSession({ access_token: session.access_token, refresh_token: session.refresh_token }).then(function () {
+              return client;
+            }).catch(function () {
+              /* setSession lỗi vẫn trả client: client dùng chung khóa lưu
+                 phiên trong localStorage nên thường đã mang sẵn phiên đúng;
+                 bước insert + đọc-xác-nhận sau đó mới quyết định thành/bại
+                 thật và hiện lỗi thật nếu phiên không dùng được. */
+              return client;
+            });
+          });
         });
-        jobClientReady.catch(function () { jobClientReady = null; });
-        return jobClientReady;
       }
 
       /* ---------- ffmpeg.wasm: nén Chuẩn xuống 720p ----------
@@ -2189,8 +2259,38 @@
       function renderJobs() {
         var legacy = loadJobs();
         var meta = loadJobMeta();
-        myJobs.hidden = (serverJobs.length === 0 && legacy.length === 0);
+        var drafts = loadFailedDrafts();
+        /* CHỈ job có THẬT trong bảng dubbing_jobs (serverJobs — đọc từ
+           server hoặc vừa insert + đọc-xác-nhận xong) mới hiện như job đã
+           gửi. localStorage meta CHỈ dùng để gắn tên file cho job server,
+           KHÔNG tự sinh mục "đã gửi". Lần gửi thất bại hiện riêng thành
+           bản nháp CHƯA gửi được, ghi rõ lý do thật. */
+        myJobs.hidden = (serverJobs.length === 0 && legacy.length === 0 && drafts.length === 0);
         jobList.innerHTML = "";
+        drafts.forEach(function (draft) {
+          var div = document.createElement("div");
+          div.className = "job";
+          var info = document.createElement("div");
+          var nm = document.createElement("p");
+          nm.className = "j-name";
+          nm.textContent = draft.fileName || "Video chưa gửi được";
+          var st = document.createElement("p");
+          st.className = "j-status";
+          st.textContent = "Bản nháp chưa gửi được" + (draft.reason ? " — " + draft.reason : "") +
+            " · Hãy chọn lại video rồi bấm gửi lại.";
+          info.appendChild(nm); info.appendChild(st);
+          var del = document.createElement("button");
+          del.type = "button";
+          del.className = "btn btn-soft btn-sm";
+          del.textContent = "Xóa";
+          del.addEventListener("click", function () {
+            saveFailedDrafts(loadFailedDrafts().filter(function (d) { return d.id !== draft.id; }));
+            renderJobs();
+          });
+          div.appendChild(info);
+          div.appendChild(del);
+          jobList.appendChild(div);
+        });
         serverJobs.forEach(function (job) {
           var div = document.createElement("div");
           div.className = "job";
@@ -2286,19 +2386,41 @@
           if (!hasPendingJobs()) stopPolling();
         }).catch(function () { /* lỗi mạng lần poll: thử lại kỳ sau */ });
       }
+      var serverJobsLoaded = false;   /* true sau lần tải danh sách server thành công đầu tiên */
+      var serverJobsFailed = false;   /* true khi đã thử hết 6 lần mà vẫn chưa tải được */
+      var serverJobsTries = 0;        /* số lần loadServerJobs đã thử (kể cả lần đầu) */
       function loadServerJobs() {
+        serverJobsTries += 1;
         getJobClient().then(function (client) {
           return client.from("dubbing_jobs").select("id,user_id,job_type,product,source_lang,target_lang,duration_seconds,source_path,result_path,status,error_message,payload,created_at")
             .eq("job_type", "video").order("created_at", { ascending: false }).limit(20);
         }).then(function (res) {
           if (res.error) throw res.error;
           serverJobs = res.data || [];
+          serverJobsLoaded = true;
           renderJobs();
           startPolling();
-        }).catch(function () { renderJobs(); /* chưa đăng nhập hoặc lỗi mạng: chỉ hiện job localStorage cũ */ });
+        }).catch(function () {
+          /* Chưa tải được danh sách server (thường do phiên đăng nhập chưa sẵn
+             sàng ngay sau khi tải trang): thử lại với backoff, tối đa 6 lần,
+             để job thật trong bảng dubbing_jobs hiện đúng trạng thái thật của
+             nó thay vì chỉ còn job localStorage cũ gắn nhãn "Bản nháp cũ". */
+          if (serverJobsTries < 6) {
+            var delay = [2000, 5000, 10000, 20000, 40000][serverJobsTries - 1] || 40000;
+            setTimeout(loadServerJobs, delay);
+          } else {
+            serverJobsFailed = true;
+          }
+          renderJobs();
+        });
       }
 
-      /* ---------- Nút "Gửi video để lồng tiếng thật" ---------- */
+      /* ---------- Nút "Gửi video để lồng tiếng thật" ----------
+         Chỉ hiện "✓ Đã gửi" SAU KHI insert vào dubbing_jobs xong VÀ đọc
+         lại được chính dòng đó từ bảng (xác nhận 2 lớp). Lỗi ở bước nào
+         (đăng nhập / tải lên / insert / xác nhận) thì hiện nguyên văn lỗi
+         ở bước đó + lưu bản nháp "chưa gửi được" — tuyệt đối không báo
+         đã gửi khi bảng chưa có job. */
       $("submitJobBtn").addEventListener("click", function () {
         if (submittingJob) return;
         if (!state.video || !state.videoFile) return;
@@ -2306,17 +2428,13 @@
         var dur = state.video.durationSec;
         if (dur > MAX_PRO_SEC) { evaluateGate(); return; }
         if (dur > MAX_STD_SEC && !state.proAccess) { evaluateGate(); return; }
-        if (!window.CongCuShop || !window.CongCuShop.getSession) {
-          dubDone.textContent = "Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.";
-          dubDone.hidden = false;
-          return;
-        }
         var btn = $("submitJobBtn");
         submittingJob = true;
         btn.disabled = true;
         dubDone.textContent = "Đang kiểm tra đăng nhập…";
         dubDone.hidden = false;
-        window.CongCuShop.getSession().then(function (session) {
+        var attempt = null;   /* { jobId, fileName } — để lưu bản nháp nếu gửi hỏng */
+        safeGetSession().then(function (session) {
           if (!session || !session.user) throw new Error("login_required");
           var uid = session.user.id;
           var jobId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("job-" + Date.now() + "-" + Math.random().toString(36).slice(2));
@@ -2326,19 +2444,47 @@
           var dst = dstLang.value;
           var durationSec = Math.round(dur);
           var fileName = state.video.name;
+          attempt = { jobId: jobId, fileName: fileName };
           var uploaded = null;
           return getJobClient().then(function (client) {
-            return prepareUpload(client, uid, jobId, isPro, state.videoFile).then(function (up) {
+            /* Bước 1: nén (Chuẩn) / chia chunk (Pro) + upload Storage. */
+            return Promise.resolve().then(function () {
+              return prepareUpload(client, uid, jobId, isPro, state.videoFile);
+            }).then(function (up) {
               uploaded = up;
-              dubDone.textContent = "Đang tạo yêu cầu xử lý…";
-              return client.from("dubbing_jobs").insert({
-                id: jobId, user_id: uid, job_type: "video", product: product,
-                source_lang: src, target_lang: dst, duration_seconds: durationSec,
-                source_path: up.sourcePath, payload: up.payload, status: "queued"
-              }).select("id").single();
+            }, function (err) {
+              throw new Error("Tải video lên thất bại: " + errText(err));
             });
-          }).then(function (res) {
-            if (res.error) throw res.error;
+          }).then(function () {
+            /* Bước 2: lấy lại client với phiên MỚI NHẤT (upload video dài
+               có thể lâu, token có thể đã bị xoay vòng trong lúc chờ) rồi
+               INSERT thật vào dubbing_jobs. */
+            dubDone.textContent = "Đang tạo yêu cầu xử lý…";
+            return getJobClient();
+          }).then(function (client) {
+            return Promise.resolve(client.from("dubbing_jobs").insert({
+              id: jobId, user_id: uid, job_type: "video", product: product,
+              source_lang: src, target_lang: dst, duration_seconds: durationSec,
+              source_path: uploaded.sourcePath, payload: uploaded.payload, status: "queued"
+            }).select("id").single()).then(function (res) {
+              if (res.error) throw res.error;
+              if (!res.data || res.data.id !== jobId) throw new Error("insert không trả về đúng job vừa tạo");
+              return client;
+            }).catch(function (err) {
+              throw new Error("Tạo yêu cầu xử lý thất bại: " + errText(err));
+            });
+          }).then(function (client) {
+            /* Bước 3: XÁC NHẬN — đọc lại chính job đó từ bảng dubbing_jobs.
+               Không đọc lại được thì coi như CHƯA gửi: báo lỗi thật, không
+               hiện "Đã gửi", không thêm job vào danh sách đã gửi. */
+            dubDone.textContent = "Đang xác nhận yêu cầu trên hệ thống…";
+            return Promise.resolve(client.from("dubbing_jobs").select("id,status").eq("id", jobId).single()).then(function (res) {
+              if (res.error) throw res.error;
+              if (!res.data || res.data.id !== jobId) throw new Error("không tìm thấy job trong bảng sau khi insert");
+            }).catch(function (err) {
+              throw new Error("Chưa xác nhận được yêu cầu trên hệ thống: " + errText(err));
+            });
+          }).then(function () {
             var meta = loadJobMeta();
             meta[jobId] = { fileName: fileName };
             saveJobMeta(meta);
@@ -2347,8 +2493,10 @@
               duration_seconds: durationSec, source_path: uploaded.sourcePath,
               result_path: null, status: "queued", created_at: new Date().toISOString()
             });
+            serverJobsLoaded = true;
             renderJobs();
             startPolling();
+            loadServerJobs();   /* nạp lại danh sách từ bảng cho khớp 100% với server */
             submitRow.hidden = true;
             var sn = $("submitNote"); if (sn) sn.hidden = true;
             dubDone.textContent = "✓ Đã gửi video “" + fileName + "” để lồng tiếng thật — xem trạng thái trong mục “Video của tôi” bên dưới.";
@@ -2359,7 +2507,14 @@
           if (err && err.message === "login_required") {
             dubDone.textContent = "Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.";
           } else {
-            dubDone.textContent = "Gửi chưa thành công (" + (err && err.message ? err.message : "lỗi không rõ") + ") — hãy thử gửi lại. Chưa tạo yêu cầu xử lý nên không mất lượt.";
+            var reason = errText(err);
+            dubDone.textContent = "Gửi chưa thành công — " + reason + ". Video CHƯA được ghi nhận trên hệ thống nên không mất lượt; hãy thử gửi lại.";
+            if (attempt) {
+              var drafts = loadFailedDrafts();
+              drafts.unshift({ id: attempt.jobId, fileName: attempt.fileName, reason: reason.slice(0, 200), at: new Date().toISOString() });
+              saveFailedDrafts(drafts.slice(0, 10));
+              renderJobs();
+            }
           }
           dubDone.hidden = false;
         }).finally(function () {
@@ -2379,7 +2534,12 @@
          khu vực công cụ đã mở khóa; KHÔNG thay cơ chế khóa đăng nhập của snippet). */
       function refreshProAccess() {
         if (!window.CongCuShop || !window.CongCuShop.checkAccess) return;
-        window.CongCuShop.checkAccess("p9pro").then(function (a) {
+        /* Bọc Promise.resolve().then(): checkAccess có thể throw đồng bộ
+           khi client của checkAccess.js chưa khởi tạo xong — không để lỗi
+           đó thoát ra ngoài và làm hỏng luồng nạp video/gửi job. */
+        Promise.resolve().then(function () {
+          return window.CongCuShop.checkAccess("p9pro");
+        }).then(function (a) {
           state.proAccess = !!(a && a.access);
           evaluateGate();
         }).catch(function () { /* chưa xác minh được quyền Pro: giữ cửa ải Chuẩn */ });
@@ -2476,8 +2636,6 @@
       refreshProAccess();
       setTimeout(refreshProAccess, 2000);
       setTimeout(refreshProAccess, 5000);
-      setTimeout(loadServerJobs, 2000);
-      setTimeout(loadServerJobs, 5000);
 
       /* ---------- Nút hero "Dùng thử 3 ngày" ---------- */
       var heroBtn = $("heroTrialBtn");
