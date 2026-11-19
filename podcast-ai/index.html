@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Podcast AI — Chuyển bài viết thành podcast hội thoại 2 giọng</title>
+    <meta name="description" content="Dán bài viết, nhận ngay kịch bản hội thoại 2 giọng và nghe thử bằng giọng đọc của trình duyệt. Tập trung bài viết tiếng Việt. Dùng thử 3 ngày miễn phí, sau đó 39.000đ/tháng." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2.75rem; }
+      * { box-sizing: border-box; }
+      :root{
+        --bg:#eef2f0; --surface:#ffffff; --surface-2:#e3ebe7; --ink:#12211b; --ink-2:#43564d;
+        --line:#cfdcd4; --accent:#0b7a55; --accent-ink:#ffffff; --accent-soft:#d9efe4;
+        --warn:#b3540a; --warn-soft:#fbeedd; --danger:#c22f2f; --danger-soft:#fbe7e7;
+        --good:#0b7a55; --good-soft:#d9efe4;
+        --shadow:0 10px 30px rgba(18,33,27,.10);
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1311; --surface:#16201b; --surface-2:#1e2b24; --ink:#e9f2ec; --ink-2:#a9bcb1;
+          --line:#2b3d34; --accent:#2fbf8f; --accent-ink:#06231a; --accent-soft:#173d2d;
+          --warn:#f0a35e; --warn-soft:#3a2a16; --danger:#ff7a6b; --danger-soft:#3d1d1a;
+          --good:#2fbf8f; --good-soft:#173d2d;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      html{ scroll-behavior:smooth; }
+      body{ margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size:16px; line-height:1.55; }
+      .wrap{ max-width:1180px; margin:0 auto; padding:0 16px; }
+      a{ color:var(--accent); }
+      [data-requires-access][hidden], [data-paywall][hidden]{ display:none !important; }
+
+      /* ---------- Hero ---------- */
+      .hero{ padding:34px 0 8px; }
+      .hero h1{ font-size:clamp(30px,5.2vw,52px); line-height:1.12; font-weight:900; letter-spacing:-.01em; margin:0 0 12px; max-width:840px; }
+      .hero h1 .hl{ color:var(--accent); }
+      .hero p.lede{ font-size:clamp(16px,2.2vw,19px); color:var(--ink-2); max-width:740px; margin:0 0 18px; }
+      .hero-points{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 6px; padding:0; list-style:none; }
+      .hero-points li{ background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-size:14px; font-weight:600; }
+      .hero-points li b{ color:var(--accent); }
+      .hero-cta{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; background:var(--surface); border:2px solid var(--accent); border-radius:14px; box-shadow:var(--shadow); padding:16px 20px; margin:14px 0 4px; max-width:840px; }
+      .hero-cta .hc-price{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+      .hero-cta .hc-amount{ font-size:34px; font-weight:900; line-height:1; color:var(--ink); }
+      .hero-cta .hc-amount small{ font-size:15px; font-weight:600; color:var(--ink-2); }
+      .hero-cta .hc-note{ font-size:13.5px; color:var(--ink-2); width:100%; margin-top:2px; }
+      .hero-cta [data-trial-days-left]{ font-size:14px; font-weight:700; color:var(--accent); width:100%; }
+      .hero-cta [data-trial-days-left]:empty{ display:none; }
+      .hero-cta .btn{ margin-left:auto; }
+      @media (max-width:560px){ .hero-cta{ padding:16px; } .hero-cta .btn{ margin-left:0; width:100%; } .hero-cta .hc-amount{ font-size:30px; } }
+
+      .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border:0; cursor:pointer;
+        font:inherit; font-weight:700; border-radius:10px; padding:12px 20px; min-height:48px; text-decoration:none; }
+      .btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 10px rgba(18,33,27,.18); }
+      .btn-ghost{ background:transparent; color:var(--ink-2); border:1.5px solid var(--line); font-weight:600; }
+      .btn-ghost:hover{ border-color:var(--ink-2); color:var(--ink); }
+      .btn:disabled{ opacity:.55; cursor:wait; }
+      .btn-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center; }
+      .btn-sm{ padding:8px 14px; min-height:40px; font-size:14px; border-radius:8px; }
+
+      /* ---------- Tool layout ---------- */
+      .tool{ display:grid; grid-template-columns:1fr; gap:18px; margin:22px 0 10px; }
+      @media (min-width:960px){ .tool{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; } }
+      .panel{ background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:20px; }
+      .panel h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+      .panel .sub{ color:var(--ink-2); font-size:14px; margin:0 0 16px; }
+      .field{ margin-bottom:14px; }
+      .field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+      .field .hint{ font-size:12.5px; color:var(--ink-2); margin-top:4px; }
+      textarea, select, input[type="text"]{
+        width:100%; border:1.5px solid var(--line); border-radius:10px; background:var(--surface);
+        color:var(--ink); font:inherit; font-size:16px; padding:10px 12px; outline:none; }
+      textarea:focus, select:focus, input[type="text"]:focus{ border-color:var(--accent); }
+      textarea{ resize:vertical; line-height:1.6; }
+      .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      @media (max-width:520px){ .grid2{ grid-template-columns:1fr; } }
+      .demo-note{ background:var(--warn-soft); border-radius:10px; padding:10px 12px; font-size:13.5px; margin:0 0 16px; }
+      .demo-note b{ color:var(--warn); }
+      .msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+      .msg.err{ color:var(--danger); } .msg.ok{ color:var(--good); }
+
+      .script-list{ display:grid; gap:10px; margin-top:6px; }
+      .line{ border:1.5px solid var(--line); border-radius:12px; padding:12px 14px; }
+      .line .who{ display:inline-block; font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+        border-radius:999px; padding:2px 10px; margin-bottom:6px; }
+      .line.a .who{ background:var(--accent-soft); color:var(--accent); }
+      .line.b .who{ background:var(--warn-soft); color:var(--warn); }
+      .line p{ margin:0; font-size:15.5px; }
+      .line.playing{ border-color:var(--accent); background:var(--accent-soft); }
+      .script-empty{ border:1.5px dashed var(--line); border-radius:10px; padding:16px; color:var(--ink-2); font-size:14.5px; text-align:center; background:var(--surface-2); }
+      .player-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
+      .player-bar .status{ font-size:13.5px; color:var(--ink-2); }
+
+      .saved-list{ display:grid; gap:10px; margin-top:14px; }
+      .saved-item{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; background:var(--surface); }
+      .saved-item .meta{ min-width:0; }
+      .saved-item .name{ font-weight:800; font-size:15.5px; word-break:break-word; }
+      .saved-item .detail{ font-size:13px; color:var(--ink-2); }
+      .saved-item .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+      .saved-empty{ border:1.5px dashed var(--line); border-radius:10px; padding:16px; color:var(--ink-2); font-size:14.5px; text-align:center; background:var(--surface-2); }
+      .fineprint{ color:var(--ink-2); font-size:13.5px; margin:12px 0 0; }
+      .bundle-line{ background:var(--accent-soft); border-radius:10px; padding:12px 14px; font-size:14.5px; margin-top:14px; }
+
+      /* ---------- Sections ---------- */
+      section.block{ padding:38px 0 6px; }
+      section.block h2{ font-size:clamp(23px,3.6vw,32px); font-weight:900; margin:0 0 8px; letter-spacing:-.01em; }
+      section.block .intro{ color:var(--ink-2); max-width:760px; margin:0 0 20px; }
+      .feat{ display:grid; grid-template-columns:1fr; gap:14px; }
+      @media (min-width:760px){ .feat{ grid-template-columns:1fr 1fr; } }
+      .feat .f{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; }
+      .feat .f h3{ margin:0 0 6px; font-size:17px; font-weight:800; }
+      .feat .f p{ margin:0; color:var(--ink-2); font-size:15px; }
+
+      .table-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+      table.cmp{ width:100%; border-collapse:collapse; font-size:14.5px; min-width:560px; }
+      table.cmp th, table.cmp td{ padding:11px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+      table.cmp thead th{ background:var(--surface-2); font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-2); }
+      table.cmp tr:last-child td{ border-bottom:0; }
+      table.cmp tr.us td{ background:var(--accent-soft); font-weight:600; }
+      @media (max-width:640px){
+        table.cmp{ min-width:0; }
+        table.cmp thead{ display:none; }
+        table.cmp, table.cmp tbody, table.cmp tr, table.cmp td{ display:block; width:100%; }
+        table.cmp tr{ padding:10px 0; border-bottom:1px solid var(--line); }
+        table.cmp tr:last-child{ border-bottom:0; }
+        table.cmp td{ border-bottom:0; padding:4px 14px; }
+        table.cmp td::before{ content:attr(data-label); display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-2); margin-bottom:2px; }
+        table.cmp td:first-child{ font-size:15.5px; font-weight:700; }
+        table.cmp td:first-child::before{ display:none; }
+      }
+      .src-note{ font-size:13.5px; color:var(--ink-2); margin-top:12px; }
+
+      .price-card{ background:var(--surface); border:2px solid var(--accent); border-radius:16px; padding:26px; box-shadow:var(--shadow);
+        display:grid; grid-template-columns:1fr; gap:20px; }
+      @media (min-width:760px){ .price-card{ grid-template-columns:5fr 7fr; } }
+      .price-big{ font-size:46px; font-weight:900; line-height:1; }
+      .price-big small{ font-size:17px; font-weight:600; color:var(--ink-2); }
+      .price-card ul{ margin:0; padding:0; list-style:none; display:grid; gap:9px; font-size:15.5px; }
+      .price-card ul li{ padding-left:26px; position:relative; }
+      .price-card ul li::before{ content:"✓"; position:absolute; left:0; color:var(--accent); font-weight:900; }
+      .trial{ background:var(--accent-soft); border-radius:10px; padding:12px 14px; font-size:14.5px; margin-top:14px; }
+
+      details.faq{ background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; }
+      details.faq summary{ cursor:pointer; font-weight:700; padding:14px 18px; min-height:48px; display:flex; align-items:center; }
+      details.faq .a{ padding:0 18px 16px; color:var(--ink-2); font-size:15px; }
+      details.faq .a p{ margin:0; }
+
+      footer{ margin-top:44px; border-top:1px solid var(--line); padding:22px 0 40px; color:var(--ink-2); font-size:13.5px; }
+      footer p{ margin:0 0 8px; max-width:820px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <h1>Bài viết dài thành <span class="hl">podcast hội thoại 2 giọng</span> trong vài phút</h1>
+        <p class="lede">Dán bài viết vào, công cụ chia nội dung thành kịch bản đối thoại giữa 2 người dẫn, rồi bạn nghe thử ngay bằng giọng đọc của trình duyệt. Thiết kế cho bài viết tiếng Việt — người nghe của bạn có thêm một cách tiếp cận nội dung mà không cần phòng thu hay micro.</p>
+        <ul class="hero-points">
+          <li>Kịch bản <b>hội thoại 2 giọng</b> tự động</li>
+          <li><b>Dùng thử 3 ngày</b> miễn phí — không cần thẻ</li>
+          <li>Sau dùng thử chỉ <b>39.000đ/tháng</b></li>
+          <li>Bài viết &amp; kịch bản <b>lưu ngay trên máy của bạn</b></li>
+        </ul>
+        <div class="hero-cta">
+          <div class="hc-price">
+            <span class="hc-amount">39.000đ<small>/tháng</small></span>
+            <span class="hc-note">Dùng thử 3 ngày miễn phí, không cần thẻ — hết 3 ngày mới tính phí.</span>
+            <span data-trial-days-left></span>
+          </div>
+          <a class="btn btn-primary" href="#ccs-auth" id="btnHeroTrial">Dùng thử 3 ngày</a>
+        </div>
+      </header>
+
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+      <script src="assets/checkAccess.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+      <script src="assets/checkAccess.js"></script>
+
+<section class="ccs-auth" id="ccs-auth" data-product="p10">
+  <style>
+    /* Khớp tông trang mẫu: dùng biến CSS sẵn có của trang (--bg, --surface,
+       --ink, --ink-2, --line, --accent, --accent-soft, --danger, --shadow).
+       Có fallback nếu trang chưa định nghĩa biến. Hỗ trợ dark mode theo
+       prefers-color-scheme của trang. Mobile-first, nút cao tối thiểu 44px. */
+    .ccs-auth{
+      --ccs-accent:var(--accent,#0b7a55);
+      --ccs-accent-ink:var(--accent-ink,#fff);
+      --ccs-soft:var(--accent-soft,#d9efe4);
+      background:var(--surface,#fff);
+      border:1px solid var(--line,#cfdcd4);
+      border-radius:14px;
+      box-shadow:var(--shadow,0 10px 30px rgba(18,33,27,.10));
+      padding:20px;
+      margin:22px 0;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .ccs-auth h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+    .ccs-auth .ccs-sub{ color:var(--ink-2,#43564d); font-size:14px; margin:0 0 16px; }
+    .ccs-auth .ccs-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+    .ccs-auth .ccs-tab{
+      border:1.5px solid var(--line,#cfdcd4); background:var(--surface-2,#e3ebe7);
+      color:var(--ink,#12211b); border-radius:10px; padding:10px 6px;
+      font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-height:48px;
+    }
+    .ccs-auth .ccs-tab[aria-pressed="true"]{ border-color:var(--ccs-accent); background:var(--ccs-soft); }
+    .ccs-auth .ccs-field{ margin-bottom:12px; }
+    .ccs-auth .ccs-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+    .ccs-auth .ccs-field input{
+      width:100%; border:1.5px solid var(--line,#cfdcd4); border-radius:10px;
+      background:var(--surface,#fff); color:var(--ink,#12211b);
+      font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+    }
+    .ccs-auth .ccs-field input:focus{ border-color:var(--ccs-accent); }
+    .ccs-auth .ccs-btn{
+      width:100%; border:0; border-radius:10px; cursor:pointer; min-height:48px;
+      background:var(--ccs-accent); color:var(--ccs-accent-ink);
+      font:inherit; font-weight:800; font-size:16px; padding:12px 16px;
+    }
+    .ccs-auth .ccs-btn:disabled{ opacity:.55; cursor:wait; }
+    .ccs-auth .ccs-btn-ghost{
+      background:transparent; color:var(--ccs-accent);
+      border:1.5px solid var(--ccs-accent); margin-top:10px;
+    }
+    .ccs-auth .ccs-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+    .ccs-auth .ccs-msg.err{ color:var(--danger,#c22f2f); }
+    .ccs-auth .ccs-msg.ok{ color:var(--good,#0b7a55); }
+    .ccs-auth .ccs-status{
+      background:var(--ccs-soft); border-radius:10px; padding:12px 14px;
+      font-size:14.5px; margin:0 0 12px;
+    }
+    .ccs-auth .ccs-status b{ font-weight:800; }
+    .ccs-auth .ccs-email{ font-weight:700; word-break:break-all; }
+    .ccs-auth .ccs-fine{ color:var(--ink-2,#43564d); font-size:13.5px; margin:12px 0 0; }
+    .ccs-auth .ccs-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .ccs-auth .ccs-row .ccs-btn{ flex:1; min-width:180px; }
+    @media (min-width:640px){ .ccs-auth .ccs-btn{ width:auto; min-width:220px; } }
+  </style>
+
+  <!-- Trạng thái CHƯA đăng nhập -->
+  <div data-ccs-view="guest">
+    <h2>Đăng nhập để dùng thử 3 ngày miễn phí</h2>
+    <p class="ccs-sub">
+      <span data-ccs-product-name>Tính Lợi Nhuận Sàn</span> —
+      <b data-ccs-price>29.000đ/tháng</b> sau 3 ngày dùng thử.
+      Tài khoản lưu trên hệ thống, không lưu mật khẩu trên máy bạn.
+    </p>
+    <div class="ccs-tabs" role="group" aria-label="Đăng nhập hoặc đăng ký">
+      <button type="button" class="ccs-tab" data-ccs-mode="signin" aria-pressed="true">Đăng nhập</button>
+      <button type="button" class="ccs-tab" data-ccs-mode="signup" aria-pressed="false">Đăng ký mới</button>
+    </div>
+    <form data-ccs-form novalidate>
+      <div class="ccs-field">
+        <label for="ccs-email">Email</label>
+        <input id="ccs-email" name="email" type="email" required autocomplete="email"
+               placeholder="vidu@email.com" />
+      </div>
+      <div class="ccs-field">
+        <label for="ccs-password">Mật khẩu <span data-ccs-pw-hint>(ít nhất 8 ký tự)</span></label>
+        <input id="ccs-password" name="password" type="password" required autocomplete="current-password"
+               minlength="8" placeholder="••••••••" />
+      </div>
+      <button type="submit" class="ccs-btn" data-ccs-submit>Đăng nhập</button>
+      <p class="ccs-msg" data-ccs-msg role="status"></p>
+    </form>
+    <p class="ccs-fine">
+      Đăng ký xong, bấm “Bắt đầu dùng thử 3 ngày” để kích hoạt trial.
+      Hết 3 ngày chưa trả tiền thì công cụ sẽ khóa lại cho tới khi bạn gia hạn.
+    </p>
+  </div>
+
+  <!-- Trạng thái ĐÃ đăng nhập -->
+  <div data-ccs-view="user" hidden>
+    <h2>Tài khoản của bạn</h2>
+    <p class="ccs-sub">Đã đăng nhập: <span class="ccs-email" data-ccs-user-email></span></p>
+    <p class="ccs-status" data-ccs-status>Đang kiểm tra quyền dùng…</p>
+    <div class="ccs-row">
+      <button type="button" class="ccs-btn" data-ccs-trial hidden>Bắt đầu dùng thử 3 ngày</button>
+      <button type="button" class="ccs-btn" data-ccs-pay hidden>Gia hạn bằng VietQR — <span data-ccs-price>29.000đ/tháng</span></button>
+      <button type="button" class="ccs-btn ccs-btn-ghost" data-ccs-logout>Đăng xuất</button>
+    </div>
+    <p class="ccs-msg" data-ccs-msg role="status"></p>
+    <p class="ccs-fine">
+      Thanh toán bằng VietQR qua payOS, tiền về tài khoản của chủ shop.
+      Hết tháng, bấm “Gia hạn bằng VietQR” để tạo mã mới và quét lại.
+    </p>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==== 1. CẤU HÌNH — THAY 2 GIÁ TRỊ NÀY BẰNG KEY THẬT (xem đầu file) ==== */
+  var SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";         // vd: https://abcdefghijkl.supabase.co
+  var SUPABASE_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq"; // anon public key (được phép lộ)
+  /* ======================================================================= */
+
+  // Bảng giá + tên hiển thị — KHỚP products.json. Chỉ để hiển thị;
+  // giá thu thật do Edge Function create-payment quyết trên server.
+  var PRODUCTS = {
+    p1:     { name: "Tính Lợi Nhuận Sàn",        price: 29000 },
+    p2:     { name: "Quản Lý Đơn Cọc Công Nợ",   price: 39000 },
+    p3:     { name: "Nội Dung Đa Nền Tảng",      price: 39000 },
+    p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
+    p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
+    p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
+    p7:     { name: "Tìm Nhà Cung Cấp Sản Xuất", price: 49000 },
+    p8:     { name: "Nghiên Cứu Đối Thủ Cạnh Tranh", price: 49000 },
+    p9:     { name: "Dịch Thuyết Minh Video Đa Ngôn Ngữ", price: 49000 },
+    p10:    { name: "Podcast AI",                price: 39000 },
+    bundle: { name: "Gói Bundle 10 công cụ",     price: 149000 }
+  };
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+
+  var root = document.getElementById("ccs-auth");
+  if (!root) return;
+  var product = (root.getAttribute("data-product") || "p1").trim();
+  if (!PRODUCTS[product]) product = "p1";
+  var meta = PRODUCTS[product];
+
+  var $ = function (sel) { return root.querySelector(sel); };
+  var $$ = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+  var viewGuest = $('[data-ccs-view="guest"]');
+  var viewUser = $('[data-ccs-view="user"]');
+  var msgEls = $$('[data-ccs-msg]');
+  var statusEl = $('[data-ccs-status]');
+  var trialBtn = $('[data-ccs-trial]');
+  var payBtn = $('[data-ccs-pay]');
+  var logoutBtn = $('[data-ccs-logout]');
+  var submitBtn = $('[data-ccs-submit]');
+  var form = $('[data-ccs-form]');
+  var mode = "signin";
+  var client = null;   // supabase client (tạo ở init)
+  var accessCache = null;
+
+  function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+    catch (e) { return iso; }
+  }
+  function say(text, kind) {
+    msgEls.forEach(function (el) {
+      el.textContent = text || "";
+      el.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+    });
+  }
+  function show(view) {
+    viewGuest.hidden = view !== "guest";
+    viewUser.hidden = view !== "user";
+  }
+  function configMissing() {
+    return !SUPABASE_URL || SUPABASE_URL.indexOf("__SUPABASE_") === 0 ||
+           !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("__SUPABASE_") === 0;
+  }
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ==== 2. HỎI QUYỀN TỪ SERVER (qua checkAccess.js nếu có, tự gọi RPC nếu không) ==== */
+  function askAccess() {
+    if (window.CongCuShop && window.CongCuShop.checkAccess) {
+      return window.CongCuShop.checkAccess(product);
+    }
+    // Dự phòng khi checkAccess.js chưa nạp: gọi trực tiếp RPC get_access.
+    return client.auth.getSession().then(function (r) {
+      if (!r.data.session) return { access: false, reason: "login_required" };
+      return client.rpc("get_access", { p_product: product }).then(function (res) {
+        if (res.error) return { access: false, reason: "rpc_error", detail: res.error.message };
+        return res.data;
+      });
+    });
+  }
+  function applyAccess(access) {
+    accessCache = access;
+    if (window.CongCuShop && window.CongCuShop.applyAccessToPage) {
+      window.CongCuShop.applyAccessToPage(access);
+    } else {
+      // Dự phòng: tự khóa/mở theo cùng quy ước data-* của checkAccess.js.
+      var locked = !access.access;
+      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
+      document.querySelectorAll("[data-paywall]").forEach(function (el) { el.style.display = locked ? "" : "none"; });
+      document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
+        el.textContent = (access.reason === "trial" && access.days_left != null)
+          ? ("Còn " + access.days_left + " ngày dùng thử") : "";
+      });
+      document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+        el.textContent = window.CongCuShop && window.CongCuShop.paywallMessage
+          ? window.CongCuShop.paywallMessage(access.reason) : "Gia hạn để dùng tiếp.";
+      });
+    }
+    renderStatus(access);
+  }
+  function renderStatus(a) {
+    if (!statusEl) return;
+    var days = (a.days_left != null) ? a.days_left : null;
+    trialBtn.hidden = true;
+    payBtn.hidden = true;
+    switch (a.reason) {
+      case "trial":
+        statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "paid":
+        statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "bundle_active":
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 10 công cụ tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "no_trial":
+      case "no_subscription":
+        statusEl.innerHTML = "Bạn chưa bắt đầu dùng thử <b>" + meta.name + "</b>.";
+        trialBtn.hidden = false;
+        break;
+      case "trial_expired":
+        statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "subscription_expired":
+        statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "verification_required":
+        statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
+          "Vui lòng liên hệ hỗ trợ để được duyệt.";
+        break;
+      case "rpc_error":
+        statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
+        break;
+      default:
+        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        if (!a.access) payBtn.hidden = false;
+    }
+  }
+
+  /* ==== 3. ĐĂNG NHẬP / ĐĂNG KÝ (Supabase Auth, email + mật khẩu) ==== */
+  function setMode(next) {
+    mode = next;
+    $$('[data-ccs-mode]').forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-ccs-mode") === next ? "true" : "false");
+    });
+    submitBtn.textContent = next === "signup" ? "Đăng ký" : "Đăng nhập";
+    $('[data-ccs-pw-hint]').textContent = next === "signup" ? "(ít nhất 8 ký tự)" : "";
+    say("");
+  }
+  $$('[data-ccs-mode]').forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-ccs-mode")); });
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var email = $("#ccs-email").value.trim();
+    var password = $("#ccs-password").value;
+    if (!email || password.length < 8) {
+      say("Email chưa đúng hoặc mật khẩu dưới 8 ký tự.", "err");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang xử lý…";
+    var call = mode === "signup"
+      ? client.auth.signUp({ email: email, password: password })
+      : client.auth.signInWithPassword({ email: email, password: password });
+    call.then(function (res) {
+      if (res.error) {
+        say("Không đăng nhập được: " + friendlyAuthError(res.error.message), "err");
+        return;
+      }
+      if (mode === "signup" && res.data && !res.data.session) {
+        // Email xác nhận đang BẬT: Supabase gửi link, chưa có session.
+        say("Đã gửi email xác nhận tới " + email + ". Bấm link trong email rồi đăng nhập lại.", "ok");
+        return;
+      }
+      say("Đăng nhập thành công.", "ok");
+      refresh();
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = mode === "signup" ? "Đăng ký" : "Đăng nhập";
+    });
+  });
+  function friendlyAuthError(msg) {
+    msg = String(msg || "");
+    if (/invalid login credentials/i.test(msg)) return "Sai email hoặc mật khẩu.";
+    if (/user already registered/i.test(msg)) return "Email này đã đăng ký — hãy bấm tab “Đăng nhập”.";
+    if (/email not confirmed/i.test(msg)) return "Email chưa xác nhận — hãy bấm link trong email rồi thử lại.";
+    if (/password/i.test(msg)) return "Mật khẩu chưa đạt yêu cầu (ít nhất 8 ký tự).";
+    return msg;
+  }
+
+  logoutBtn.addEventListener("click", function () {
+    client.auth.signOut().then(refresh);
+  });
+
+  /* ==== 4. DÙNG THỬ 3 NGÀY / GIA HẠN VIETQR (qua checkAccess.js) ==== */
+  trialBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.startTrial) {
+      say("Chưa nạp được checkAccess.js — không bắt đầu trial được. Kiểm tra lại thứ tự script.", "err");
+      return;
+    }
+    trialBtn.disabled = true;
+    say("Đang kích hoạt dùng thử…");
+    window.CongCuShop.startTrial(product).then(function (res) {
+      if (res && res.access) {
+        say("Đã kích hoạt dùng thử 3 ngày.", "ok");
+        refresh();
+      } else if (res && res.needs_verification) {
+        say("Tài khoản cần xác minh thêm trước khi dùng thử. Vui lòng liên hệ hỗ trợ.", "err");
+        refresh();
+      } else {
+        say("Không kích hoạt được dùng thử: " + (res && (res.reason || res.error) || "lỗi không rõ") + ".", "err");
+      }
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () { trialBtn.disabled = false; });
+  });
+  payBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.createPayment) {
+      say("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
+      return;
+    }
+    payBtn.disabled = true;
+    say("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
+    window.CongCuShop.createPayment(product).then(function (res) {
+      if (res && !res.checkoutUrl) {
+        say("Không tạo được link thanh toán: " + (res.error || "lỗi không rõ") + ".", "err");
+        payBtn.disabled = false;
+      }
+      // Có checkoutUrl thì createPayment tự redirect sang payOS.
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      payBtn.disabled = false;
+    });
+  });
+
+  /* ==== 5. LÀM MỚI TRẠNG THÁI + XỬ LÝ QUAY VỀ TỪ PAYOS ==== */
+  function refresh() {
+    return client.auth.getSession().then(function (r) {
+      var session = r.data.session;
+      if (!session) {
+        show("guest");
+        // Chưa đăng nhập = chưa có quyền: khóa công cụ NGAY, không được
+        // return sớm mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
+        applyAccess({ access: false, reason: "login_required" });
+        return;
+      }
+      show("user");
+      $('[data-ccs-user-email]').textContent = session.user.email || "";
+      return askAccess().then(applyAccess).catch(function (err) {
+        statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+        say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      });
+    });
+  }
+  function handlePayReturn() {
+    var q = new URLSearchParams(window.location.search);
+    var pay = q.get("pay");
+    if (!pay) return;
+    if (pay === "success") {
+      say("Đã nhận thanh toán, đang chờ payOS xác nhận (webhook)…", "ok");
+      // Webhook có thể về chậm vài giây — hỏi lại quyền vài lần.
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        refresh().then(function () {
+          if ((accessCache && accessCache.access) || tries >= 6) {
+            clearInterval(timer);
+            if (accessCache && accessCache.access) say("Thanh toán đã xác nhận — gói đã kích hoạt.", "ok");
+          }
+        });
+      }, 5000);
+    } else if (pay === "cancelled") {
+      say("Bạn đã hủy thanh toán — gói chưa được kích hoạt.", "err");
+    }
+  }
+
+  /* ==== 6. KHỞI ĐỘNG ==== */
+  function init() {
+    // Điền tên + giá theo sản phẩm của trang.
+    $$('[data-ccs-product-name]').forEach(function (el) { el.textContent = meta.name; });
+    $$('[data-ccs-price]').forEach(function (el) { el.textContent = fmtVnd(meta.price) + "/tháng"; });
+    if (configMissing()) {
+      say("Chưa cấu hình Supabase (thiếu SUPABASE_URL / SUPABASE_ANON_KEY). " +
+          "Thay 2 giá trị ở đầu khối này rồi mới đăng nhập được.", "err");
+      show("guest");
+      // Chưa cấu hình thì cũng chưa có quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+      return;
+    }
+    loadSupabaseUmd().then(function () {
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // Nối checkAccess.js vào cùng client (để nó dùng chung session).
+      if (window.CongCuShop && window.CongCuShop.init) {
+        return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
+      }
+    }).then(function () {
+      client.auth.onAuthStateChange(function () { refresh(); });
+      handlePayReturn();
+      return refresh();
+    }).catch(function (err) {
+      say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
+          ". Kiểm tra mạng rồi tải lại trang.", "err");
+      show("guest");
+      // Không tải được Supabase thì chưa xác minh được quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else { init(); }
+})();
+</script>
+
+
+
+      <!-- ================= TOOL ================= -->
+      <div class="tool" id="cong-cu" data-requires-access style="display:none">
+        <div class="panel">
+          <h2>1. Dán bài viết của bạn</h2>
+          <p class="sub">Bài viết càng rõ ý, từng đoạn ngắn thì kịch bản chia càng tự nhiên. Công cụ chạy ngay trên trình duyệt của bạn.</p>
+          <p class="demo-note"><b>Bản demo:</b> kịch bản được tạo bằng mẫu câu có sẵn phía client và giọng nghe thử là giọng đọc của trình duyệt (speechSynthesis) — chất lượng giọng tùy máy và trình duyệt của bạn, không phải âm thanh phòng thu.</p>
+          <div class="field">
+            <label for="inTitle">Tiêu đề bài viết</label>
+            <input type="text" id="inTitle" placeholder="Ví dụ: 5 thói quen giúp shop bán hàng đều hơn" />
+          </div>
+          <div class="field">
+            <label for="inArticle">Nội dung bài viết</label>
+            <textarea id="inArticle" rows="10" placeholder="Dán toàn bộ bài viết vào đây. Mỗi đoạn cách nhau bằng một dòng trống — công cụ sẽ dựa vào các đoạn để chia lượt nói."></textarea>
+            <p class="hint"><span id="charCount">0</span> ký tự · <span id="paraCount">0</span> đoạn</p>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label for="selLang">Ngôn ngữ kịch bản</label>
+              <select id="selLang">
+                <option value="vi" selected>Tiếng Việt</option>
+                <option value="en">English</option>
+              </select>
+              <p class="hint">Câu dẫn và câu hỏi gợi mở sẽ theo ngôn ngữ này; phần nội dung giữ nguyên văn bài viết của bạn.</p>
+            </div>
+            <div class="field">
+              <label for="selStyle">Kiểu hội thoại</label>
+              <select id="selStyle">
+                <option value="chat" selected>Trò chuyện thân mật</option>
+                <option value="news">Dẫn tin nghiêm túc</option>
+                <option value="teach">Giảng giải — hỏi đáp</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label for="selVoiceA">Giọng người dẫn A</label>
+              <select id="selVoiceA"></select>
+            </div>
+            <div class="field">
+              <label for="selVoiceB">Giọng người dẫn B</label>
+              <select id="selVoiceB"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="selRate">Tốc độ đọc: <span id="rateVal">1,0×</span></label>
+            <input type="range" id="selRate" min="0.7" max="1.4" step="0.1" value="1" style="width:100%" />
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" id="btnMake">Tạo kịch bản hội thoại</button>
+            <button type="button" class="btn btn-ghost" id="btnSample">Dán bài mẫu</button>
+          </div>
+          <p class="msg" id="toolMsg" role="status"></p>
+        </div>
+
+        <div class="panel">
+          <h2>2. Kịch bản &amp; nghe thử</h2>
+          <p class="sub">Kịch bản tạo xong sẽ hiện ở đây. Bấm “Nghe thử” để trình duyệt đọc lần lượt từng lượt thoại, đổi giọng giữa 2 người dẫn.</p>
+          <div class="player-bar">
+            <button type="button" class="btn btn-primary btn-sm" id="btnPlay">▶ Nghe thử</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btnStop" disabled>Dừng đọc</button>
+            <span class="status" id="playStatus">Chưa có kịch bản.</span>
+          </div>
+          <div class="script-list" id="scriptList">
+            <div class="script-empty">Chưa có kịch bản nào. Dán bài viết ở cột bên trái rồi bấm “Tạo kịch bản hội thoại”.</div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-ghost" id="btnCopyScript">Sao chép kịch bản</button>
+            <button type="button" class="btn btn-ghost" id="btnDownload">Tải kịch bản (.txt)</button>
+            <span class="msg ok" id="copyOk" hidden>Đã sao chép ✓</span>
+          </div>
+          <p class="fineprint">Bài viết và kịch bản được lưu tự động vào trình duyệt trên máy này (localStorage) để bạn mở lại sau. Xóa dữ liệu trình duyệt hoặc đổi máy thì sẽ không còn — hãy tải file .txt nếu muốn giữ lâu dài.</p>
+        </div>
+      </div>
+
+      <div class="panel" data-paywall style="display:none">
+        <h2>Bạn cần đăng nhập để dùng công cụ</h2>
+        <p data-paywall-reason>Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.</p>
+        <button type="button" class="btn btn-primary" data-pay-button>Gia hạn bằng VietQR — 39.000đ/tháng</button>
+        <p class="fineprint">Thanh toán 1 lần bằng VietQR qua payOS. Hết tháng gia hạn lại bằng mã mới.</p>
+      </div>
+
+      <!-- ================= SAVED ================= -->
+      <section class="block" id="bai-da-luu" aria-label="Bài viết đã lưu">
+        <div class="panel">
+          <h2>Bài viết &amp; kịch bản đã lưu trên máy này</h2>
+          <p class="fineprint" style="margin:0">Mỗi lần tạo kịch bản, bài viết và kịch bản được lưu kèm tại đây. Bấm “Mở lại” để nạp lên công cụ, “Xóa” để bỏ khỏi danh sách.</p>
+          <div class="saved-list" id="savedList"></div>
+        </div>
+      </section>
+
+      <!-- ================= FEATURES ================= -->
+      <section class="block">
+        <h2>Công cụ này làm được gì</h2>
+        <p class="intro">Mục tiêu hẹp và rõ: biến bài viết có sẵn thành một bản hội thoại nghe được, để bạn tận dụng lại nội dung đã viết cho kênh podcast, video ngắn dạng audio, hoặc cho người bận nghe thay vì đọc.</p>
+        <div class="feat">
+          <div class="f">
+            <h3>Hội thoại 2 giọng thay vì đọc đơn điệu</h3>
+            <p>Bài viết được chia thành các lượt nói qua lại giữa người dẫn A và người dẫn B, có câu mở đầu, câu hỏi gợi mở và câu chốt — nghe giống một cuộc trò chuyện hơn là đọc thuộc lòng từng đoạn.</p>
+          </div>
+          <div class="f">
+            <h3>Tối ưu cho bài viết tiếng Việt</h3>
+            <p>Mẫu câu dẫn, câu chuyển ý và câu hỏi đều viết cho tiếng Việt tự nhiên. Cũng có tùy chọn khung kịch bản tiếng Anh nếu bạn làm nội dung song ngữ.</p>
+          </div>
+          <div class="f">
+            <h3>Nghe thử ngay, không cài thêm gì</h3>
+            <p>Phần nghe thử dùng giọng đọc có sẵn trong trình duyệt của bạn (speechSynthesis), chọn được giọng cho từng người dẫn và chỉnh tốc độ đọc. Không cần tài khoản thu âm hay phần mềm ngoài.</p>
+          </div>
+          <div class="f">
+            <h3>Lưu và dùng lại trên chính máy của bạn</h3>
+            <p>Bài viết và kịch bản lưu trong trình duyệt, mở lại trang là thấy. Bạn cũng sao chép hoặc tải kịch bản dạng .txt để đưa sang công cụ thu âm/dựng khác nếu muốn sản xuất bản chính thức.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= COMPARE ================= -->
+      <section class="block">
+        <h2>So sánh nhanh với các lựa chọn quốc tế</h2>
+        <p class="intro">Các công cụ quốc tế mạnh về giọng AI phòng thu và nhiều ngôn ngữ, nhưng giá tính theo đô la và không tối ưu riêng cho bài viết tiếng Việt. Bảng dưới là mức giá khởi điểm công bố của từng bên tại thời điểm viết trang này — hãy kiểm tra lại trên trang chủ của họ vì giá có thể thay đổi.</p>
+        <div class="table-scroll">
+          <table class="cmp">
+            <thead>
+              <tr><th>Công cụ</th><th>Giá khởi điểm</th><th>Điểm chính</th><th>Phù hợp khi</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Công cụ">Wondercraft</td>
+                <td data-label="Giá khởi điểm">Từ $25/tháng</td>
+                <td data-label="Điểm chính">Studio podcast AI đầy đủ, giọng nhân bản, nhiều tính năng sản xuất</td>
+                <td data-label="Phù hợp khi">Bạn sản xuất podcast chuyên nghiệp, ngân sách theo USD</td>
+              </tr>
+              <tr>
+                <td data-label="Công cụ">ElevenLabs</td>
+                <td data-label="Giá khởi điểm">Từ $6/tháng</td>
+                <td data-label="Điểm chính">Giọng đọc AI chất lượng cao, tính phí theo ký tự</td>
+                <td data-label="Phù hợp khi">Bạn cần giọng đọc đơn chất lượng cao và tự dựng kịch bản</td>
+              </tr>
+              <tr class="us">
+                <td data-label="Công cụ">Podcast AI (trang này)</td>
+                <td data-label="Giá khởi điểm">39.000đ/tháng</td>
+                <td data-label="Điểm chính">Chuyển bài viết tiếng Việt thành hội thoại 2 giọng, nghe thử ngay trên trình duyệt</td>
+                <td data-label="Phù hợp khi">Bạn có sẵn bài viết tiếng Việt và muốn bản podcast hội thoại nhanh, chi phí thấp</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="src-note">Nói thẳng: bản demo trên trang này dùng mẫu câu phía client và giọng của trình duyệt, nên không thay thế được giọng AI phòng thu của các nền tảng lớn. Đổi lại, giá chỉ 39.000đ/tháng, thanh toán VietQR, và quy trình được làm riêng cho bài viết tiếng Việt dạng hội thoại 2 giọng.</p>
+      </section>
+
+      <!-- ================= PRICING ================= -->
+      <section class="block" id="bang-gia">
+        <h2>Bảng giá</h2>
+        <p class="intro">Một mức giá duy nhất, không gói ẩn, không tính phí theo ký tự trong bản demo này.</p>
+        <div class="price-card">
+          <div>
+            <div class="price-big">39.000đ<small>/tháng</small></div>
+            <div class="trial"><b>Dùng thử 3 ngày miễn phí</b> — đăng nhập, bấm bắt đầu dùng thử, không cần thẻ. Hết 3 ngày chưa gia hạn thì công cụ khóa lại.</div>
+            <div class="bundle-line"><b>Gói Bundle: 149.000đ/tháng</b> (1.490.000đ/năm) — dùng cả 10 công cụ trong hệ thống thay vì mua lẻ từng công cụ.</div>
+          </div>
+          <ul>
+            <li>Chuyển bài viết thành kịch bản hội thoại 2 giọng không giới hạn số bài trong tháng</li>
+            <li>Khung kịch bản tiếng Việt và tiếng Anh, 3 kiểu hội thoại</li>
+            <li>Nghe thử bằng giọng đọc của trình duyệt, chọn giọng riêng cho từng người dẫn</li>
+            <li>Lưu bài viết &amp; kịch bản trên máy, tải file .txt để dùng tiếp ở nơi khác</li>
+            <li>Thanh toán bằng VietQR qua payOS, gia hạn từng tháng — không tự động trừ tiền</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="block">
+        <h2>Câu hỏi thường gặp</h2>
+        <details class="faq">
+          <summary>Bản demo trên trang này khác gì bản podcast “thật”?</summary>
+          <div class="a"><p>Bản demo tạo kịch bản bằng mẫu câu có sẵn ngay trong trình duyệt và đọc thử bằng giọng speechSynthesis của máy bạn. Nó cho bạn xem trước cấu trúc hội thoại và nội dung sẽ nghe ra sao. Nó không phải giọng AI phòng thu và chất lượng giọng nghe thử phụ thuộc vào trình duyệt, hệ điều hành của bạn.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Bài viết dài bao nhiêu thì hợp?</summary>
+          <div class="a"><p>Khoảng 300–2.000 chữ là vừa cho một tập podcast hội thoại dễ nghe. Bài quá ngắn sẽ ít lượt thoại; bài quá dài bạn nên tách thành nhiều tập, mỗi tập một chủ đề để người nghe theo dõi dễ hơn.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Tôi chọn được giọng đọc nào?</summary>
+          <div class="a"><p>Danh sách giọng lấy từ chính trình duyệt của bạn — máy có giọng tiếng Việt thì sẽ hiện trong ô chọn giọng. Nếu máy chưa có giọng tiếng Việt, bạn vẫn tạo được kịch bản, còn phần nghe thử sẽ đọc bằng giọng mặc định đang có.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Dữ liệu bài viết của tôi lưu ở đâu?</summary>
+          <div class="a"><p>Bài viết và kịch bản chỉ lưu trong trình duyệt trên máy của bạn (localStorage) để mở lại sau, không gửi lên máy chủ của chúng tôi khi bạn tạo kịch bản demo. Đổi máy hoặc xóa dữ liệu trình duyệt thì phần đã lưu sẽ mất — hãy tải file .txt để giữ bản lâu dài.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Dùng thử 3 ngày hoạt động thế nào?</summary>
+          <div class="a"><p>Bạn đăng ký tài khoản bằng email, bấm “Bắt đầu dùng thử 3 ngày” là dùng được toàn bộ công cụ trong 3 ngày, không cần thẻ. Hết 3 ngày, công cụ khóa lại; bạn gia hạn 39.000đ/tháng bằng VietQR để dùng tiếp. Thời gian dùng thử tính ở máy chủ, xóa dữ liệu trình duyệt không làm mới được.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Gói Bundle 149.000đ/tháng gồm những gì?</summary>
+          <div class="a"><p>Bundle mở cả 10 công cụ trong cùng hệ thống (tính lợi nhuận sàn, quản lý đơn cọc công nợ, nội dung đa nền tảng, sổ thu chi, tạo ảnh sản phẩm, báo giá hợp đồng mẫu, tìm nhà cung cấp, nghiên cứu đối thủ, dịch thuyết minh video và Podcast AI) với giá 149.000đ/tháng hoặc 1.490.000đ/năm — rẻ hơn mua lẻ từng công cụ.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Tôi có bị tự động trừ tiền sau dùng thử không?</summary>
+          <div class="a"><p>Không. Thanh toán là từng lần bằng VietQR qua payOS: hết hạn bạn chủ động tạo mã mới và quét để gia hạn. Không có lưu thẻ và không tự động gia hạn.</p></div>
+        </details>
+      </section>
+
+      <footer>
+        <p><b>Podcast AI</b> — công cụ chuyển bài viết thành kịch bản podcast hội thoại 2 giọng, thuộc hệ thống công cụ cho người bán hàng và người làm nội dung Việt Nam.</p>
+        <p>Bản demo trên trang tạo kịch bản bằng mẫu câu phía client và đọc thử bằng giọng của trình duyệt; đây không phải dịch vụ thu âm hay giọng AI phòng thu. Giá đối thủ nêu trên trang là giá khởi điểm công bố tại thời điểm viết và có thể thay đổi — vui lòng kiểm tra lại trên trang của nhà cung cấp đó.</p>
+      </footer>
+    </div>
+
+    <script>
+    (function(){
+      "use strict";
+      var $ = function(id){ return document.getElementById(id); };
+      var STORE_KEY = "podcastai_items_v1";
+      var DRAFT_KEY = "podcastai_draft_v1";
+      var currentScript = []; // [{who:'A'|'B', text}]
+      var speaking = false;
+
+      var OPENERS = {
+        vi: {
+          chat: ["Chào bạn, cảm ơn bạn đã ghé nghe số podcast hôm nay.", "Hôm nay mình cùng bàn về một chủ đề mà nhiều người quan tâm."],
+          news: ["Xin chào quý thính giả, chào mừng đến với bản tin hôm nay.", "Sau đây là nội dung chính chúng tôi muốn gửi tới quý vị."],
+          teach: ["Chào bạn, hôm nay chúng ta cùng tìm hiểu một chủ đề rất thực tế.", "Nếu bạn từng thắc mắc về chuyện này thì số hôm nay dành cho bạn."]
+        },
+        en: {
+          chat: ["Hi there, thanks for tuning in to today's episode.", "Today we're chatting about a topic lots of listeners asked about."],
+          news: ["Hello and welcome to today's briefing.", "Here are the main points we want to walk you through."],
+          teach: ["Welcome back — today we're breaking down a very practical topic.", "If you've ever wondered about this, today's episode is for you."]
+        }
+      };
+      var QUESTIONS = {
+        vi: ["Nghe hay đấy, vậy ý chính ở đây là gì?", "Khoan, phần này mình muốn hỏi rõ hơn một chút.", "Vậy cụ thể thì sao?", "Điều này ảnh hưởng thế nào tới người nghe của mình?", "Có ví dụ nào dễ hình dung không bạn?"],
+        en: ["Interesting — so what's the main point here?", "Hold on, let me dig into that a bit more.", "So how does that work in practice?", "How does this affect our listeners?", "Can you give an easy example?"]
+      };
+      var BRIDGES = {
+        vi: ["Đúng vậy.", "Chuẩn luôn.", "Mình đồng ý, và thêm một ý nữa.", "Nghe hợp lý đấy.", "Ừ, phần tiếp theo còn quan trọng hơn."],
+        en: ["Exactly.", "That's right.", "Agreed — and there's one more thing.", "That makes sense.", "Yes, and the next part matters even more."]
+      };
+      var CLOSERS = {
+        vi: ["Đó là toàn bộ nội dung hôm nay. Cảm ơn bạn đã nghe tới cuối — hẹn gặp lại ở số tiếp theo!", "Cảm ơn bạn đã dành thời gian nghe số này. Nếu thấy hữu ích, hãy chia sẻ cho một người bạn nhé!"],
+        en: ["That's all for today. Thanks for listening to the end — see you in the next episode!", "Thanks for spending time with this episode. If it helped, share it with a friend!"]
+      };
+      var SAMPLE = {
+        title: "3 thói quen giúp shop nhỏ bán đều mỗi ngày",
+        body: "Nhiều shop nhỏ nghĩ muốn bán được hàng thì phải chạy quảng cáo thật nhiều. Thực tế, những shop bán đều thường thắng ở những việc rất cơ bản, lặp lại mỗi ngày.\n\nThói quen đầu tiên là trả lời tin nhắn nhanh. Khách hỏi mà chờ quá lâu thì họ sang shop khác ngay, vì trên sàn có hàng chục lựa chọn giống hệt nhau. Chỉ cần phản hồi trong vài phút đầu, tỉ lệ chốt đơn đã khác hẳn.\n\nThói quen thứ hai là chụp lại ảnh thật của sản phẩm trước khi gửi. Ảnh thật giúp khách tin hơn, đồng thời shop có bằng chứng nếu xảy ra tranh chấp về tình trạng hàng.\n\nThói quen thứ ba là xem lại số liệu mỗi tối: hôm nay bao nhiêu đơn, sản phẩm nào đang lên, sản phẩm nào tồn kho lâu. Mười phút mỗi tối giúp shop tránh được cảnh ôm hàng chết vốn cả tháng.\n\nBa thói quen này không tốn tiền quảng cáo, chỉ tốn sự đều đặn. Và chính sự đều đặn đó mới là thứ khiến một shop nhỏ đi đường dài được."
+      };
+
+      function splitParagraphs(text){
+        return text.split(/\n\s*\n/).map(function(p){ return p.replace(/\s+/g," ").trim(); }).filter(Boolean);
+      }
+      function splitSentences(p){
+        var parts = p.match(/[^.!?…]+[.!?…]+["”']?|[^.!?…]+$/g) || [p];
+        return parts.map(function(s){ return s.trim(); }).filter(Boolean);
+      }
+      function chunkParagraph(p){
+        var sents = splitSentences(p);
+        var chunks = []; var cur = "";
+        sents.forEach(function(s){
+          if ((cur + " " + s).trim().length > 320 && cur){ chunks.push(cur.trim()); cur = s; }
+          else cur = (cur ? cur + " " : "") + s;
+        });
+        if (cur.trim()) chunks.push(cur.trim());
+        return chunks;
+      }
+      function pick(arr, i){ return arr[i % arr.length]; }
+
+      function buildScript(){
+        var title = $("inTitle").value.trim();
+        var body = $("inArticle").value.trim();
+        var msg = $("toolMsg");
+        if (!body){ msg.textContent = "Hãy dán nội dung bài viết trước khi tạo kịch bản."; msg.className = "msg err"; $("inArticle").focus(); return; }
+        var paras = splitParagraphs(body);
+        var lang = $("selLang").value, style = $("selStyle").value;
+        var lines = [];
+        var opener = pick(OPENERS[lang][style], Math.floor(Math.random()*2));
+        lines.push({ who:"A", text: title ? opener + " Chủ đề hôm nay: " + (lang==="vi" ? title : title) + "." : opener });
+        lines.push({ who:"B", text: lang==="vi" ? "Nghe hấp dẫn đấy, mình bắt đầu luôn nhé." : "Sounds good — let's dive right in." });
+        var qi = 0, bi = 0;
+        paras.forEach(function(p, idx){
+          var chunks = chunkParagraph(p);
+          chunks.forEach(function(c, ci){
+            if (idx > 0 && ci === 0 && (idx % 2 === 1)){
+              lines.push({ who:"B", text: pick(QUESTIONS[lang], qi++) });
+              lines.push({ who:"A", text: c });
+            } else if (idx > 0 && ci === 0){
+              lines.push({ who:"A", text: pick(BRIDGES[lang], bi++) + " " + c });
+            } else {
+              lines.push({ who: (lines.length % 2 === 0) ? "A" : "B", text: c });
+            }
+          });
+        });
+        lines.push({ who:"B", text: pick(CLOSERS[lang], Math.floor(Math.random()*2)) });
+        currentScript = lines;
+        renderScript();
+        saveItem(title, body, lines, lang, style);
+        msg.textContent = "Đã tạo kịch bản " + lines.length + " lượt thoại và lưu vào danh sách bên dưới."; msg.className = "msg ok";
+        $("playStatus").textContent = "Sẵn sàng nghe thử — " + lines.length + " lượt thoại.";
+      }
+
+      function renderScript(){
+        var box = $("scriptList");
+        box.innerHTML = "";
+        if (!currentScript.length){
+          box.innerHTML = '<div class="script-empty">Chưa có kịch bản nào. Dán bài viết ở cột bên trái rồi bấm “Tạo kịch bản hội thoại”.</div>';
+          return;
+        }
+        currentScript.forEach(function(line, i){
+          var d = document.createElement("div");
+          d.className = "line " + (line.who === "A" ? "a" : "b");
+          d.id = "line-" + i;
+          var who = document.createElement("span"); who.className = "who";
+          who.textContent = line.who === "A" ? "Người dẫn A" : "Người dẫn B";
+          var p = document.createElement("p"); p.textContent = line.text;
+          d.appendChild(who); d.appendChild(p);
+          box.appendChild(d);
+        });
+      }
+
+      /* ----- Voices ----- */
+      var voices = [];
+      function loadVoices(){
+        if (!("speechSynthesis" in window)) return;
+        voices = window.speechSynthesis.getVoices() || [];
+        fillVoiceSelect($("selVoiceA"), 0);
+        fillVoiceSelect($("selVoiceB"), 1);
+      }
+      function fillVoiceSelect(sel, preferIdx){
+        if (!sel) return;
+        var prev = sel.value;
+        sel.innerHTML = "";
+        var lang = $("selLang").value;
+        var sorted = voices.slice().sort(function(a,b){
+          var as = (a.lang || "").toLowerCase().indexOf(lang) === 0 ? 0 : 1;
+          var bs = (b.lang || "").toLowerCase().indexOf(lang) === 0 ? 0 : 1;
+          return as - bs;
+        });
+        if (!sorted.length){
+          var o = document.createElement("option"); o.value = ""; o.textContent = "Giọng mặc định của trình duyệt";
+          sel.appendChild(o); return;
+        }
+        sorted.forEach(function(v, i){
+          var o = document.createElement("option");
+          o.value = v.name; o.textContent = v.name + " (" + v.lang + ")";
+          sel.appendChild(o);
+        });
+        var viVoice = sorted.findIndex(function(v){ return (v.lang||"").toLowerCase().indexOf(lang) === 0; });
+        var pickIdx = viVoice >= 0 ? Math.min(viVoice + preferIdx, sorted.length - 1) : Math.min(preferIdx, sorted.length - 1);
+        sel.selectedIndex = prev ? Math.max(0, sorted.findIndex(function(v){ return v.name === prev; })) : pickIdx;
+      }
+      function voiceByName(name){
+        for (var i = 0; i < voices.length; i++) if (voices[i].name === name) return voices[i];
+        return null;
+      }
+
+      /* ----- Playback ----- */
+      function stopSpeak(){
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        speaking = false;
+        $("btnPlay").disabled = false; $("btnStop").disabled = true;
+        document.querySelectorAll(".line.playing").forEach(function(el){ el.classList.remove("playing"); });
+      }
+      function playScript(){
+        var msg = $("toolMsg");
+        if (!currentScript.length){ msg.textContent = "Chưa có kịch bản để đọc — hãy tạo kịch bản trước."; msg.className = "msg err"; return; }
+        if (!("speechSynthesis" in window)){ msg.textContent = "Trình duyệt này không hỗ trợ đọc thành tiếng (speechSynthesis). Bạn vẫn xem và tải kịch bản bình thường."; msg.className = "msg err"; return; }
+        stopSpeak();
+        speaking = true;
+        $("btnPlay").disabled = true; $("btnStop").disabled = false;
+        var rate = parseFloat($("selRate").value) || 1;
+        var lang = $("selLang").value === "vi" ? "vi-VN" : "en-US";
+        var idx = 0;
+        function speakNext(){
+          if (!speaking) return;
+          if (idx >= currentScript.length){
+            stopSpeak();
+            $("playStatus").textContent = "Đã đọc xong toàn bộ kịch bản.";
+            return;
+          }
+          var line = currentScript[idx];
+          document.querySelectorAll(".line.playing").forEach(function(el){ el.classList.remove("playing"); });
+          var el = $("line-" + idx);
+          if (el){ el.classList.add("playing"); el.scrollIntoView({ behavior:"smooth", block:"center" }); }
+          $("playStatus").textContent = "Đang đọc lượt " + (idx + 1) + "/" + currentScript.length + " — " + (line.who === "A" ? "Người dẫn A" : "Người dẫn B");
+          var u = new SpeechSynthesisUtterance(line.text);
+          u.lang = lang; u.rate = rate;
+          var v = voiceByName(line.who === "A" ? $("selVoiceA").value : $("selVoiceB").value);
+          if (v) u.voice = v;
+          u.pitch = line.who === "A" ? 1 : 1.1;
+          u.onend = function(){ idx++; speakNext(); };
+          u.onerror = function(){ idx++; speakNext(); };
+          window.speechSynthesis.speak(u);
+        }
+        speakNext();
+      }
+
+      /* ----- Storage ----- */
+      function loadItems(){ try { return JSON.parse(localStorage.getItem(STORE_KEY) || "[]"); } catch(e){ return []; } }
+      function storeItems(items){ try { localStorage.setItem(STORE_KEY, JSON.stringify(items)); return true; } catch(e){ return false; } }
+      function saveItem(title, body, lines, lang, style){
+        var items = loadItems();
+        var now = new Date();
+        items.unshift({
+          id: "s" + now.getTime(),
+          title: title || "(Chưa đặt tiêu đề)",
+          body: body, script: lines, lang: lang, style: style,
+          savedAt: now.toLocaleDateString("vi-VN") + " " + now.toLocaleTimeString("vi-VN", { hour:"2-digit", minute:"2-digit" })
+        });
+        if (items.length > 20) items = items.slice(0, 20);
+        storeItems(items);
+        renderSaved();
+      }
+      function renderSaved(){
+        var box = $("savedList");
+        var items = loadItems();
+        box.innerHTML = "";
+        if (!items.length){
+          box.innerHTML = '<div class="saved-empty">Chưa có bài nào được lưu. Tạo kịch bản đầu tiên là bài sẽ tự lưu vào đây.</div>';
+          return;
+        }
+        items.forEach(function(it){
+          var d = document.createElement("div"); d.className = "saved-item";
+          var meta = document.createElement("div"); meta.className = "meta";
+          var nm = document.createElement("div"); nm.className = "name"; nm.textContent = it.title;
+          var dt = document.createElement("div"); dt.className = "detail";
+          dt.textContent = (it.script ? it.script.length : 0) + " lượt thoại · Lưu lúc " + it.savedAt;
+          meta.appendChild(nm); meta.appendChild(dt);
+          var act = document.createElement("div"); act.className = "actions";
+          var bOpen = document.createElement("button"); bOpen.type = "button"; bOpen.className = "btn btn-ghost btn-sm"; bOpen.textContent = "Mở lại";
+          bOpen.addEventListener("click", function(){
+            stopSpeak();
+            $("inTitle").value = it.title === "(Chưa đặt tiêu đề)" ? "" : it.title;
+            $("inArticle").value = it.body || "";
+            if (it.lang) $("selLang").value = it.lang;
+            if (it.style) $("selStyle").value = it.style;
+            currentScript = it.script || [];
+            renderScript(); updateCounts(); loadVoices();
+            $("playStatus").textContent = "Đã mở lại kịch bản — " + currentScript.length + " lượt thoại.";
+            document.getElementById("cong-cu").scrollIntoView({ behavior:"smooth", block:"start" });
+          });
+          var bDel = document.createElement("button"); bDel.type = "button"; bDel.className = "btn btn-ghost btn-sm"; bDel.textContent = "Xóa";
+          bDel.addEventListener("click", function(){
+            storeItems(loadItems().filter(function(x){ return x.id !== it.id; }));
+            renderSaved();
+          });
+          act.appendChild(bOpen); act.appendChild(bDel);
+          d.appendChild(meta); d.appendChild(act);
+          box.appendChild(d);
+        });
+      }
+
+      /* ----- Copy / download ----- */
+      function scriptText(){
+        var title = $("inTitle").value.trim();
+        var out = [];
+        if (title) out.push("PODCAST: " + title, "");
+        currentScript.forEach(function(l){ out.push((l.who === "A" ? "Người dẫn A: " : "Người dẫn B: ") + l.text); });
+        return out.join("\n");
+      }
+      function copyFallback(text){
+        return new Promise(function(resolve){
+          try {
+            var ta = document.createElement("textarea");
+            ta.value = text; ta.setAttribute("readonly","");
+            ta.style.position = "fixed"; ta.style.opacity = "0.01";
+            document.body.appendChild(ta); ta.focus(); ta.select();
+            var ok = false; try { ok = document.execCommand("copy"); } catch(e){ ok = false; }
+            document.body.removeChild(ta); resolve(ok);
+          } catch(e){ resolve(false); }
+        });
+      }
+
+      /* ----- Wiring ----- */
+      function updateCounts(){
+        var t = $("inArticle").value;
+        $("charCount").textContent = t.length.toLocaleString("vi-VN");
+        $("paraCount").textContent = splitParagraphs(t).length;
+        try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ title: $("inTitle").value, body: t })); } catch(e){}
+      }
+      $("inArticle").addEventListener("input", updateCounts);
+      $("inTitle").addEventListener("input", updateCounts);
+      $("selRate").addEventListener("input", function(){ $("rateVal").textContent = Number($("selRate").value).toFixed(1).replace(".", ",") + "×"; });
+      $("selLang").addEventListener("change", loadVoices);
+      $("btnMake").addEventListener("click", buildScript);
+      $("btnSample").addEventListener("click", function(){
+        $("inTitle").value = SAMPLE.title; $("inArticle").value = SAMPLE.body; updateCounts();
+        $("toolMsg").textContent = "Đã dán bài mẫu — bấm “Tạo kịch bản hội thoại” để xem kết quả."; $("toolMsg").className = "msg ok";
+      });
+      $("btnPlay").addEventListener("click", playScript);
+      $("btnStop").addEventListener("click", function(){ stopSpeak(); $("playStatus").textContent = "Đã dừng đọc."; });
+      $("btnCopyScript").addEventListener("click", function(){
+        var msg = $("toolMsg");
+        if (!currentScript.length){ msg.textContent = "Chưa có kịch bản để sao chép."; msg.className = "msg err"; return; }
+        var text = scriptText();
+        var done = function(ok){
+          var el = $("copyOk");
+          el.textContent = ok ? "Đã sao chép ✓" : "Chưa sao chép tự động được — hãy chọn kịch bản ở trên và sao chép thủ công";
+          el.className = "msg " + (ok ? "ok" : "err"); el.hidden = false;
+          setTimeout(function(){ el.hidden = true; }, 3500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ copyFallback(text).then(done); });
+        } else copyFallback(text).then(done);
+      });
+      $("btnDownload").addEventListener("click", function(){
+        var msg = $("toolMsg");
+        if (!currentScript.length){ msg.textContent = "Chưa có kịch bản để tải — hãy tạo kịch bản trước."; msg.className = "msg err"; return; }
+        var blob = new Blob([scriptText()], { type: "text/plain;charset=utf-8" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "kich-ban-podcast.txt";
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+      });
+      window.addEventListener("beforeunload", stopSpeak);
+
+      /* ----- Init ----- */
+      try {
+        var draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+        if (draft){ $("inTitle").value = draft.title || ""; $("inArticle").value = draft.body || ""; }
+      } catch(e){}
+      updateCounts();
+      renderScript();
+      renderSaved();
+      loadVoices();
+      if ("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = loadVoices;
+    })();
+    </script>
+    <script>
+      // Nút "Dùng thử 3 ngày" ở hero: chưa đăng nhập thì cuộn tới khối
+      // đăng nhập (#ccs-auth); đã đăng nhập thì bắt đầu dùng thử qua
+      // CongCuShop (checkAccess.js). Không tự tạo trial khi chưa đăng nhập.
+      (function(){
+        "use strict";
+        var btn = document.getElementById("btnHeroTrial");
+        if (!btn) return;
+        function scrollToAuth(){
+          var el = document.getElementById("ccs-auth");
+          if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+        }
+        btn.addEventListener("click", function(ev){
+          ev.preventDefault();
+          if (!window.CongCuShop || !window.CongCuShop.checkAccess || !window.CongCuShop.startTrial){
+            scrollToAuth();
+            return;
+          }
+          window.CongCuShop.checkAccess("p10").then(function(access){
+            if (!access || access.reason === "login_required"){
+              scrollToAuth();
+              return;
+            }
+            window.CongCuShop.startTrial("p10");
+          }).catch(function(){ scrollToAuth(); });
+        });
+      })();
+    </script>
+  </body>
+</html>
