@@ -2268,7 +2268,7 @@
          <script> ffmpeg.js nên Worker 814.ffmpeg.js tự nạp cùng thư mục. */
       var FFMPEG_JS = "assets/ffmpeg/ffmpeg.js";
       var FFMPEG_CORE_JS = "assets/ffmpeg/ffmpeg-core.js";
-      var FFMPEG_CORE_WASM = "assets/ffmpeg/ffmpeg-core.wasm";
+      var FFMPEG_CORE_WASM = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.wasm";
       /* Bên trong Worker, importScripts(coreURL) + fetch(wasmURL) phân giải
          theo URL của Worker (assets/ffmpeg/814.ffmpeg.js) chứ không theo
          trang — đường dẫn tương đối trần sẽ thành
