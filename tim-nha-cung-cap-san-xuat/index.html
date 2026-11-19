@@ -12,34 +12,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
       :root{
-        --bg:#f4f7f5;
+        --bg:#f2f0ec;
         --surface:#ffffff;
-        --surface-2:#e9efec;
-        --ink:#12211b;
-        --ink-2:#43564d;
-        --line:#cfdcd4;
-        --accent:#0b7a55;
+        --surface-2:#e9e6e0;
+        --ink:#211a13;
+        --ink-2:#5d564b;
+        --line:#d5cec2;
+        --accent:#92400e;
+        --accent-deep:#7c2d12;
+        --steel:#57534e;
         --accent-ink:#ffffff;
-        --accent-soft:#d9efe4;
+        --accent-soft:#f9e9d4;
         --danger:#c22f2f;
-        --good:#0b7a55;
-        --shadow:0 10px 30px rgba(18,33,27,.10);
-        --radius:14px;
+        --good:#92400e;
+        --shadow:0 10px 30px rgba(33,26,19,.12);
+        --radius:10px;
       }
       @media (prefers-color-scheme: dark){
         :root{
-          --bg:#0d1512;
-          --surface:#16211c;
-          --surface-2:#1e2c25;
-          --ink:#e8f1ec;
-          --ink-2:#a9bcb1;
-          --line:#2c4036;
-          --accent:#2fbf8f;
-          --accent-ink:#08130e;
-          --accent-soft:#173b2d;
+          --bg:#161210;
+          --surface:#221b16;
+          --surface-2:#2d251e;
+          --ink:#f2ebe1;
+          --ink-2:#b5a996;
+          --line:#3d332a;
+          --accent:#f59e0b;
+          --accent-deep:#d97706;
+          --steel:#a8a29e;
+          --accent-ink:#1c1005;
+          --accent-soft:#3a2712;
           --danger:#ff8a80;
-          --good:#2fbf8f;
-          --shadow:0 10px 30px rgba(0,0,0,.45);
+          --good:#f59e0b;
+          --shadow:0 10px 30px rgba(0,0,0,.5);
         }
       }
       *{ box-sizing:border-box; }
@@ -53,11 +57,22 @@
       .wrap{ max-width:960px; margin:0 auto; padding:0 16px 56px; }
 
       /* ---------- Hero ---------- */
-      .hero{ padding:40px 0 8px; }
+      .hero{ padding:44px 0 12px; }
+      /* Dải vạch chéo hổ phách / thép — motif vạch cảnh báo dây chuyền, kho bãi. */
+      .hero::before{
+        content:""; display:block; height:10px; border-radius:4px; margin-bottom:22px;
+        background:repeating-linear-gradient(-45deg, var(--accent) 0 16px, var(--steel) 16px 32px);
+      }
       .hero h1{ font-size:32px; line-height:1.2; font-weight:800; margin:0 0 12px; letter-spacing:-.01em; }
+      .hero h1::before{
+        content:"Danh bạ nhà máy — Xưởng — Kho bãi"; display:block;
+        font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+        color:var(--steel); margin-bottom:10px;
+      }
       .hero .lead{ font-size:17px; color:var(--ink-2); margin:0 0 20px; max-width:640px; }
       .hero-card{
-        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        background:linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 170%);
+        border:1px solid var(--line); border-top:4px solid var(--accent); border-radius:var(--radius);
         box-shadow:var(--shadow); padding:20px;
       }
       .price-row{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
@@ -68,13 +83,17 @@
         display:inline-block; width:100%; margin-top:14px; border:0; border-radius:10px; cursor:pointer;
         background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:17px;
         padding:14px 20px; min-height:52px; text-align:center;
+        text-transform:uppercase; letter-spacing:.03em;
+        box-shadow:0 4px 0 rgba(0,0,0,.18);
       }
-      .cta:active{ transform:translateY(1px); }
+      .cta:hover{ background:var(--accent-deep); }
+      .cta:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
       .hero-points{ list-style:none; margin:16px 0 0; padding:0; display:grid; gap:8px; }
       .hero-points li{ display:flex; gap:10px; font-size:15px; }
       .hero-points li::before{ content:"✓"; color:var(--accent); font-weight:800; }
       .sample-note{
-        margin-top:16px; background:var(--accent-soft); border-radius:10px; padding:12px 14px; font-size:14.5px;
+        margin-top:16px; background:var(--accent-soft); border-left:4px solid var(--accent);
+        border-radius:10px; padding:12px 14px; font-size:14.5px;
       }
       @media (min-width:640px){
         .hero h1{ font-size:40px; }
@@ -83,13 +102,19 @@
       }
 
       /* ---------- Sections ---------- */
-      section.block{ margin-top:36px; }
+      section.block{ margin-top:44px; }
       section.block > h2{ font-size:23px; font-weight:800; margin:0 0 6px; }
-      section.block > .sub{ color:var(--ink-2); margin:0 0 18px; font-size:15px; }
+      /* Đinh tán vuông hổ phách trước mỗi tiêu đề mục — motif bu-lông nhà máy. */
+      section.block > h2::before{
+        content:""; display:inline-block; width:11px; height:11px; border-radius:2px;
+        background:var(--accent); margin-right:9px;
+      }
+      section.block > .sub{ color:var(--ink-2); margin:0 0 20px; font-size:15px; }
 
       /* ---------- Tool ---------- */
       .filters{
-        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--steel);
+        border-radius:var(--radius);
         padding:16px; display:grid; gap:12px; margin-bottom:16px;
       }
       @media (min-width:720px){ .filters{ grid-template-columns:1fr 1fr 1.4fr auto; align-items:end; } }
@@ -108,7 +133,8 @@
       .cards{ display:grid; gap:14px; }
       @media (min-width:720px){ .cards{ grid-template-columns:1fr 1fr; } }
       .card{
-        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--accent);
+        border-radius:var(--radius); box-shadow:0 4px 16px rgba(33,26,19,.07);
         padding:16px; display:flex; flex-direction:column; gap:8px;
       }
       .card-head{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
@@ -129,7 +155,10 @@
       .card .rfq-open{
         margin-top:auto; border:0; border-radius:10px; cursor:pointer; min-height:48px;
         background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:15.5px; padding:12px;
+        box-shadow:0 3px 0 rgba(0,0,0,.16);
       }
+      .card .rfq-open:hover{ background:var(--accent-deep); }
+      .card .rfq-open:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.16); }
       .empty{
         background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius);
         padding:24px; text-align:center; color:var(--ink-2); font-size:15px;
@@ -137,7 +166,8 @@
 
       /* ---------- RFQ panel ---------- */
       .rfq{
-        background:var(--surface); border:1.5px solid var(--accent); border-radius:var(--radius);
+        background:linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 170%);
+        border:1.5px solid var(--accent); border-top:4px solid var(--accent); border-radius:var(--radius);
         padding:18px; margin-top:18px; box-shadow:var(--shadow);
       }
       .rfq h3{ margin:0 0 4px; font-size:18px; font-weight:800; }
@@ -153,13 +183,17 @@
       .rfq-actions .copy-btn{
         flex:1; min-width:200px; border:0; border-radius:10px; cursor:pointer; min-height:50px;
         background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:16px; padding:12px;
+        box-shadow:0 3px 0 rgba(0,0,0,.16);
       }
+      .rfq-actions .copy-btn:hover{ background:var(--accent-deep); }
+      .rfq-actions .copy-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.16); }
       .rfq-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
       .rfq-msg.ok{ color:var(--good); font-weight:700; }
 
       /* ---------- Paywall ---------- */
       .paywall{
-        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--accent);
+        border-radius:var(--radius);
         padding:26px 20px; text-align:center; box-shadow:var(--shadow);
       }
       .paywall h2{ font-size:20px; margin:0 0 8px; font-weight:800; }
@@ -167,7 +201,10 @@
       .paywall .btn-pay{
         border:0; border-radius:10px; cursor:pointer; min-height:50px; padding:12px 22px;
         background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:16px;
+        box-shadow:0 3px 0 rgba(0,0,0,.16);
       }
+      .paywall .btn-pay:hover{ background:var(--accent-deep); }
+      .paywall .btn-pay:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.16); }
       .paywall .btn-scroll{
         display:inline-block; margin-top:10px; background:none; border:0; color:var(--accent);
         font:inherit; font-weight:700; font-size:15px; cursor:pointer; padding:10px; min-height:44px;
@@ -176,25 +213,25 @@
       /* ---------- Compare / pricing / FAQ ---------- */
       .compare{ display:grid; gap:14px; }
       @media (min-width:720px){ .compare{ grid-template-columns:1fr 1fr; } }
-      .compare .col{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; }
-      .compare .col.us{ border-color:var(--accent); }
+      .compare .col{ background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--steel); border-radius:var(--radius); padding:18px; }
+      .compare .col.us{ border-color:var(--accent); border-top:3px solid var(--accent); }
       .compare h3{ margin:0 0 10px; font-size:16.5px; font-weight:800; }
       .compare ul{ margin:0; padding-left:20px; font-size:15px; display:grid; gap:6px; }
       .price-grid{ display:grid; gap:14px; }
       @media (min-width:720px){ .price-grid{ grid-template-columns:1fr 1fr; } }
-      .price-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px; }
-      .price-card.featured{ border:1.5px solid var(--accent); }
+      .price-card{ background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--steel); border-radius:var(--radius); padding:20px; }
+      .price-card.featured{ border:1.5px solid var(--accent); border-top:3px solid var(--accent); }
       .price-card h3{ margin:0 0 4px; font-size:17px; font-weight:800; }
       .price-card .amount{ font-size:28px; font-weight:800; color:var(--accent); margin:6px 0 2px; }
       .price-card .per{ color:var(--ink-2); font-size:14px; margin:0 0 12px; }
       .price-card ul{ margin:0; padding-left:20px; font-size:15px; display:grid; gap:6px; }
       .faq details{
-        background:var(--surface); border:1px solid var(--line); border-radius:12px;
+        background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--steel); border-radius:12px;
         padding:4px 16px; margin-bottom:10px;
       }
       .faq summary{ font-weight:700; cursor:pointer; padding:12px 0; font-size:15.5px; }
       .faq details p{ margin:0 0 14px; color:var(--ink-2); font-size:15px; }
-      footer{ margin-top:44px; border-top:1px solid var(--line); padding-top:18px; color:var(--ink-2); font-size:13.5px; }
+      footer{ margin-top:56px; border-top:2px solid var(--line); padding-top:18px; color:var(--ink-2); font-size:13.5px; }
     </style>
   </head>
   <body>
