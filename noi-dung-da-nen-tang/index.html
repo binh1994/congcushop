@@ -352,7 +352,7 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
     p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
     p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
     p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
-    bundle: { name: "Gói Bundle 6 công cụ",      price: 99000 }
+    bundle: { name: "Gói Bundle 10 công cụ",      price: 149000 }
   };
   var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
 
@@ -479,7 +479,7 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
           fmtDate(a.paid_until) + "</b>.";
         break;
       case "bundle_active":
-        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 6 công cụ tới ngày <b>" +
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 10 công cụ tới ngày <b>" +
           fmtDate(a.paid_until) + "</b>.";
         break;
       case "no_trial":
@@ -792,7 +792,7 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
         <p class="sub">Dùng cho cả Facebook, TikTok và website/Shopee. Không giới hạn số sản phẩm, không tính phí theo bài trong thời gian dùng gói.</p>
         <div class="big-price">39.000đ<small> /tháng</small></div>
         <span class="trial">Dùng thử 3 ngày miễn phí · Sau đó 39.000đ/tháng</span>
-        <p class="compare">Dùng cả bộ 6 công cụ cho người bán hàng? <b>Bundle trọn bộ: 99.000đ/tháng</b> — rẻ hơn mua lẻ từng công cụ.</p>
+        <p class="compare">Dùng cả bộ 10 công cụ cho người bán hàng? <b>Bundle trọn bộ: 149.000đ/tháng</b> — rẻ hơn mua lẻ từng công cụ.</p>
         <p class="compare">Khách hàng vẫn trả phí sau 3 ngày dùng thử. Giá giữ được ở mức này vì sản phẩm được xây trên hạ tầng miễn phí — <b>chi phí đầu tư ban đầu của đội ngũ là 0đ</b>, không tốn chi phí máy chủ đắt đỏ để đội lên giá bán. Nói rõ để tránh hiểu nhầm: <b>“0đ” là chi phí đầu tư của bên làm sản phẩm, không phải giá cho khách hàng.</b></p>
         <p class="compare">Lưu ý: công cụ ở trên là bản dùng thử trực tiếp — bấm là tạo được ngay, trang này không có nút thanh toán giả. Đăng ký dùng thử 3 ngày và thanh toán sẽ mở khi sản phẩm ra mắt chính thức.</p>
         <a class="btn btn-yellow" href="#cong-cu">Bắt đầu dùng thử 3 ngày ở công cụ trên ↑</a>
