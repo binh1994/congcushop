@@ -1193,6 +1193,165 @@
       </section>
     </main>
 
+    <!-- ============ HỖ TRỢ KHÁCH HÀNG ============ -->
+    <section id="support" class="wrap" aria-labelledby="support-title">
+      <style>
+        #support{padding:40px 0 4px}
+        #support .sp-card{background:var(--surface);border:1.5px solid var(--line);border-top:4px solid var(--brand);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+        #support h2{font-size:clamp(1.35rem,3vw,1.7rem);font-weight:800;margin:0 0 8px;line-height:1.25}
+        #support .sp-lead{color:var(--ink-soft);margin:0 0 18px;font-size:1rem;max-width:42em}
+        #support .sp-zalo-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#fff;font-weight:700;font-size:1rem;text-decoration:none;border-radius:12px;padding:12px 22px;min-height:50px}
+        #support .sp-zalo-btn:hover{background:var(--brand-dark)}
+        @media (prefers-color-scheme: dark){#support .sp-zalo-btn{color:#0a1a33}#support .sp-zalo-btn:hover{color:#0a1a33}}
+        #support .sp-zalo-num{margin:10px 0 0;font-size:.95rem;color:var(--ink-soft)}
+        #support .sp-zalo-num b{color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+        #support .sp-divider{border:0;border-top:1px solid var(--line);margin:22px 0}
+        #support h3{margin:0 0 4px;font-size:1.08rem;font-weight:800}
+        #support .sp-sub{color:var(--ink-soft);font-size:.9rem;margin:0 0 16px}
+        #support .sp-field{margin-bottom:13px}
+        #support .sp-field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:5px}
+        #support .sp-field input,#support .sp-field select,#support .sp-field textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:9px 12px;min-height:44px;font:inherit;font-size:1rem}
+        #support .sp-field textarea{min-height:96px;resize:vertical}
+        #support .sp-field input:focus,#support .sp-field select:focus,#support .sp-field textarea:focus{outline:2px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
+        #support .sp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        #support .sp-submit{width:100%;border:0;border-radius:12px;padding:12px 22px;min-height:50px;background:var(--brand);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit}
+        #support .sp-submit:hover{background:var(--brand-dark)}
+        #support .sp-submit:disabled{opacity:.55;cursor:wait}
+        @media (prefers-color-scheme: dark){#support .sp-submit{color:#0a1a33}}
+        #support #sp-msg{font-size:.92rem;margin:12px 0 0;min-height:1.4em;font-weight:600}
+        #support #sp-msg.sp-ok{color:var(--brand-dark)}
+        #support #sp-msg.sp-err{color:var(--danger)}
+        @media (max-width:640px){#support .sp-grid{grid-template-columns:1fr}#support .sp-card{padding:20px 16px}#support .sp-zalo-btn{width:100%}}
+      </style>
+      <div class="sp-card">
+        <h2 id="support-title">Cần hỗ trợ?</h2>
+        <p class="sp-lead">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+        <a class="sp-zalo-btn" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+        <p class="sp-zalo-num">Số Zalo của shop: <b>0327047928</b> — nếu nút trên không mở được, hãy tìm số này trên Zalo để nhắn trực tiếp.</p>
+        <hr class="sp-divider" />
+        <h3>Gửi yêu cầu hỗ trợ</h3>
+        <p class="sp-sub">Điền form bên dưới, shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.</p>
+        <form id="sp-form" novalidate>
+          <div class="sp-grid">
+            <div class="sp-field">
+              <label for="sp-name">Họ tên</label>
+              <input id="sp-name" name="sp-name" type="text" autocomplete="name" placeholder="Tên của bạn (không bắt buộc)" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-contact">Số điện thoại hoặc email *</label>
+              <input id="sp-contact" name="sp-contact" type="text" autocomplete="tel" required placeholder="Số điện thoại hoặc email" />
+            </div>
+          </div>
+          <div class="sp-field">
+            <label for="sp-issue">Vấn đề</label>
+            <select id="sp-issue" name="sp-issue">
+              <option value="Lỗi trang">Lỗi trang</option>
+              <option value="Hết dùng thử">Hết dùng thử</option>
+              <option value="Thanh toán">Thanh toán</option>
+              <option value="Gói Pro">Gói Pro</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+          <div class="sp-field">
+            <label for="sp-message">Mô tả ngắn *</label>
+            <textarea id="sp-message" name="sp-message" required placeholder="Bạn đang gặp vấn đề gì? Mô tả ngắn để shop hỗ trợ nhanh hơn."></textarea>
+          </div>
+          <button type="submit" class="sp-submit" id="sp-submit">Gửi yêu cầu</button>
+          <p id="sp-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <script>
+      (function(){
+        "use strict";
+        var form = document.getElementById("sp-form");
+        if(!form) return;
+        var msgEl = document.getElementById("sp-msg");
+        var submitBtn = document.getElementById("sp-submit");
+        var SUPABASE_CDN_SP = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+        function loadUmd(){
+          return new Promise(function(resolve, reject){
+            if(window.supabase && window.supabase.createClient) return resolve();
+            var s = document.createElement("script");
+            s.src = SUPABASE_CDN_SP;
+            s.onload = resolve;
+            s.onerror = function(){ reject(new Error("load_failed")); };
+            document.head.appendChild(s);
+          });
+        }
+        function findConfig(){
+          try{
+            if(typeof SUPABASE_URL !== "undefined" && typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_URL && SUPABASE_ANON_KEY){
+              return { url: SUPABASE_URL, key: SUPABASE_ANON_KEY };
+            }
+          }catch(e){}
+          var scripts = document.querySelectorAll("script");
+          var url = null, key = null;
+          for(var i=0;i<scripts.length;i++){
+            var t = scripts[i].textContent || "";
+            if(!url){
+              var m1 = t.match(/SUPABASE_URL\s*=\s*["']([^"']+)["']/);
+              if(m1) url = m1[1];
+            }
+            if(!key){
+              var m2 = t.match(/SUPABASE_ANON_KEY\s*=\s*["']([^"']+)["']/);
+              if(m2) key = m2[1];
+            }
+            if(url && key) break;
+          }
+          if(url && key) return { url: url, key: key };
+          return null;
+        }
+        function getClient(){
+          return loadUmd().then(function(){
+            var cfg = findConfig();
+            if(!cfg) throw new Error("missing_config");
+            return window.supabase.createClient(cfg.url, cfg.key);
+          });
+        }
+        form.addEventListener("submit", function(ev){
+          ev.preventDefault();
+          var nameEl = document.getElementById("sp-name");
+          var contactEl = document.getElementById("sp-contact");
+          var issueEl = document.getElementById("sp-issue");
+          var messageEl = document.getElementById("sp-message");
+          var contact = (contactEl.value || "").trim();
+          var message = (messageEl.value || "").trim();
+          msgEl.textContent = "";
+          msgEl.className = "";
+          if(!contact || !message){
+            msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+            msgEl.className = "sp-err";
+            return;
+          }
+          submitBtn.disabled = true;
+          var originalText = submitBtn.textContent;
+          submitBtn.textContent = "Đang gửi…";
+          getClient().then(function(spClient){
+            return spClient.from("support_tickets").insert({
+              name: (nameEl.value || "").trim(),
+              contact: contact,
+              issue_type: issueEl.value,
+              message: message,
+              page: "quan-ly-don-coc-cong-no",
+              status: "new"
+            });
+          }).then(function(res){
+            if(res && res.error) throw res.error;
+            msgEl.textContent = "Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.";
+            msgEl.className = "sp-ok";
+            form.reset();
+          }).catch(function(){
+            msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+            msgEl.className = "sp-err";
+          }).finally(function(){
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+          });
+        });
+      })();
+      </script>
+    </section>
+
     <footer>
       <div class="wrap cols">
         <span><b>Quản Lý Đơn Cọc Công Nợ</b> — một trong 6 công cụ cho người bán hàng Việt Nam.</span>
