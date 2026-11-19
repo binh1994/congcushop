@@ -1,0 +1,143 @@
+name: Support ticket watch
+# Checks Supabase support_tickets every 15 min (free, public repo).
+# For each NEW ticket (created in the last 30 min, status='new') with no
+# open GitHub issue yet, opens an issue labelled support-ticket.
+# Closes the issue once the ticket is no longer 'new'.
+# Muse's own 15-min cron watches these issues (public API, no auth) and
+# messages the shop owner on WhatsApp about each new one, once.
+# Uses the repo secrets SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (already set
+# for the dub worker). GITHUB_TOKEN is provided automatically by Actions.
+on:
+  schedule:
+    - cron: "3,18,33,48 * * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for new support tickets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, urllib.request, urllib.error
+          from datetime import datetime, timedelta, timezone
+
+          SB_URL = os.environ["SUPABASE_URL"].rstrip("/")
+          SB_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
+          GH_TOKEN = os.environ["GH_TOKEN"]
+          REPO = "congcushop/congcushop"
+
+          def req(url, method="GET", headers=None, body=None):
+              data = json.dumps(body).encode() if body is not None else None
+              r = urllib.request.Request(url, data=data, method=method)
+              for k, v in (headers or {}).items():
+                  r.add_header(k, v)
+              try:
+                  with urllib.request.urlopen(r, timeout=30) as resp:
+                      return resp.status, json.loads(resp.read() or b"[]")
+              except urllib.error.HTTPError as e:
+                  print("HTTP error", e.code, "for", url, e.read()[:300])
+                  raise
+
+          # 1. Read tickets (service_role bypasses RLS).
+          sb_headers = {
+              "apikey": SB_KEY,
+              "Authorization": "Bearer " + SB_KEY,
+              "Content-Type": "application/json",
+          }
+          _, tickets = req(
+              SB_URL + "/rest/v1/support_tickets"
+              "?select=id,name,contact,issue_type,message,page,status,created_at"
+              "&order=created_at.desc&limit=20",
+              headers=sb_headers,
+          )
+
+          # 2. Read existing support-ticket issues (open + closed).
+          gh_headers = {
+              "Accept": "application/vnd.github+json",
+              "Authorization": "Bearer " + GH_TOKEN,
+          }
+          _, issues = req(
+              "https://api.github.com/repos/" + REPO +
+              "/issues?labels=support-ticket&state=all&per_page=100",
+              headers=gh_headers,
+          )
+          open_by_ticket = {}
+          closed_by_ticket = {}
+          for iss in issues:
+              # Ticket id is stored in the issue body first line: "ticket: <uuid>"
+              tid = None
+              for line in (iss.get("body") or "").splitlines():
+                  if line.startswith("ticket: "):
+                      tid = line[len("ticket: "):].strip()
+                      break
+              if tid:
+                  if iss["state"] == "open":
+                      open_by_ticket[tid] = iss
+                  else:
+                      closed_by_ticket[tid] = iss
+
+          now = datetime.now(timezone.utc)
+          window_start = now - timedelta(minutes=30)
+          created, closed = 0, 0
+          for t in tickets:
+              tid = t["id"]
+              created_at = datetime.fromisoformat(
+                  t["created_at"].replace("Z", "+00:00"))
+              if t["status"] == "new" and created_at >= window_start:
+                  if tid in open_by_ticket:
+                      continue  # already reported
+                  if tid in closed_by_ticket:
+                      continue  # already handled once; don't reopen
+                  title = "[Hỗ trợ] %s — %s" % (
+                      t["issue_type"] or "Khác", t["contact"] or "?")
+                  body = (
+                      "ticket: %s\n"
+                      "Liên hệ: %s\n"
+                      "Tên: %s\n"
+                      "Loại: %s\n"
+                      "Trang: %s\n"
+                      "Gửi lúc: %s\n\n"
+                      "%s" % (
+                          tid,
+                          t["contact"] or "?",
+                          t["name"] or "(không để tên)",
+                          t["issue_type"] or "Khác",
+                          t["page"] or "?",
+                          t["created_at"],
+                          t["message"] or "",
+                      )
+                  )
+                  _, iss = req(
+                      "https://api.github.com/repos/" + REPO + "/issues",
+                      method="POST",
+                      headers=gh_headers,
+                      body={"title": title, "body": body,
+                            "labels": ["support-ticket"]},
+                  )
+                  print("created issue #%d for ticket %s"
+                        % (iss["number"], tid))
+                  created += 1
+              elif t["status"] != "new" and tid in open_by_ticket:
+                  iss = open_by_ticket[tid]
+                  req(
+                      "https://api.github.com/repos/%s/issues/%d"
+                      % (REPO, iss["number"]),
+                      method="PATCH",
+                      headers=gh_headers,
+                      body={"state": "closed"},
+                  )
+                  print("closed issue #%d (ticket %s now %s)"
+                        % (iss["number"], tid, t["status"]))
+                  closed += 1
+          print("done: %d issues created, %d closed, %d tickets seen"
+                % (created, closed, len(tickets)))
+          EOF
