@@ -382,7 +382,7 @@
     p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
     p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
     p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
-    bundle: { name: "Gói Bundle 6 công cụ",      price: 99000 }
+    bundle: { name: "Gói Bundle 10 công cụ",      price: 149000 }
   };
   var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
 
@@ -497,7 +497,7 @@
           fmtDate(a.paid_until) + "</b>.";
         break;
       case "bundle_active":
-        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 6 công cụ tới ngày <b>" +
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 10 công cụ tới ngày <b>" +
           fmtDate(a.paid_until) + "</b>.";
         break;
       case "no_trial":
@@ -977,7 +977,7 @@
             <div class="price-big num">29.000đ<small>/tháng</small></div>
             <p class="muted-note">Dùng thử đủ 3 ngày với đầy đủ tính năng tính toán, không cần thẻ. Hết 3 ngày mới thu phí 29.000đ/tháng — rẻ hơn một đơn hàng lỗ vì tính sai phí sàn.</p>
             <div class="trial"><b>Lưu ngay trên máy của bạn:</b> số đang nhập và danh sách sản phẩm đã lưu được giữ trong trình duyệt của máy này, mở lại trang vẫn còn trong thời gian dùng thử và khi đã trả phí trên cùng máy.</div>
-            <div class="bundle-line"><b>Bundle cả 6 công cụ: 99.000đ/tháng</b> — một gói dùng chung cho cả 6 công cụ, thay vì mua lẻ từng công cụ.</div>
+            <div class="bundle-line"><b>Bundle cả 10 công cụ: 149.000đ/tháng</b> — một gói dùng chung cho cả 10 công cụ, thay vì mua lẻ từng công cụ.</div>
             <div class="btn-row">
               <a class="btn btn-primary" href="#calc">Dùng thử 3 ngày — tính ngay</a>
             </div>
