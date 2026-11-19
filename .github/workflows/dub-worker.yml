@@ -6,6 +6,7 @@ name: Dub Worker (free auto dubbing)
 # Repo công khai nên số phút GitHub Actions miễn phí (Linux).
 # File này đặt tại .github/workflows/dub-worker.yml khi deploy (bản gốc giữ
 # tại backend/dub-worker/dispatch.yml).
+# re-register schedule 2026-11-19
 
 on:
   schedule:
