@@ -882,6 +882,146 @@
         </details>
       </section>
 
+      <!-- ================= SUPPORT ================= -->
+      <section class="block" id="support" aria-label="Hỗ trợ khách hàng">
+        <style>
+          #support .sp-panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); padding:22px; }
+          #support h2{ font-size:clamp(23px,3.6vw,32px); font-weight:900; margin:0 0 8px; letter-spacing:-.01em; }
+          #support h2::after{ content:""; display:block; width:44px; height:5px; border-radius:999px; margin-top:10px; background:linear-gradient(90deg, var(--accent-2), var(--accent), #7e22ce); }
+          #support .sp-intro{ color:var(--ink-2); max-width:760px; margin:0 0 18px; }
+          #support .sp-zalo-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#a21caf; color:#fff; font-weight:700; border-radius:10px; padding:12px 20px; min-height:48px; text-decoration:none; box-shadow:0 4px 16px rgba(162,28,175,.35); }
+          #support .sp-zalo-btn:hover{ filter:brightness(1.1); }
+          #support .sp-zalo-num{ font-size:14px; color:var(--ink-2); margin:10px 0 22px; }
+          #support .sp-zalo-num b{ color:var(--ink); font-size:16px; letter-spacing:.02em; }
+          #support .sp-form-title{ font-size:17px; font-weight:800; margin:0 0 14px; }
+          #support .sp-field{ margin-bottom:14px; }
+          #support .sp-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+          #support .sp-field input, #support .sp-field select, #support .sp-field textarea{ width:100%; border:1.5px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); font:inherit; font-size:16px; padding:10px 12px; outline:none; }
+          #support .sp-field input:focus, #support .sp-field select:focus, #support .sp-field textarea:focus{ border-color:#a21caf; box-shadow:0 0 0 3px rgba(162,28,175,.18); }
+          #support .sp-field textarea{ resize:vertical; line-height:1.6; }
+          #support .sp-submit{ display:inline-flex; align-items:center; justify-content:center; border:0; cursor:pointer; font:inherit; font-weight:700; border-radius:10px; padding:12px 20px; min-height:48px; background:#a21caf; color:#fff; box-shadow:0 4px 16px rgba(162,28,175,.35); width:100%; }
+          @media (min-width:640px){ #support .sp-submit{ width:auto; min-width:220px; } }
+          #support .sp-submit:hover{ filter:brightness(1.1); }
+          #support .sp-submit:disabled{ opacity:.55; cursor:wait; }
+          #support #sp-msg{ font-size:14px; margin:12px 0 0; min-height:1.4em; }
+          #support #sp-msg.ok{ color:var(--good); }
+          #support #sp-msg.err{ color:var(--danger); }
+        </style>
+        <div class="sp-panel">
+          <h2>Cần hỗ trợ?</h2>
+          <p class="sp-intro">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+          <a class="sp-zalo-btn" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+          <p class="sp-zalo-num">Số Zalo của shop: <b>0327047928</b> — nếu nút không mở được, hãy tìm số này trên Zalo để nhắn trực tiếp.</p>
+          <p class="sp-form-title">Gửi yêu cầu hỗ trợ</p>
+          <form id="sp-form" novalidate>
+            <div class="sp-field">
+              <label for="sp-name">Họ tên</label>
+              <input type="text" id="sp-name" name="sp-name" placeholder="Tên của bạn (không bắt buộc)" autocomplete="name" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-contact">Số điện thoại hoặc email *</label>
+              <input type="text" id="sp-contact" name="sp-contact" placeholder="Số điện thoại hoặc email để shop liên hệ lại" required autocomplete="tel" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-issue">Vấn đề</label>
+              <select id="sp-issue" name="sp-issue">
+                <option value="Lỗi trang">Lỗi trang</option>
+                <option value="Hết dùng thử">Hết dùng thử</option>
+                <option value="Thanh toán">Thanh toán</option>
+                <option value="Gói Pro">Gói Pro</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="sp-field">
+              <label for="sp-message">Mô tả ngắn *</label>
+              <textarea id="sp-message" name="sp-message" rows="4" placeholder="Mô tả ngắn vấn đề bạn đang gặp…" required></textarea>
+            </div>
+            <button type="submit" class="sp-submit" id="sp-submit">Gửi yêu cầu</button>
+            <p id="sp-msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <script>
+        (function(){
+          "use strict";
+          var form = document.getElementById("sp-form");
+          if (!form) return;
+          var msgEl = document.getElementById("sp-msg");
+          var submitBtn = document.getElementById("sp-submit");
+          var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+          function loadSupabaseUmd(){
+            return new Promise(function(resolve, reject){
+              if (window.supabase && window.supabase.createClient) return resolve();
+              var s = document.createElement("script");
+              s.src = SUPABASE_CDN;
+              s.onload = resolve;
+              s.onerror = function(){ reject(new Error("load_supabase_failed")); };
+              document.head.appendChild(s);
+            });
+          }
+          function resolveConfig(){
+            var url = null, key = null;
+            try { if (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL) url = SUPABASE_URL; } catch(e){}
+            try { if (typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY) key = SUPABASE_ANON_KEY; } catch(e){}
+            if (!url && window.SUPABASE_URL) url = window.SUPABASE_URL;
+            if (!key && window.SUPABASE_ANON_KEY) key = window.SUPABASE_ANON_KEY;
+            if (!url || !key) {
+              // Fallback: dùng đúng giá trị đã có sẵn trong khối đăng nhập của trang này
+              // (không phải URL/key mới) vì 2 biến gốc nằm trong closure của khối auth.
+              url = url || "https://azsaucfdgplkxvqseheh.supabase.co";
+              key = key || "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq";
+            }
+            return { url: url, key: key };
+          }
+          function getSupportClient(){
+            // Ưu tiên client sẵn có của trang nếu truy cập được
+            try { if (typeof client !== "undefined" && client && client.from) return Promise.resolve(client); } catch(e){}
+            if (window.client && window.client.from) return Promise.resolve(window.client);
+            if (window.__spClient && window.__spClient.from) return Promise.resolve(window.__spClient);
+            return loadSupabaseUmd().then(function(){
+              var cfg = resolveConfig();
+              window.__spClient = window.supabase.createClient(cfg.url, cfg.key);
+              return window.__spClient;
+            });
+          }
+          form.addEventListener("submit", function(ev){
+            ev.preventDefault();
+            var nameVal = document.getElementById("sp-name").value.trim();
+            var contactVal = document.getElementById("sp-contact").value.trim();
+            var issueVal = document.getElementById("sp-issue").value;
+            var messageVal = document.getElementById("sp-message").value.trim();
+            if (!contactVal || !messageVal) {
+              msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+              msgEl.className = "err";
+              return;
+            }
+            submitBtn.disabled = true;
+            msgEl.textContent = "";
+            msgEl.className = "";
+            getSupportClient().then(function(spClient){
+              return spClient.from("support_tickets").insert({
+                name: nameVal || "",
+                contact: contactVal,
+                issue_type: issueVal,
+                message: messageVal,
+                page: "podcast-ai",
+                status: "new"
+              });
+            }).then(function(res){
+              if (res && res.error) throw res.error;
+              msgEl.textContent = "Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.";
+              msgEl.className = "ok";
+              form.reset();
+            }).catch(function(){
+              msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+              msgEl.className = "err";
+            }).finally(function(){
+              submitBtn.disabled = false;
+            });
+          });
+        })();
+        </script>
+      </section>
+
       <footer>
         <p><b>Podcast AI</b> — công cụ chuyển bài viết thành kịch bản podcast hội thoại 2 giọng, thuộc hệ thống công cụ cho người bán hàng và người làm nội dung Việt Nam.</p>
         <p>Bản demo trên trang tạo kịch bản bằng mẫu câu phía client và đọc thử bằng giọng của trình duyệt; đây không phải dịch vụ thu âm hay giọng AI phòng thu. Giá đối thủ nêu trên trang là giá khởi điểm công bố tại thời điểm viết và có thể thay đổi — vui lòng kiểm tra lại trên trang của nhà cung cấp đó.</p>
@@ -973,6 +1113,7 @@
         lines.push({ who:"B", text: pick(CLOSERS[lang], Math.floor(Math.random()*2)) });
         currentScript = lines;
         renderScript();
+        saveDraft();
         saveItem(title, body, lines, lang, style);
         msg.textContent = "Đã tạo kịch bản " + lines.length + " lượt thoại và lưu vào danh sách bên dưới."; msg.className = "msg ok";
         $("playStatus").textContent = "Sẵn sàng nghe thử — " + lines.length + " lượt thoại.";
@@ -1114,7 +1255,7 @@
             if (it.lang) $("selLang").value = it.lang;
             if (it.style) $("selStyle").value = it.style;
             currentScript = it.script || [];
-            renderScript(); updateCounts(); loadVoices();
+            renderScript(); saveDraft(); updateCounts(); loadVoices();
             $("playStatus").textContent = "Đã mở lại kịch bản — " + currentScript.length + " lượt thoại.";
             document.getElementById("cong-cu").scrollIntoView({ behavior:"smooth", block:"start" });
           });
@@ -1151,11 +1292,14 @@
       }
 
       /* ----- Wiring ----- */
+      function saveDraft(){
+        try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ title: $("inTitle").value, body: $("inArticle").value, script: currentScript })); } catch(e){}
+      }
       function updateCounts(){
         var t = $("inArticle").value;
         $("charCount").textContent = t.length.toLocaleString("vi-VN");
         $("paraCount").textContent = splitParagraphs(t).length;
-        try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ title: $("inTitle").value, body: t })); } catch(e){}
+        saveDraft();
       }
       $("inArticle").addEventListener("input", updateCounts);
       $("inTitle").addEventListener("input", updateCounts);
@@ -1197,10 +1341,17 @@
       /* ----- Init ----- */
       try {
         var draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
-        if (draft){ $("inTitle").value = draft.title || ""; $("inArticle").value = draft.body || ""; }
+        if (draft){
+          $("inTitle").value = draft.title || "";
+          $("inArticle").value = draft.body || "";
+          if (Array.isArray(draft.script)){
+            currentScript = draft.script.filter(function(l){ return l && (l.who === "A" || l.who === "B") && typeof l.text === "string"; });
+          }
+        }
       } catch(e){}
       updateCounts();
       renderScript();
+      if (currentScript.length) $("playStatus").textContent = "Đã khôi phục kịch bản đã lưu — " + currentScript.length + " lượt thoại. Bấm “Nghe thử” để nghe lại.";
       renderSaved();
       loadVoices();
       if ("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = loadVoices;
