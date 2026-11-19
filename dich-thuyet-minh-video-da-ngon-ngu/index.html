@@ -1964,7 +1964,7 @@
           ffmpeg.on("log", function (e) { if (e && e.message) logs += e.message + "\n"; });
           var m = /\.([a-z0-9]+)$/i.exec(file.name || "");
           var inName = "probe." + (m ? m[1].toLowerCase() : "mp4");
-          return ffmpeg.load({ coreURL: FFMPEG_CORE_JS, wasmURL: FFMPEG_CORE_WASM }).then(function () {
+          return ffmpeg.load({ coreURL: FFMPEG_CORE_JS_ABS, wasmURL: FFMPEG_CORE_WASM_ABS }).then(function () {
             return WASM.fetchFile(file);
           }).then(function (data) {
             return ffmpeg.writeFile(inName, data);
@@ -2259,9 +2259,24 @@
       var CHUNK_SIZE = 40 * 1024 * 1024;        /* chunk Pro: <= 40 MB */
       var MAX_UPLOAD_BYTES = 48 * 1024 * 1024;   /* 1 file tối đa 48 MB */
       var LS_JOB_META = "ccs_p9_job_meta";       /* job_id -> { fileName } để hiển thị tên sau khi tải lại trang */
-      var FFMPEG_JS = "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/ffmpeg.js";
-      var FFMPEG_CORE_JS = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js";
-      var FFMPEG_CORE_WASM = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.wasm";
+      /* ffmpeg.wasm TỰ HOST cùng origin (assets/ffmpeg/): Worker classic của
+         @ffmpeg/ffmpeg bắt buộc cùng origin — tải từ CDN bên ngoài bị
+         trình duyệt chặn ("cannot be accessed from origin") nên bước nén
+         Chuẩn không chạy được. Đường dẫn tương đối như video mẫu
+         (assets/mau-10s.mp4) để chạy đúng cả khi site nằm ở thư mục con
+         /congcushop/ trên GitHub Pages. Bản UMD tự suy publicPath từ
+         <script> ffmpeg.js nên Worker 814.ffmpeg.js tự nạp cùng thư mục. */
+      var FFMPEG_JS = "assets/ffmpeg/ffmpeg.js";
+      var FFMPEG_CORE_JS = "assets/ffmpeg/ffmpeg-core.js";
+      var FFMPEG_CORE_WASM = "assets/ffmpeg/ffmpeg-core.wasm";
+      /* Bên trong Worker, importScripts(coreURL) + fetch(wasmURL) phân giải
+         theo URL của Worker (assets/ffmpeg/814.ffmpeg.js) chứ không theo
+         trang — đường dẫn tương đối trần sẽ thành
+         assets/ffmpeg/assets/ffmpeg/… và 404. Vì vậy khi gọi ffmpeg.load()
+         phải đưa URL tuyệt đối cùng origin, suy từ đường dẫn tương đối
+         trên theo document.baseURI của trang. */
+      var FFMPEG_CORE_JS_ABS = new URL(FFMPEG_CORE_JS, document.baseURI).href;
+      var FFMPEG_CORE_WASM_ABS = new URL(FFMPEG_CORE_WASM, document.baseURI).href;
       var SUPABASE_CDN_JOB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
 
       var serverJobs = [];
@@ -2424,7 +2439,7 @@
         return loadFfmpeg().then(function (WASM) {
           var ffmpeg = new WASM.FFmpeg();
           if (onProgress) ffmpeg.on("progress", function (p) { onProgress(p && p.progress ? p.progress : 0); });
-          return ffmpeg.load({ coreURL: FFMPEG_CORE_JS, wasmURL: FFMPEG_CORE_WASM }).then(function () {
+          return ffmpeg.load({ coreURL: FFMPEG_CORE_JS_ABS, wasmURL: FFMPEG_CORE_WASM_ABS }).then(function () {
             return WASM.fetchFile(file);
           }).then(function (data) {
             return ffmpeg.writeFile("input.mp4", data);
@@ -2503,6 +2518,18 @@
         var s = raw.trim();
         if (!s) return "Xử lý không thành công — hãy bấm “Gửi lại” để thử lại, hoặc liên hệ hỗ trợ qua Zalo.";
         if (/no_audio_stream/i.test(s) || /does not contain any stream/i.test(s)) {
+          return "Video không có rãnh âm thanh (không có tiếng nói) nên không lồng tiếng được.";
+        }
+        /* Job cũ (worker chạy trước đợt sửa): error_message đã lưu bị CẮT,
+           chỉ còn lệnh ffmpeg tách audio + banner cấu hình, mất dòng
+           "does not contain any stream". Nhận diện qua cặp dấu hiệu còn
+           sót: lệnh tách audio (xuất original.wav bằng cờ -vn -ac 1
+           -ar 16000) VÀ dấu hiệu thất bại của lệnh đó (mã 234 /
+           "lệnh thất bại" / "Invalid argument") — ffmpeg thoát mã 234 ở
+           bước tách audio nghĩa là video không có rãnh âm thanh để tách. */
+        var hasExtractCmd = /original\.wav/i.test(s) || /-vn\s+-ac\s+1\s+-ar\s+16000/.test(s);
+        var hasExtractFail = /\(234\)/.test(s) || /lệnh thất bại/i.test(s) || /invalid argument/i.test(s);
+        if (hasExtractCmd && hasExtractFail) {
           return "Video không có rãnh âm thanh (không có tiếng nói) nên không lồng tiếng được.";
         }
         if (/duration_exceeded/i.test(s)) {
