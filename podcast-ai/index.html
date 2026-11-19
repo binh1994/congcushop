@@ -749,7 +749,19 @@
           <div class="btn-row">
             <button type="button" class="btn btn-ghost" id="btnCopyScript">Sao chép kịch bản</button>
             <button type="button" class="btn btn-ghost" id="btnDownload">Tải kịch bản (.txt)</button>
+            <button type="button" class="btn btn-primary" id="btnExportMp3">Xuất file MP3</button>
             <span class="msg ok" id="copyOk" hidden>Đã sao chép ✓</span>
+          </div>
+          <p class="msg" id="mp3Msg" role="status" aria-live="polite"></p>
+          <div id="mp3Section">
+            <h3 style="font-size:17px;margin:18px 0 4px;font-weight:800;">File MP3 của tôi</h3>
+            <p class="fineprint" style="margin:0 0 10px;">File MP3 được tạo trên máy chủ bằng giọng AI, thường xong trong vài phút. Tải lại trang, danh sách này vẫn hiện và tiếp tục cập nhật tiến độ.</p>
+            <div class="saved-list" id="mp3List">
+              <div class="saved-empty">Chưa có file MP3 nào. Tạo kịch bản rồi bấm “Xuất file MP3” để tạo tập đầu tiên.</div>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-ghost btn-sm" id="btnRefreshMp3">Làm mới danh sách</button>
+            </div>
           </div>
           <p class="fineprint">Bài viết và kịch bản được lưu tự động vào trình duyệt trên máy này (localStorage) để bạn mở lại sau. Xóa dữ liệu trình duyệt hoặc đổi máy thì sẽ không còn — hãy tải file .txt nếu muốn giữ lâu dài.</p>
         </div>
@@ -1291,6 +1303,229 @@
         });
       }
 
+      /* ----- Xuất file MP3 thật (qua bảng dubbing_jobs, worker xử lý) ----- */
+      /* Hợp đồng: ~/workspace/backend/dub-worker/CONTRACT.md §3 (podcast).
+         Trang KHÔNG tự đọc file MP3 — worker tạo file rồi ghi result_path,
+         trang chỉ poll trạng thái và hiện link tải từ bucket dubbing-result. */
+      var MP3_SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";
+      var MP3_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq";
+      var MP3_RESULT_BASE = MP3_SUPABASE_URL + "/storage/v1/object/public/dubbing-result/";
+      var MP3_MAX_CHARS = 8000;
+      var MP3_POLL_MS = 10000;
+      var mp3Client = null;
+      var mp3Timers = {};   // jobId -> interval id
+      var mp3Jobs = [];     // job podcast của tài khoản, mới nhất trước
+      var mp3ListRetries = 0;
+
+      function mp3Say(text, kind){
+        var el = $("mp3Msg");
+        if (!el) return;
+        el.textContent = text || "";
+        el.className = "msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+      }
+      function mp3StatusLabel(status){
+        if (status === "queued") return "Đang chờ xử lý";
+        if (status === "processing") return "Đang tạo file MP3…";
+        if (status === "done") return "Hoàn thành";
+        if (status === "failed") return "Đang xử lý thủ công";
+        return status || "Chưa rõ";
+      }
+      function mp3ResultUrl(job){
+        return job && job.result_path ? MP3_RESULT_BASE + job.result_path : "";
+      }
+      function mp3GetSession(){
+        try {
+          if (!window.CongCuShop || !window.CongCuShop.getSession) return Promise.resolve(null);
+          return Promise.resolve(window.CongCuShop.getSession()).catch(function(){ return null; });
+        } catch (e) { return Promise.resolve(null); }
+      }
+      function mp3LoadSupabaseUmd(){
+        return new Promise(function(resolve, reject){
+          if (window.supabase && window.supabase.createClient) return resolve();
+          var s = document.createElement("script");
+          s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+          s.onload = resolve;
+          s.onerror = function(){ reject(new Error("load_supabase_failed")); };
+          document.head.appendChild(s);
+        });
+      }
+      // Client Supabase riêng cho job MP3 (mẫu như khối hỗ trợ sp-script):
+      // tạo client bằng anon key rồi setSession() bằng token của phiên
+      // đăng nhập hiện tại, để insert/select qua RLS (auth.uid() = user_id).
+      function mp3GetClient(session){
+        return mp3LoadSupabaseUmd().then(function(){
+          if (!mp3Client) mp3Client = window.supabase.createClient(MP3_SUPABASE_URL, MP3_ANON_KEY);
+          if (session && session.access_token && session.refresh_token){
+            return mp3Client.auth.setSession({
+              access_token: session.access_token,
+              refresh_token: session.refresh_token
+            }).then(function(){ return mp3Client; }).catch(function(){ return mp3Client; });
+          }
+          return mp3Client;
+        });
+      }
+      function mp3FmtTime(iso){
+        try {
+          var d = new Date(iso);
+          return d.toLocaleDateString("vi-VN") + " " + d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+        } catch (e) { return iso || ""; }
+      }
+      function mp3RenderList(){
+        var box = $("mp3List");
+        if (!box) return;
+        box.innerHTML = "";
+        if (!mp3Jobs.length){
+          box.innerHTML = '<div class="saved-empty">Chưa có file MP3 nào. Tạo kịch bản rồi bấm “Xuất file MP3” để tạo tập đầu tiên.</div>';
+          return;
+        }
+        mp3Jobs.forEach(function(job){
+          var d = document.createElement("div"); d.className = "saved-item";
+          var meta = document.createElement("div"); meta.className = "meta";
+          var nm = document.createElement("div"); nm.className = "name";
+          nm.textContent = "Tập podcast — " + mp3FmtTime(job.created_at);
+          var dt = document.createElement("div"); dt.className = "detail";
+          var turns = (job.payload && job.payload.turns) ? job.payload.turns.length : 0;
+          var lang = (job.payload && job.payload.lang) || job.target_lang || "vi";
+          dt.textContent = turns + " lượt thoại · " + (lang === "en" ? "English" : "Tiếng Việt") +
+            " · " + mp3StatusLabel(job.status);
+          if (job.status === "failed"){
+            var fm = document.createElement("div"); fm.className = "detail";
+            fm.textContent = "Podcast của bạn đang được xử lý thủ công, shop sẽ gửi lại qua Zalo/SĐT bạn để lại.";
+            meta.appendChild(nm); meta.appendChild(dt); meta.appendChild(fm);
+          } else {
+            meta.appendChild(nm); meta.appendChild(dt);
+          }
+          var act = document.createElement("div"); act.className = "actions";
+          if (job.status === "done" && job.result_path){
+            var a = document.createElement("a");
+            a.className = "btn btn-primary btn-sm"; a.textContent = "Tải file MP3";
+            a.href = mp3ResultUrl(job); a.target = "_blank"; a.rel = "noopener";
+            a.download = "podcast.mp3";
+            act.appendChild(a);
+          }
+          d.appendChild(meta); d.appendChild(act);
+          box.appendChild(d);
+        });
+      }
+      function mp3StopPoll(jobId){
+        if (mp3Timers[jobId]){ clearInterval(mp3Timers[jobId]); delete mp3Timers[jobId]; }
+      }
+      function mp3PollJob(jobId){
+        if (mp3Timers[jobId]) return; // đang poll rồi
+        mp3Timers[jobId] = setInterval(function(){
+          mp3GetSession().then(function(session){
+            if (!session) { mp3StopPoll(jobId); return; }
+            return mp3GetClient(session).then(function(client){
+              return client.from("dubbing_jobs").select("id,status,result_path,error_message").eq("id", jobId).single();
+            });
+          }).then(function(res){
+            if (!res || res.error) return;
+            var row = res.data;
+            for (var i = 0; i < mp3Jobs.length; i++){
+              if (mp3Jobs[i].id === jobId){
+                mp3Jobs[i].status = row.status;
+                mp3Jobs[i].result_path = row.result_path;
+                break;
+              }
+            }
+            if (row.status === "done"){
+              mp3StopPoll(jobId);
+              mp3RenderList();
+              mp3Say("Đã tạo xong file MP3 — bấm “Tải file MP3” trong mục “File MP3 của tôi” để tải về.", "ok");
+            } else if (row.status === "failed"){
+              mp3StopPoll(jobId);
+              mp3RenderList();
+              mp3Say("Podcast của bạn đang được xử lý thủ công, shop sẽ gửi lại qua Zalo/SĐT bạn để lại.", "err");
+            } else {
+              mp3RenderList();
+              mp3Say(mp3StatusLabel(row.status) + " — worker xử lý mỗi 5 phút, bạn cứ để trang mở hoặc quay lại sau.", "");
+            }
+          }).catch(function(){ /* lỗi mạng lúc poll: thử lại ở lần sau */ });
+        }, MP3_POLL_MS);
+      }
+      function mp3ResumePolling(){
+        mp3Jobs.forEach(function(job){
+          if (job.status === "queued" || job.status === "processing") mp3PollJob(job.id);
+        });
+      }
+      // Đọc job podcast của tài khoản hiện tại (mới nhất trước). Chưa đăng
+      // nhập thì không đọc được (RLS) — để nguyên danh sách trống.
+      // Client checkAccess.js chỉ sẵn sàng sau DOMContentLoaded nên thử
+      // lại vài lần khi trang vừa tải.
+      function mp3LoadMyJobs(){
+        return mp3GetSession().then(function(session){
+          if (!session){
+            if (mp3ListRetries < 5){
+              mp3ListRetries++;
+              setTimeout(mp3LoadMyJobs, 2000);
+            }
+            return;
+          }
+          return mp3GetClient(session).then(function(client){
+            return client.from("dubbing_jobs")
+              .select("id,status,result_path,target_lang,payload,created_at")
+              .eq("job_type", "podcast").eq("product", "p10")
+              .order("created_at", { ascending: false }).limit(10);
+          }).then(function(res){
+            if (res && !res.error && Array.isArray(res.data)){
+              mp3Jobs = res.data;
+              mp3RenderList();
+              mp3ResumePolling();
+            }
+          });
+        }).catch(function(){ /* chưa đăng nhập / chưa nạp xong: giữ danh sách trống */ });
+      }
+      function mp3Export(){
+        if (!currentScript.length){ mp3Say("Hãy tạo kịch bản trước.", "err"); return; }
+        var lang = $("selLang").value || "vi";
+        var turns = currentScript.map(function(l){
+          return { speaker: l.who === "A" ? "host" : "guest", text: l.text };
+        });
+        var totalChars = 0;
+        turns.forEach(function(t){ totalChars += (t.text || "").length; });
+        if (totalChars > MP3_MAX_CHARS){
+          mp3Say("Kịch bản dài " + totalChars.toLocaleString("vi-VN") + " ký tự, vượt giới hạn " +
+            MP3_MAX_CHARS.toLocaleString("vi-VN") + " ký tự cho một file MP3 — hãy rút ngắn bài viết rồi tạo lại kịch bản.", "err");
+          return;
+        }
+        var btn = $("btnExportMp3");
+        btn.disabled = true;
+        mp3Say("Đang gửi kịch bản…", "");
+        mp3GetSession().then(function(session){
+          if (!session){
+            mp3Say("Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.", "err");
+            btn.disabled = false;
+            return null;
+          }
+          return mp3GetClient(session).then(function(client){
+            // Trang chưa có tên giọng Edge TTS riêng cho từng ngôn ngữ —
+            // gửi chuỗi rỗng để worker tự chọn giọng theo lang (xem CONTRACT §3).
+            return client.from("dubbing_jobs").insert({
+              user_id: session.user.id,
+              job_type: "podcast",
+              product: "p10",
+              target_lang: lang,
+              source_path: null,
+              status: "queued",
+              payload: { turns: turns, lang: lang, voice_host: "", voice_guest: "" }
+            }).select("id,status,result_path,target_lang,payload,created_at").single();
+          });
+        }).then(function(res){
+          btn.disabled = false;
+          if (!res) return; // đã báo lỗi đăng nhập ở trên
+          if (res.error) throw res.error;
+          var job = res.data;
+          mp3Jobs.unshift(job);
+          mp3RenderList();
+          mp3Say("Đang chờ xử lý — file MP3 thường xong trong vài phút, bạn cứ để trang mở hoặc quay lại sau.", "ok");
+          mp3PollJob(job.id);
+        }).catch(function(err){
+          btn.disabled = false;
+          mp3Say("Chưa gửi được kịch bản: " + (err && err.message ? err.message : "lỗi không rõ") +
+            ". Kiểm tra mạng rồi thử lại.", "err");
+        });
+      }
+
       /* ----- Wiring ----- */
       function saveDraft(){
         try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ title: $("inTitle").value, body: $("inArticle").value, script: currentScript })); } catch(e){}
@@ -1326,6 +1561,20 @@
           navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ copyFallback(text).then(done); });
         } else copyFallback(text).then(done);
       });
+      $("btnExportMp3").addEventListener("click", mp3Export);
+      $("btnRefreshMp3").addEventListener("click", function(){ mp3ListRetries = 0; mp3LoadMyJobs(); });
+      // Đăng nhập/xuất xong thì nạp lại "File MP3 của tôi" (khối auth không
+      // phát sự kiện riêng nên bắt theo form đăng nhập / nút đăng xuất).
+      var authFormEl = document.querySelector('[data-ccs-form]');
+      if (authFormEl) authFormEl.addEventListener("submit", function(){
+        mp3ListRetries = 0;
+        setTimeout(mp3LoadMyJobs, 3000);
+      });
+      var logoutEl = document.querySelector('[data-ccs-logout]');
+      if (logoutEl) logoutEl.addEventListener("click", function(){
+        Object.keys(mp3Timers).forEach(mp3StopPoll);
+        mp3Jobs = []; mp3RenderList(); mp3Say("", "");
+      });
       $("btnDownload").addEventListener("click", function(){
         var msg = $("toolMsg");
         if (!currentScript.length){ msg.textContent = "Chưa có kịch bản để tải — hãy tạo kịch bản trước."; msg.className = "msg err"; return; }
@@ -1354,6 +1603,10 @@
       if (currentScript.length) $("playStatus").textContent = "Đã khôi phục kịch bản đã lưu — " + currentScript.length + " lượt thoại. Bấm “Nghe thử” để nghe lại.";
       renderSaved();
       loadVoices();
+      mp3LoadMyJobs();
+      if (document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", function(){ mp3LoadMyJobs(); });
+      }
       if ("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged = loadVoices;
     })();
     </script>
