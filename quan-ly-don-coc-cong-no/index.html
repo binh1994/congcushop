@@ -62,57 +62,72 @@
       input,select,textarea{font-family:inherit;font-size:1rem;color:var(--ink)}
       .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
       .num{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+      .due-val{color:var(--red)}
+      .plan-desc{color:var(--ink-soft);margin:0}
 
       /* ---------- HERO ---------- */
-      .hero{padding:44px 0 8px}
-      .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+      .hero{padding:36px 0 8px}
+      .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:start}
       .tag{
         display:inline-flex;align-items:center;gap:8px;
         background:var(--brand-tint);color:var(--brand-dark);
-        font-weight:700;font-size:.82rem;padding:7px 13px;border-radius:999px;
+        font-weight:700;font-size:.82rem;padding:6px 12px;border-radius:999px;
       }
-      .tag .dot{width:8px;height:8px;border-radius:50%;background:var(--brand)}
+      .tag .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex:none}
       h1{
-        font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.14;font-weight:900;
-        letter-spacing:-.01em;margin:16px 0 14px;
+        font-size:clamp(1.95rem,4.6vw,3.05rem);line-height:1.13;font-weight:900;
+        letter-spacing:-.015em;margin:12px 0 10px;
       }
       h1 em{font-style:normal;color:var(--brand)}
-      .hero p.lead{font-size:1.08rem;color:var(--ink-soft);margin:0 0 22px;max-width:34em}
-      .price-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:22px}
-      .price-line .big{font-size:2rem;font-weight:900}
-      .price-line .per{color:var(--ink-soft);font-weight:600}
-      .price-line .trial{
-        background:var(--amber-tint);color:var(--amber);font-weight:700;font-size:.85rem;
-        padding:5px 11px;border-radius:999px;
+      .hero p.lead{font-size:1.07rem;color:var(--ink-soft);margin:0 0 16px;max-width:34em}
+      .price-line{
+        display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 16px;
+        background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;
       }
-      .cta-row{display:flex;flex-wrap:wrap;gap:12px}
+      .price-line .big{font-size:2.45rem;font-weight:900;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+      .price-line .per{color:var(--ink-soft);font-weight:700;font-size:1rem}
+      .price-line .trial{
+        background:var(--amber-tint);color:var(--amber);font-weight:800;font-size:.84rem;
+        padding:6px 11px;border-radius:999px;white-space:nowrap;
+      }
+      .cta-row{display:flex;flex-wrap:wrap;gap:10px}
       .btn{
         display:inline-flex;align-items:center;justify-content:center;gap:8px;
-        border:0;border-radius:12px;padding:12px 22px;min-height:48px;
+        border:0;border-radius:12px;padding:12px 22px;min-height:50px;
         font-weight:700;font-size:1rem;text-decoration:none;transition:transform .12s ease, background .12s ease;
       }
       .btn:active{transform:scale(.98)}
-      .btn-primary{background:var(--brand);color:#fff}
+      .btn-primary{background:var(--brand);color:#fff;box-shadow:0 6px 18px rgba(12,122,92,.28)}
       .btn-primary:hover{background:var(--brand-dark)}
+      .cta-row .btn-primary{font-size:1.05rem;padding:14px 26px;min-height:54px}
       @media (prefers-color-scheme: dark){.btn-primary{color:#06231a}}
-      .btn-ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--line)}
-      .hero-points{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:9px;color:var(--ink-soft);font-size:.97rem}
+      .btn-ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--ink-soft)}
+      .btn-ghost:hover{border-color:var(--ink)}
+      .hero-points{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:8px;color:var(--ink-soft);font-size:.96rem}
       .hero-points li{display:flex;gap:10px;align-items:flex-start}
       .hero-points .ck{color:var(--brand);font-weight:900;flex:none}
 
       /* phone mock */
       .phone{
-        background:var(--surface);border:1.5px solid var(--line);border-radius:22px;
-        box-shadow:var(--shadow);padding:18px;max-width:400px;justify-self:end;width:100%;
+        background:var(--surface);border:1.5px solid var(--line);border-radius:20px;
+        box-shadow:var(--shadow);padding:16px;max-width:400px;justify-self:end;width:100%;min-width:0;
       }
-      .phone-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+      .phone-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
       .phone-head b{font-size:.95rem}
-      .phone-head span{font-size:.75rem;color:var(--ink-soft)}
+      .phone-head span{font-size:.72rem;color:var(--ink-soft);text-align:right}
+      .phone-demo{
+        display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.04em;
+        background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line);
+        padding:3px 8px;border-radius:999px;white-space:nowrap;
+      }
       .mini-order{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--surface)}
-      .mini-order .row1{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:.92rem}
+      .mini-order .row1{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-weight:700;font-size:.92rem}
       .mini-order .row2{color:var(--ink-soft);font-size:.83rem;margin-top:2px}
-      .mini-order .money{display:flex;gap:14px;margin-top:8px;font-size:.83rem;flex-wrap:wrap}
-      .mini-order .money b{display:block;font-size:.95rem}
+      .mini-order .money{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;font-size:.78rem;color:var(--ink-soft)}
+      .mini-order .money span{min-width:0}
+      .mini-order .money span:last-child{text-align:right}
+      .mini-order .money b{display:block;font-size:.92rem;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+      .mini-order .money span:last-child b{color:var(--red)}
       .badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
       .b-new{background:var(--blue-tint);color:var(--blue)}
       .b-dep{background:var(--brand-tint);color:var(--brand-dark)}
@@ -124,32 +139,38 @@
         display:flex;justify-content:space-between;align-items:center;
         background:var(--red-tint);border-radius:12px;padding:12px 14px;font-size:.9rem;
       }
-      .phone-total b{color:var(--red);font-size:1.05rem}
+      .phone-total b{color:var(--red);font-size:1.05rem;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+      .phone-total span{min-width:0}
 
       /* ---------- PAIN STRIP ---------- */
-      .pain{margin:38px 0 0;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:22px}
-      .pain h2{font-size:1.15rem;margin:0 0 14px}
-      .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+      .pain{margin:32px 0 0;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:22px}
+      .pain h2{font-size:1.15rem;margin:0 0 16px;font-weight:800}
+      .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
       .pain-item b{display:block;margin-bottom:4px;font-size:.98rem}
       .pain-item p{margin:0;color:var(--ink-soft);font-size:.92rem}
-      .pain-item .ic{font-size:1.3rem;display:block;margin-bottom:6px}
+      .pain-num{
+        display:inline-flex;align-items:center;justify-content:center;
+        width:30px;height:30px;border-radius:50%;margin-bottom:10px;
+        background:var(--red-tint);color:var(--red);
+        font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.82rem;font-weight:700;
+      }
 
       /* ---------- SECTIONS ---------- */
-      section{padding:44px 0 4px}
-      .sec-head{max-width:640px;margin-bottom:20px}
-      .sec-head h2{font-size:clamp(1.45rem,3vw,1.9rem);font-weight:800;margin:0 0 8px;line-height:1.25}
-      .sec-head p{color:var(--ink-soft);margin:0}
+      section{padding:48px 0 4px}
+      .sec-head{max-width:660px;margin-bottom:22px}
+      .sec-head h2{font-size:clamp(1.45rem,3vw,1.9rem);font-weight:800;margin:0 0 8px;line-height:1.25;letter-spacing:-.01em}
+      .sec-head p{color:var(--ink-soft);margin:0;font-size:1rem}
 
       /* ---------- DEMO ---------- */
-      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-      .stat{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+      .stat{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 16px;min-width:0}
       .stat .lbl{font-size:.8rem;color:var(--ink-soft);font-weight:600}
-      .stat .val{font-size:1.35rem;font-weight:800;margin-top:2px}
+      .stat .val{font-size:1.32rem;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .stat.alert .val{color:var(--red)}
       .stat.good .val{color:var(--brand)}
       .demo-grid{display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
-      .card{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px}
-      .card h3{margin:0 0 4px;font-size:1.08rem;font-weight:800}
+      .card{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:22px;min-width:0}
+      .card h3{margin:0 0 4px;font-size:1.08rem;font-weight:800;line-height:1.3}
       .card .sub{color:var(--ink-soft);font-size:.88rem;margin:0 0 16px}
       .field{margin-bottom:13px}
       .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:5px}
@@ -172,30 +193,38 @@
 
       .filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
       .chip{
-        border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
+        border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
         border-radius:999px;padding:7px 14px;font-weight:600;font-size:.86rem;min-height:38px;
       }
-      .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+      .chip:hover{border-color:var(--ink-soft)}
+      .chip.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
       @media (prefers-color-scheme: dark){.chip.on{color:#06231a}}
       .order{
-        border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:11px;background:var(--surface);
+        border:1.5px solid var(--line);border-radius:12px;padding:15px 16px;margin-bottom:11px;background:var(--surface);min-width:0;
       }
       .order-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
-      .order-top .who{font-weight:800}
-      .order-top .who small{display:block;font-weight:500;color:var(--ink-soft);font-size:.8rem}
+      .order-top .who{font-weight:800;min-width:0}
+      .order-top .who small{display:block;font-weight:500;color:var(--ink-soft);font-size:.8rem;margin-top:1px}
       .order-prod{color:var(--ink-soft);font-size:.9rem;margin-top:3px}
-      .order-money{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:.83rem;color:var(--ink-soft)}
-      .order-money b{display:block;color:var(--ink);font-size:.95rem}
+      .order-money{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);font-size:.78rem;color:var(--ink-soft)}
+      .order-money span{min-width:0}
+      .order-money span:nth-child(2){text-align:right}
+      .order-money span:last-child{text-align:right}
+      .order-money b{display:block;color:var(--ink);font-size:.95rem;font-variant-numeric:tabular-nums;white-space:nowrap;margin-top:1px}
       .order-money .due b{color:var(--red)}
-      .order-money .paid b{color:var(--brand)}
-      .order-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+      .order-money .paid b{color:var(--brand-dark)}
+      .order-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
       .mini-btn{
-        border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink);
-        border-radius:9px;padding:7px 13px;font-weight:600;font-size:.84rem;min-height:38px;
+        border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
+        border-radius:9px;padding:7px 12px;font-weight:600;font-size:.84rem;min-height:38px;
       }
-      .mini-btn.warn{border-color:var(--amber);color:var(--amber);background:var(--amber-tint)}
-      .mini-btn.good{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-tint)}
-      .empty{color:var(--ink-soft);text-align:center;padding:26px 10px;border:1.5px dashed var(--line);border-radius:12px}
+      .mini-btn.next-act{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+      @media (prefers-color-scheme: dark){.mini-btn.next-act{color:#06231a}}
+      .mini-btn.warn{border-color:var(--amber);color:var(--amber);background:var(--amber-tint);font-weight:700}
+      .mini-btn.good{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-tint);font-weight:700}
+      .mini-btn.danger{color:var(--red);border-color:var(--line);background:var(--surface)}
+      .mini-btn.subtle{color:var(--ink-soft);background:var(--surface-2)}
+      .empty{color:var(--ink-soft);text-align:center;padding:26px 14px;border:1.5px dashed var(--line);border-radius:12px;font-size:.94rem}
 
       /* message box */
       .msg-box{margin-top:18px}
@@ -210,12 +239,12 @@
       .debt-list{display:grid;gap:10px}
       .debt-row{
         display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-        background:var(--surface);border:1.5px solid var(--line);border-left:5px solid var(--red);
-        border-radius:12px;padding:13px 16px;
+        background:var(--surface);border:1.5px solid var(--line);
+        border-radius:12px;padding:14px 16px;min-width:0;
       }
-      .debt-row .who{font-weight:700}
-      .debt-row .who small{display:block;color:var(--ink-soft);font-weight:500;font-size:.82rem}
-      .debt-row .amt{font-weight:800;color:var(--red);font-size:1.05rem;text-align:right}
+      .debt-row .who{font-weight:700;min-width:0}
+      .debt-row .who small{display:block;color:var(--ink-soft);font-weight:500;font-size:.82rem;margin-top:1px}
+      .debt-row .amt{font-weight:800;color:var(--red);font-size:1.08rem;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
       .debt-row .amt small{display:block;color:var(--ink-soft);font-weight:500;font-size:.78rem}
 
       /* steps */
@@ -230,34 +259,36 @@
       .step p{margin:0;color:var(--ink-soft);font-size:.93rem}
 
       /* pricing */
-      .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
-      .plan{border-radius:var(--radius);padding:26px;background:var(--surface);border:1.5px solid var(--line)}
+      .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;padding-top:14px}
+      .plan{border-radius:var(--radius);padding:26px;background:var(--surface);border:1.5px solid var(--line);display:flex;flex-direction:column;min-width:0}
       .plan.hot{border:2px solid var(--brand);box-shadow:var(--shadow);position:relative}
       .plan .flag{
-        position:absolute;top:-13px;left:22px;background:var(--brand);color:#fff;
-        font-size:.75rem;font-weight:800;padding:4px 12px;border-radius:999px;
+        position:absolute;top:-14px;left:20px;background:var(--brand);color:#fff;
+        font-size:.74rem;font-weight:800;letter-spacing:.02em;padding:5px 12px;border-radius:999px;
+        white-space:nowrap;max-width:calc(100% - 32px);overflow:hidden;text-overflow:ellipsis;
       }
       @media (prefers-color-scheme: dark){.plan .flag{color:#06231a}}
-      .plan h3{margin:0 0 4px;font-size:1.15rem}
-      .plan .p{font-size:2.1rem;font-weight:900;margin:8px 0 2px}
+      .plan h3{margin:0 0 4px;font-size:1.15rem;line-height:1.3}
+      .plan .p{font-size:2.1rem;font-weight:900;margin:8px 0 2px;font-variant-numeric:tabular-nums}
       .plan .p small{font-size:.95rem;color:var(--ink-soft);font-weight:600}
       .plan ul{list-style:none;margin:16px 0 20px;padding:0;display:grid;gap:9px;font-size:.95rem}
       .plan ul li{display:flex;gap:9px}
       .plan ul .ck{color:var(--brand);font-weight:900;flex:none}
-      .compare{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:6px}
-      .compare th,.compare td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+      .plan .btn-block{margin-top:auto}
+      .compare{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:6px;table-layout:fixed}
+      .compare th,.compare td{padding:10px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
       .compare th{font-size:.82rem;color:var(--ink-soft);font-weight:700}
-      .compare td:last-child,.compare th:last-child{text-align:right;font-weight:700}
+      .compare th:last-child,.compare td:last-child{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;width:38%}
       .compare tr.us td{color:var(--brand-dark);font-weight:800}
-      .fineprint{color:var(--ink-soft);font-size:.83rem;margin-top:12px}
+      .fineprint{color:var(--ink-soft);font-size:.83rem;margin:12px 0 0;line-height:1.55}
 
       /* faq */
       .faq{display:grid;gap:10px}
-      details{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:4px 18px}
-      summary{font-weight:700;cursor:pointer;padding:12px 0;min-height:44px;display:flex;align-items:center}
-      details p{color:var(--ink-soft);margin:0 0 14px;font-size:.95rem}
+      details{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:2px 18px}
+      summary{font-weight:700;cursor:pointer;padding:13px 0;min-height:44px;display:flex;align-items:center;line-height:1.4}
+      details p{color:var(--ink-soft);margin:0 0 15px;font-size:.95rem;line-height:1.6}
 
-      footer{margin-top:52px;border-top:1.5px solid var(--line);padding:24px 0 40px;color:var(--ink-soft);font-size:.88rem}
+      footer{margin-top:56px;border-top:1.5px solid var(--line);padding:24px 0 40px;color:var(--ink-soft);font-size:.88rem}
       footer .cols{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
       /* collect-payment inline form */
@@ -279,18 +310,53 @@
 
       .toast{
         position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);
-        background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;font-weight:600;
-        font-size:.92rem;box-shadow:var(--shadow);transition:transform .25s ease;z-index:50;max-width:92vw;text-align:center;
+        background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;
+        font-size:.92rem;box-shadow:var(--shadow);transition:transform .25s ease;z-index:50;
+        width:max-content;max-width:calc(100vw - 32px);text-align:center;overflow-wrap:anywhere;
       }
       .toast.show{transform:translateX(-50%) translateY(0)}
 
       @media (max-width:900px){
         .hero-grid{grid-template-columns:1fr}
-        .phone{justify-self:start}
+        .phone{justify-self:stretch;max-width:520px}
         .demo-grid{grid-template-columns:1fr}
         .stats{grid-template-columns:1fr 1fr}
         .pain-grid,.steps{grid-template-columns:1fr}
         .price-grid{grid-template-columns:1fr}
+      }
+      @media (max-width:480px){
+        .wrap{padding:0 14px}
+        .hero{padding-top:26px}
+        h1{font-size:1.92rem}
+        .price-line{padding:11px 13px;gap:6px 9px}
+        .price-line .big{font-size:2.15rem}
+        .price-line .trial{white-space:normal}
+        .cta-row{flex-direction:column}
+        .cta-row .btn{width:100%}
+        .phone{padding:13px;border-radius:16px}
+        .mini-order{padding:11px 12px}
+        .mini-order .money b{font-size:.84rem}
+        .pain{padding:18px 16px}
+        section{padding-top:38px}
+        .card{padding:18px 16px}
+        .plan{padding:22px 18px}
+        .plan .flag{left:14px;font-size:.7rem;padding:5px 10px}
+        .stats{gap:9px}
+        .stat{padding:12px 13px}
+        .stat .val{font-size:1.12rem}
+        .field-row{grid-template-columns:1fr 1fr;gap:8px}
+        .order{padding:13px 13px}
+        .order-money{gap:7px}
+        .order-money b{font-size:.86rem}
+        .order-actions .mini-btn{flex:1 1 auto;text-align:center}
+        .debt-row{padding:12px 13px}
+        .debt-row .amt{font-size:1rem}
+        .compare{font-size:.87rem}
+        .compare th,.compare td{padding:9px 6px}
+        .compare th:last-child,.compare td:last-child{width:34%}
+        .collect-form input{min-width:0;flex:1 1 100%}
+        .msg-actions .btn{width:100%}
+        details{padding:2px 14px}
       }
       @media (prefers-reduced-motion: reduce){
         html{scroll-behavior:auto}
@@ -323,26 +389,26 @@
             </ul>
           </div>
           <div class="phone" aria-hidden="true">
-            <div class="phone-head"><b>Đơn hôm nay</b><span>Thứ Tư, 18/11</span></div>
+            <div class="phone-head"><b>Đơn hôm nay</b><span class="phone-demo">VÍ DỤ MINH HỌA</span></div>
             <div class="mini-order">
               <div class="row1"><span>Chị Lan Anh</span><span class="badge b-ship">Đang giao</span></div>
-              <div class="row2">Áo len cổ lọ ×2 · qua Zalo</div>
+              <div class="row2">Áo len cổ lọ ×2 · qua Zalo · đơn mẫu</div>
               <div class="money">
                 <span>Tổng<b class="num">560.000đ</b></span>
                 <span>Đã cọc<b class="num">200.000đ</b></span>
-                <span>Còn thu<b class="num" style="color:var(--red)">360.000đ</b></span>
+                <span>Còn thu<b class="num">360.000đ</b></span>
               </div>
             </div>
             <div class="mini-order">
               <div class="row1"><span>Anh Tuấn</span><span class="badge b-dep">Đã cọc · chờ hàng</span></div>
-              <div class="row2">Giày order Hàn ×1 · qua Facebook</div>
+              <div class="row2">Giày order Hàn ×1 · qua Facebook · đơn mẫu</div>
               <div class="money">
                 <span>Tổng<b class="num">1.250.000đ</b></span>
                 <span>Đã cọc<b class="num">500.000đ</b></span>
-                <span>Còn thu<b class="num" style="color:var(--red)">750.000đ</b></span>
+                <span>Còn thu<b class="num">750.000đ</b></span>
               </div>
             </div>
-            <div class="phone-total"><span>Còn phải thu của 2 đơn trên</span><b class="num">1.110.000đ</b></div>
+            <div class="phone-total"><span>Còn phải thu của 2 đơn mẫu trên</span><b class="num">1.110.000đ</b></div>
           </div>
         </div>
 
@@ -350,17 +416,17 @@
           <h2>3 kiểu mất tiền quen thuộc của shop bán qua chat</h2>
           <div class="pain-grid">
             <div class="pain-item">
-              <span class="ic">💬</span>
+              <span class="pain-num">01</span>
               <b>Quên khách đã cọc</b>
               <p>Khách cọc 200k từ tuần trước, hôm nay giao hàng lại thu đủ 100% — khách bực, shop mất uy tín, có khi mất luôn khách quen.</p>
             </div>
             <div class="pain-item">
-              <span class="ic">📦</span>
+              <span class="pain-num">02</span>
               <b>Hàng đặt trước không ai theo dõi</b>
               <p>Đơn order 2–3 tuần mới về. Không ghi lại thì đến lúc hàng về không nhớ của ai, cọc bao nhiêu, phải thu thêm bao nhiêu.</p>
             </div>
             <div class="pain-item">
-              <span class="ic">🧾</span>
+              <span class="pain-num">03</span>
               <b>Nợ đọng không biết đòi ai</b>
               <p>Cho khách quen nợ “vài hôm”, vài người cộng lại thành vài triệu. Cuối tháng nhìn lại mới biết mình đang cho vay không lãi.</p>
             </div>
@@ -524,7 +590,7 @@
             <span class="flag">DÙNG THỬ 3 NGÀY MIỄN PHÍ</span>
             <h3>Quản lý đơn, cọc &amp; công nợ</h3>
             <div class="p">39.000đ<small> /tháng</small></div>
-            <p style="color:var(--ink-soft);margin:0">3 ngày đầu miễn phí. Sau đó 39.000đ/tháng, hủy lúc nào cũng được. Đơn tự lưu trên máy bạn đang dùng trong bản demo này.</p>
+            <p class="plan-desc">3 ngày đầu miễn phí. Sau đó 39.000đ/tháng, hủy lúc nào cũng được. Đơn tự lưu trên máy bạn đang dùng trong bản demo này.</p>
             <ul>
               <li><span class="ck">✓</span><span>Ghi đơn không giới hạn, theo dõi cọc &amp; số còn thu từng đơn</span></li>
               <li><span class="ck">✓</span><span>Trạng thái giao hàng: mới → đã cọc → đang giao → hoàn tất</span></li>
@@ -535,12 +601,12 @@
               <li><span class="ck">✓</span><span>Dữ liệu tự lưu trên máy này, mở lại không mất đơn</span></li>
             </ul>
             <a class="btn btn-primary btn-block" href="#demo">Bắt đầu dùng thử 3 ngày</a>
-            <p class="fineprint">Lưu ý: “0đ” ở đây là chi phí đầu tư vận hành của bên làm sản phẩm (hạ tầng miễn phí), không phải giá cho khách hàng. Khách hàng vẫn dùng thử 3 ngày miễn phí rồi trả 39.000đ/tháng như trên.</p>
+            <p class="fineprint">“0đ” là chi phí đầu tư vận hành của bên làm sản phẩm (hạ tầng miễn phí) — không phải giá cho khách. Khách vẫn dùng thử 3 ngày miễn phí, sau đó 39.000đ/tháng.</p>
           </div>
           <div class="plan">
             <h3>So giá &amp; gói Bundle</h3>
             <table class="compare">
-              <tr><th>Phần mềm</th><th style="text-align:right">Giá /tháng</th></tr>
+              <tr><th>Phần mềm</th><th>Giá /tháng</th></tr>
               <tr class="us"><td>Quản Lý Đơn Cọc Công Nợ (trang này)</td><td>39.000đ</td></tr>
               <tr><td>Sổ Bán Hàng</td><td>~160.000đ</td></tr>
               <tr><td>Sapo</td><td>~170.000đ</td></tr>
@@ -680,13 +746,13 @@
               : '<span class="badge '+statusMeta[o.status].cls+'">'+statusMeta[o.status].label+'</span>';
             var meta = statusMeta[o.status];
             var nextBtn = meta.next
-              ? '<button type="button" class="mini-btn" data-act="next" data-id="'+o.id+'">'+meta.nextLabel+' →</button>' : '';
+              ? '<button type="button" class="mini-btn next-act" data-act="next" data-id="'+o.id+'">'+meta.nextLabel+' →</button>' : '';
             var collectBtn = due(o)>0
               ? '<button type="button" class="mini-btn warn" data-act="collect" data-id="'+o.id+'">Thu thêm tiền</button>'
               + '<button type="button" class="mini-btn" data-act="remind" data-id="'+o.id+'">Lấy tin nhắc nợ</button>' : '';
             var paidBtn = due(o)>0
               ? '<button type="button" class="mini-btn good" data-act="paidfull" data-id="'+o.id+'">Đã thu đủ</button>' : '';
-            var delBtn = '<button type="button" class="mini-btn" data-act="del" data-id="'+o.id+'">Xóa đơn</button>';
+            var delBtn = '<button type="button" class="mini-btn danger" data-act="del" data-id="'+o.id+'">Xóa đơn</button>';
             var collectForm = '<div class="collect-form" id="collect-'+o.id+'">'
               + '<input type="number" min="0" step="1000" inputmode="numeric" placeholder="Nhập số tiền khách vừa trả (đ)" data-collect-input="'+o.id+'" />'
               + '<button type="button" class="mini-btn warn" data-act="collect-ok" data-id="'+o.id+'">Ghi nhận thu</button>'
@@ -702,7 +768,7 @@
               + '<span class="due">Còn phải thu<b class="num">'+fmt(due(o))+'</b></span>'
               + '</div>'
               + '<div class="order-actions">'+nextBtn+collectBtn+paidBtn+delBtn
-              + '<button type="button" class="mini-btn" data-act="select" data-id="'+o.id+'">Dùng cho tin nhắn</button>'
+              + '<button type="button" class="mini-btn subtle" data-act="select" data-id="'+o.id+'">Dùng cho tin nhắn</button>'
               + '</div>'+collectForm+'</div>';
           }).join('');
         }
@@ -718,7 +784,7 @@
           var rows = Object.keys(map).map(function(k){ return map[k]; }).sort(function(a,b){ return b.amt-a.amt; });
           var el = $('debtList');
           if(!rows.length){
-            el.innerHTML = '<div class="empty">Không ai đang nợ — sổ sạch bong. 🎉</div>';
+            el.innerHTML = '<div class="empty">Không ai đang nợ — sổ đang sạch, không còn khoản phải thu nào.</div>';
             return;
           }
           el.innerHTML = rows.map(function(r){
