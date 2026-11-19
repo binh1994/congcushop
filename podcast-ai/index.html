@@ -916,7 +916,8 @@
           #support .sp-submit:hover{ filter:brightness(1.1); }
           #support .sp-submit:disabled{ opacity:.55; cursor:wait; }
           #support #sp-msg{ font-size:14px; margin:12px 0 0; min-height:1.4em; }
-          #support #sp-msg.ok{ color:var(--good); }
+          #support #sp-msg.ok{ color:#15803d; }
+          @media (prefers-color-scheme: dark){ #support #sp-msg.ok{ color:#4ade80; } }
           #support #sp-msg.err{ color:var(--danger); }
         </style>
         <div class="sp-panel">
@@ -1638,5 +1639,32 @@
         });
       })();
     </script>
+<script>
+  // Nút "Gia hạn bằng VietQR" trong paywall: khi chưa đăng nhập,
+  // createPayment của checkAccess.js trả về login_required trong im
+  // lặng (không chuyển trang, không báo lỗi). Bấm nút lúc chưa đăng
+  // nhập thì hiện lại câu yêu cầu đăng nhập và cuộn tới khối đăng
+  // nhập; đã đăng nhập thì không can thiệp (để nguyên luồng payOS).
+  (function(){
+    "use strict";
+    var btn = document.querySelector("[data-pay-button]");
+    if (!btn) return;
+    function scrollToAuth(){
+      var el = document.getElementById("ccs-auth");
+      if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+    btn.addEventListener("click", function(){
+      if (!window.CongCuShop || !window.CongCuShop.checkAccess) { scrollToAuth(); return; }
+      window.CongCuShop.checkAccess("p10").then(function(access){
+        if (!access || access.reason === "login_required"){
+          var reason = document.querySelector("[data-paywall-reason]");
+          if (reason) reason.textContent = "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.";
+          scrollToAuth();
+        }
+        // Đã đăng nhập: không làm gì — handler của checkAccess.js tạo link payOS.
+      }).catch(function(){ scrollToAuth(); });
+    });
+  })();
+</script>
   </body>
 </html>
