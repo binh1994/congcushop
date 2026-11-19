@@ -12,40 +12,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
       :root{
-        --bg:#f4f7f5;
+        --bg:#faf5f5;
         --surface:#ffffff;
-        --surface-2:#e7edea;
-        --ink:#12211b;
-        --ink-2:#43564d;
-        --line:#cfdcd4;
-        --accent:#0b7a55;
+        --surface-2:#f3e8e8;
+        --ink:#1f1214;
+        --ink-2:#5f4a4d;
+        --line:#e3d2d2;
+        --accent:#b91c1c;
         --accent-ink:#ffffff;
-        --accent-soft:#d9efe4;
-        --danger:#c22f2f;
+        --accent-soft:#fbe7e7;
+        --danger:#b91c1c;
         --good:#0b7a55;
         --warn-bg:#fdf3e0;
         --warn-ink:#7a5410;
         --warn-line:#ecd9ae;
-        --shadow:0 10px 30px rgba(18,33,27,.10);
+        --shadow:0 10px 30px rgba(60,10,10,.12);
         --radius:14px;
       }
       @media (prefers-color-scheme: dark){
         :root{
-          --bg:#0d1310;
-          --surface:#16201b;
-          --surface-2:#1f2c26;
-          --ink:#e9f2ed;
-          --ink-2:#a9bcb2;
-          --line:#2d3f36;
-          --accent:#2fbf8f;
-          --accent-ink:#08130e;
-          --accent-soft:#173a2d;
-          --danger:#ff8a7a;
-          --good:#2fbf8f;
+          --bg:#171113;
+          --surface:#221619;
+          --surface-2:#2e2024;
+          --ink:#f7ecec;
+          --ink-2:#c4a9ac;
+          --line:#402a2e;
+          --accent:#f87171;
+          --accent-ink:#20090b;
+          --accent-soft:#3d1a1d;
+          --danger:#fca5a5;
+          --good:#4ade80;
           --warn-bg:#33270f;
           --warn-ink:#f0cd8a;
           --warn-line:#5c4a1e;
-          --shadow:0 10px 30px rgba(0,0,0,.45);
+          --shadow:0 10px 30px rgba(0,0,0,.5);
         }
       }
       *{ box-sizing:border-box; }
@@ -58,16 +58,34 @@
       button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height:2.75rem; }
       .wrap{ max-width:960px; margin:0 auto; padding:0 16px 56px; }
       h1,h2,h3{ line-height:1.25; }
-      section.block{ margin:34px 0 0; }
+      section.block{ margin:44px 0 0; }
       section.block > h2{ font-size:23px; font-weight:800; margin:0 0 8px; }
+      section.block > h2::before{
+        content:""; display:inline-block; width:10px; height:10px;
+        background:var(--accent); transform:rotate(45deg); margin-right:10px;
+      }
       section.block > p.lead{ color:var(--ink-2); margin:0 0 16px; max-width:65ch; }
 
       /* ---------- HERO ---------- */
-      .hero{ padding:34px 0 6px; }
+      .hero{
+        position:relative; overflow:hidden; padding:40px 0 10px;
+        background:linear-gradient(180deg, var(--accent-soft), transparent 65%);
+      }
+      .hero::before{
+        content:"VS"; position:absolute; right:-12px; top:-38px;
+        font-size:clamp(120px,30vw,190px); font-weight:900; line-height:1;
+        color:transparent; -webkit-text-stroke:1.5px var(--accent);
+        opacity:.14; pointer-events:none;
+      }
       .hero h1{ font-size:clamp(28px,6vw,42px); font-weight:900; margin:0 0 12px; letter-spacing:-.01em; }
+      .hero h1::after{
+        content:""; display:block; width:64px; height:4px;
+        background:var(--accent); margin-top:14px;
+      }
       .hero .sub{ font-size:17px; color:var(--ink-2); margin:0 0 20px; max-width:62ch; }
       .hero-card{
         background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        border-top:4px solid var(--accent);
         box-shadow:var(--shadow); padding:20px;
         display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;
       }
@@ -79,7 +97,9 @@
         border:0; border-radius:10px; cursor:pointer; min-height:52px;
         background:var(--accent); color:var(--accent-ink);
         font:inherit; font-weight:800; font-size:16px; padding:12px 26px;
+        box-shadow:0 6px 16px rgba(185,28,28,.35);
       }
+      .btn:hover{ filter:brightness(1.08); }
       .btn:active{ transform:translateY(1px); }
       .btn-ghost{
         background:transparent; color:var(--accent);
@@ -90,9 +110,10 @@
       @media (min-width:720px){ .hero-points{ grid-template-columns:repeat(3,1fr); } }
       .hero-points li{
         background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+        border-top:3px solid var(--accent);
         font-size:14.5px;
       }
-      .hero-points b{ display:block; font-size:15px; margin-bottom:2px; }
+      .hero-points b{ display:block; font-size:15px; margin-bottom:2px; color:var(--accent); }
 
       /* ---------- PAYWALL ---------- */
       .paywall{
@@ -106,7 +127,8 @@
       /* ---------- TOOL ---------- */
       .tool{
         background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
-        box-shadow:var(--shadow); padding:20px; margin:22px 0;
+        border-top:4px solid var(--accent);
+        box-shadow:var(--shadow); padding:20px; margin:26px 0;
       }
       .tool h2{ font-size:21px; font-weight:800; margin:0 0 4px; }
       .tool .tool-sub{ color:var(--ink-2); font-size:14.5px; margin:0 0 16px; }
@@ -136,8 +158,8 @@
         border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;
       }
       .cmp-table thead th{ background:var(--surface-2); font-weight:700; }
-      .cmp-table tbody th{ font-weight:700; background:var(--surface); }
-      .cmp-table .you{ background:var(--accent-soft); }
+      .cmp-table tbody th{ font-weight:700; background:var(--surface); border-left:3px solid var(--accent); }
+      .cmp-table .you{ background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent); }
       @media (max-width:719px){
         .cmp-table, .cmp-table thead, .cmp-table tbody, .cmp-table tr, .cmp-table th, .cmp-table td{ display:block; }
         .cmp-table thead{ display:none; }
@@ -151,6 +173,7 @@
       }
       .gaps{
         background:var(--accent-soft); border-radius:12px; padding:16px 18px; margin-top:16px;
+        border:1px solid var(--accent); border-left:4px solid var(--accent);
       }
       .gaps h3{ font-size:17px; margin:0 0 8px; }
       .gaps ul{ margin:0; padding-left:20px; }
@@ -183,6 +206,7 @@
       .vs-table thead th{ background:var(--surface-2); }
       .vs-table tr:last-child td{ border-bottom:0; }
       .vs-table .hl td{ background:var(--accent-soft); font-weight:600; }
+      .vs-table .hl td:first-child{ border-left:3px solid var(--accent); }
       @media (max-width:719px){
         .vs-table, .vs-table thead, .vs-table tbody, .vs-table tr, .vs-table th, .vs-table td{ display:block; }
         .vs-table thead{ display:none; }
@@ -199,7 +223,7 @@
         background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
         padding:22px; box-shadow:var(--shadow);
       }
-      .price-card.featured{ border:2px solid var(--accent); }
+      .price-card.featured{ border:2px solid var(--accent); box-shadow:0 10px 30px rgba(185,28,28,.18); }
       .price-card h3{ margin:0 0 4px; font-size:18px; }
       .price-card .p-amount{ font-size:30px; font-weight:900; color:var(--accent); }
       .price-card .p-per{ color:var(--ink-2); font-weight:600; }
@@ -210,6 +234,7 @@
         padding:4px 18px; margin-bottom:10px;
       }
       .faq summary{ font-weight:700; cursor:pointer; padding:12px 0; font-size:16px; }
+      .faq details[open] summary{ color:var(--accent); }
       .faq details p{ margin:0 0 14px; color:var(--ink-2); }
       footer{ margin-top:44px; padding-top:18px; border-top:1px solid var(--line);
         color:var(--ink-2); font-size:13.5px; }
@@ -252,9 +277,9 @@
        Có fallback nếu trang chưa định nghĩa biến. Hỗ trợ dark mode theo
        prefers-color-scheme của trang. Mobile-first, nút cao tối thiểu 44px. */
     .ccs-auth{
-      --ccs-accent:var(--accent,#0b7a55);
+      --ccs-accent:var(--accent,#b91c1c);
       --ccs-accent-ink:var(--accent-ink,#fff);
-      --ccs-soft:var(--accent-soft,#d9efe4);
+      --ccs-soft:var(--accent-soft,#fbe7e7);
       background:var(--surface,#fff);
       border:1px solid var(--line,#cfdcd4);
       border-radius:14px;
