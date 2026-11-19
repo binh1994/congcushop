@@ -1,0 +1,15 @@
+# CongCuShop dub worker — toàn thư viện miễn phí, KHÔNG dùng API trả phí.
+# Đã kiểm chứng cài được trên Python 3.12 (Ubuntu 24.04) ngày 19/11/2026.
+# Lưu ý: KHÔNG dùng googletrans — nó kẹt httpx==0.13.3, xung đột với supabase.
+# Worker gọi thẳng endpoint web Google Translate bằng requests (xem dub_worker.py).
+# Lưu ý 2: KHÔNG dùng argostranslate — nó kéo theo stanza + torch (~800 MB),
+# tải qua proxy hay lỗi; dịch đã có Google -> MyMemory, đủ cho production.
+faster-whisper==1.2.1
+# PyAV: faster-whisper 1.2.1 gọi av.open(..., metadata_errors="ignore") —
+# tham số này bị bỏ ở av 19, nên phải ghim av <= 14.1.0 (đã kiểm chứng
+# 14.1.0 chạy được; av 19.0.2 lỗi TypeError). Không ghim là pip sẽ cài av 19.
+av==14.1.0
+edge-tts==7.3.1
+piper-tts==1.8.0
+supabase==2.34.1
+requests==2.34.2
