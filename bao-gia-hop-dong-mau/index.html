@@ -109,10 +109,10 @@
       .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
       .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
       /* item rows */
-      .item-row{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.6fr) minmax(0,.52fr) minmax(0,1fr) minmax(0,1.08fr) 36px;gap:8px;margin-bottom:10px;align-items:end;width:100%;min-width:0}
+      .item-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.55fr) minmax(0,.45fr) minmax(0,.95fr) minmax(0,.55fr) minmax(0,1fr) 36px;gap:8px;margin-bottom:10px;align-items:end;width:100%;min-width:0}
       .item-row>*{min-width:0}
       .item-row input{min-width:0;padding-left:7px;padding-right:7px}
-      .item-row .f-qty input,.item-row .f-price input{text-align:right;font-variant-numeric:tabular-nums}
+      .item-row .f-qty input,.item-row .f-price input,.item-row .f-disc input{text-align:right;font-variant-numeric:tabular-nums}
       .item-row .lbl{font-size:.78rem;font-weight:600;color:var(--ink2);display:block;margin-bottom:3px;white-space:nowrap}
       .item-row .amt{display:flex;align-items:center;min-height:44px;font-weight:700;font-size:.9rem;font-variant-numeric:tabular-nums;justify-content:flex-end;text-align:right;padding-right:2px;white-space:nowrap;min-width:0}
       .icon-btn{width:36px;height:44px;border:1px solid var(--line);background:var(--surface2);border-radius:8px;cursor:pointer;color:var(--danger);font-size:1.05rem;justify-self:end;padding:0}
@@ -208,9 +208,9 @@
       }
       @media (max-width:640px){
         .feat-row,.tpl-grid,.steps,.grid2,.grid3{grid-template-columns:1fr}
-        .item-row{grid-template-columns:minmax(0,1fr) minmax(0,.65fr) minmax(92px,auto);gap:8px;grid-template-areas:"name name del" "unit qty amt" "price price amt"}
+        .item-row{grid-template-columns:minmax(0,1fr) minmax(0,.65fr) minmax(92px,auto);gap:8px;grid-template-areas:"name name del" "unit qty amt" "price disc amt"}
         .item-row .f-name{grid-area:name}.item-row .f-unit{grid-area:unit}.item-row .f-qty{grid-area:qty}
-        .item-row .f-price{grid-area:price}.item-row .amt{grid-area:amt;justify-self:end}.item-row .icon-btn{grid-area:del}
+        .item-row .f-price{grid-area:price}.item-row .f-disc{grid-area:disc}.item-row .amt{grid-area:amt;justify-self:end}.item-row .icon-btn{grid-area:del}
         .paper{padding:20px 16px;font-size:.8rem}
         .paper .doc-head{flex-direction:column}
         .paper .doc-title{text-align:left}
@@ -762,11 +762,11 @@
               <button class="btn small" id="saveTpl" type="button">Lưu hạng mục hiện tại thành mẫu riêng</button>
               <p class="hint" style="margin-top:8px">Mẫu riêng được lưu trên thiết bị này và hiện ở thẻ “Khách hàng &amp; mẫu” để dùng lại cho khách sau. Form báo giá cũng tự lưu nháp trên thiết bị — mở lại trang không mất số đang điền.</p>
 
-              <div class="grid3">
-                <div><label class="f" for="discount">Chiết khấu (%)</label><input type="number" id="discount" value="0" min="0" max="100" step="0.5" /></div>
+              <div class="grid2">
                 <div><label class="f" for="vat">VAT (%)</label><input type="number" id="vat" value="0" min="0" max="20" step="0.5" /></div>
                 <div><label class="f" for="deposit">Tạm ứng (%)</label><input type="number" id="deposit" value="30" min="0" max="100" step="5" /></div>
               </div>
+              <p class="hint" style="margin-top:8px">Chiết khấu được tính theo từng hạng mục — nhập ở cột “CK %” của mỗi dòng, hệ thống sẽ cộng dồn chiết khấu từng dòng.</p>
 
               <div class="totals" id="totals"></div>
 
@@ -941,6 +941,150 @@
       </div>
     </section>
 
+    <!-- ================= HỖ TRỢ KHÁCH HÀNG ================= -->
+    <section class="block" id="support" style="padding-top:14px">
+      <style>
+        #support .sp-card{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:10px;padding:22px 20px;box-shadow:var(--shadow)}
+        #support h2{font-size:1.6rem;font-weight:800;letter-spacing:-.01em;margin:0 0 8px}
+        #support .sp-sub{color:var(--ink2);margin:0 0 18px;max-width:64ch}
+        #support .sp-zalo{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);border-radius:8px;padding:10px 18px;font-weight:700;text-decoration:none;min-height:48px}
+        #support .sp-zalo:hover{opacity:.92}
+        #support .sp-zalo-num{margin:8px 0 0;font-size:.92rem;color:var(--ink2)}
+        #support .sp-zalo-num b{color:var(--accent);font-variant-numeric:tabular-nums}
+        #support h3{font-size:1.05rem;font-weight:700;margin:24px 0 4px}
+        #support label.f{display:block;font-size:.88rem;font-weight:600;margin:12px 0 4px}
+        #support .sp-msg{display:none;margin-top:14px;border-radius:8px;padding:10px 14px;font-size:.92rem;font-weight:600}
+        #support .sp-msg.show{display:block}
+        #support .sp-msg.ok{background:var(--accent-soft);color:var(--accent)}
+        #support .sp-msg.err{background:#fbe9e6;color:var(--danger)}
+        @media (prefers-color-scheme: dark){ #support .sp-msg.err{background:#3a1712} }
+        #support .sp-submit:disabled{opacity:.55;cursor:wait}
+      </style>
+      <div class="wrap">
+        <div class="sp-card">
+          <h2>Cần hỗ trợ?</h2>
+          <p class="sp-sub">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+          <a class="sp-zalo" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+          <p class="sp-zalo-num">Số Zalo của shop: <b>0327047928</b> — nếu nút không mở được, hãy tìm số này trên Zalo.</p>
+
+          <h3>Gửi yêu cầu hỗ trợ</h3>
+          <form id="sp-form" novalidate>
+            <label class="f" for="sp-name">Họ tên (không bắt buộc)</label>
+            <input type="text" id="sp-name" autocomplete="name" placeholder="VD: Nguyễn Văn A" />
+            <label class="f" for="sp-contact">Số điện thoại hoặc email *</label>
+            <input type="text" id="sp-contact" required autocomplete="tel" placeholder="VD: 09xx xxx xxx hoặc email của bạn" />
+            <label class="f" for="sp-issue">Vấn đề</label>
+            <select id="sp-issue">
+              <option value="Lỗi trang">Lỗi trang</option>
+              <option value="Hết dùng thử">Hết dùng thử</option>
+              <option value="Thanh toán">Thanh toán</option>
+              <option value="Gói Pro">Gói Pro</option>
+              <option value="Khác">Khác</option>
+            </select>
+            <label class="f" for="sp-message">Mô tả ngắn *</label>
+            <textarea id="sp-message" rows="4" required placeholder="Mô tả ngắn vấn đề bạn đang gặp…"></textarea>
+            <div class="actions">
+              <button class="btn primary sp-submit" id="sp-submit" type="submit">Gửi yêu cầu</button>
+            </div>
+            <p class="sp-msg" id="sp-msg" role="status"></p>
+          </form>
+        </div>
+      </div>
+      <script>
+      (function () {
+        "use strict";
+        var form = document.getElementById("sp-form");
+        if (!form) return;
+        var msgEl = document.getElementById("sp-msg");
+        var submitBtn = document.getElementById("sp-submit");
+        var spClientPromise = null;
+
+        function showMsg(text, ok) {
+          msgEl.textContent = text;
+          msgEl.className = "sp-msg show " + (ok ? "ok" : "err");
+        }
+        function pageConfig() {
+          // Lấy đúng 2 biến cấu hình đã có sẵn trong trang (khối đăng nhập) — không hardcode giá trị mới.
+          if (typeof SUPABASE_URL !== "undefined" && typeof SUPABASE_ANON_KEY !== "undefined") {
+            return { url: SUPABASE_URL, key: SUPABASE_ANON_KEY };
+          }
+          var scripts = document.getElementsByTagName("script");
+          for (var i = 0; i < scripts.length; i++) {
+            var t = scripts[i].textContent || "";
+            var mu = t.match(/SUPABASE_URL\s*=\s*"([^"]+)"/);
+            var mk = t.match(/SUPABASE_ANON_KEY\s*=\s*"([^"]+)"/);
+            if (mu && mk) return { url: mu[1], key: mk[1] };
+          }
+          return null;
+        }
+        function supabaseCdn() {
+          var scripts = document.getElementsByTagName("script");
+          for (var i = 0; i < scripts.length; i++) {
+            var src = scripts[i].getAttribute("src") || "";
+            if (src.indexOf("@supabase/supabase-js") !== -1) return src;
+          }
+          return "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+        }
+        function loadUmd() {
+          return new Promise(function (resolve, reject) {
+            if (window.supabase && window.supabase.createClient) return resolve();
+            var s = document.createElement("script");
+            s.src = supabaseCdn();
+            s.onload = resolve;
+            s.onerror = function () { reject(new Error("load_supabase_failed")); };
+            document.head.appendChild(s);
+          });
+        }
+        function getClient() {
+          if (spClientPromise) return spClientPromise;
+          spClientPromise = (function () {
+            // Ưu tiên client Supabase sẵn có của trang nếu truy cập được.
+            try {
+              if (typeof client !== "undefined" && client && client.from) return Promise.resolve(client);
+            } catch (e) { /* client nằm trong scope khối đăng nhập — tạo client riêng bên dưới */ }
+            var cfg = pageConfig();
+            if (!cfg) return Promise.reject(new Error("missing_config"));
+            return loadUmd().then(function () {
+              return window.supabase.createClient(cfg.url, cfg.key);
+            });
+          })();
+          return spClientPromise;
+        }
+
+        form.addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          var name = document.getElementById("sp-name").value.trim();
+          var contact = document.getElementById("sp-contact").value.trim();
+          var issue = document.getElementById("sp-issue").value;
+          var message = document.getElementById("sp-message").value.trim();
+          if (!contact || !message) {
+            showMsg("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", false);
+            return;
+          }
+          submitBtn.disabled = true;
+          getClient().then(function (sb) {
+            return sb.from("support_tickets").insert({
+              name: name,
+              contact: contact,
+              issue_type: issue,
+              message: message,
+              page: "bao-gia-hop-dong-mau",
+              status: "new"
+            });
+          }).then(function (res) {
+            if (res && res.error) throw res.error;
+            showMsg("Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.", true);
+            form.reset();
+          }).catch(function () {
+            showMsg("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", false);
+          }).finally(function () {
+            submitBtn.disabled = false;
+          });
+        });
+      })();
+      </script>
+    </section>
+
     <footer>
       <div class="wrap">
         <span><b>Báo Giá &amp; Hợp Đồng Mẫu</b> — một trong 6 công cụ cho người bán và làm dịch vụ tại Việt Nam.</span>
@@ -1039,7 +1183,7 @@
       }
 
       /* ---------------- Quote items ---------------- */
-      function addItemRow(name, unit, qty, price) {
+      function addItemRow(name, unit, qty, price, discPct) {
         var row = document.createElement("div");
         row.className = "item-row";
         row.innerHTML =
@@ -1047,13 +1191,27 @@
           '<div class="f-unit"><span class="lbl">Đơn vị</span><input type="text" class="i-unit" value="' + esc(unit || "gói") + '" /></div>' +
           '<div class="f-qty"><span class="lbl">SL</span><input type="number" class="i-qty" min="0" step="0.5" value="' + (qty == null ? 1 : qty) + '" /></div>' +
           '<div class="f-price"><span class="lbl">Đơn giá (đ)</span><input type="number" class="i-price" min="0" step="1000" value="' + (price == null ? 0 : price) + '" /></div>' +
+          '<div class="f-disc"><span class="lbl">CK %</span><input type="number" class="i-disc" min="0" max="100" step="0.5" value="' + (discPct == null ? 0 : discPct) + '" /></div>' +
           '<div class="amt">0đ</div>' +
           '<button type="button" class="icon-btn" title="Xóa hạng mục" aria-label="Xóa hạng mục">×</button>';
         row.querySelector(".icon-btn").addEventListener("click", function () { row.remove(); renderQuote(); });
         row.querySelectorAll("input").forEach(function (inp) { inp.addEventListener("input", renderQuote); });
         $("items").appendChild(row);
       }
-      $("addItem").addEventListener("click", function () { addItemRow("", "gói", 1, 0); });
+      $("addItem").addEventListener("click", function () {
+        var rows = document.querySelectorAll("#items .item-row");
+        var last = rows.length ? rows[rows.length - 1] : null;
+        if (last) {
+          var lastName = last.querySelector(".i-name") ? last.querySelector(".i-name").value.trim() : "";
+          var lastPrice = last.querySelector(".i-price") ? (parseFloat(last.querySelector(".i-price").value) || 0) : 0;
+          if (!lastName || !(lastPrice > 0)) {
+            toast("quoteToast", "Hãy nhập hạng mục và đơn giá cho dòng hiện tại trước khi thêm dòng mới.");
+            return;
+          }
+        }
+        addItemRow("", "gói", 1, 0, 0);
+        renderQuote();
+      });
 
       function readItems() {
         var out = [];
@@ -1062,8 +1220,12 @@
           var unit = row.querySelector(".i-unit").value.trim() || "gói";
           var qty = parseFloat(row.querySelector(".i-qty").value) || 0;
           var price = parseFloat(row.querySelector(".i-price").value) || 0;
-          out.push({ name: name, unit: unit, qty: qty, price: price, amount: qty * price });
-          row.querySelector(".amt").textContent = fmt(qty * price);
+          var discEl = row.querySelector(".i-disc");
+          var discPct = discEl ? Math.min(100, Math.max(0, parseFloat(discEl.value) || 0)) : 0;
+          var amount = qty * price;
+          var disc = amount * discPct / 100;
+          out.push({ name: name, unit: unit, qty: qty, price: price, discPct: discPct, disc: disc, amount: amount, net: amount - disc });
+          row.querySelector(".amt").textContent = fmt(amount);
         });
         return out;
       }
@@ -1071,14 +1233,14 @@
       function calcQuote() {
         var items = readItems();
         var sub = items.reduce(function (s, i) { return s + i.amount; }, 0);
-        var discPct = Math.min(100, Math.max(0, parseFloat($("discount").value) || 0));
+        var disc = items.reduce(function (s, i) { return s + (i.disc || 0); }, 0);
         var vatPct = Math.max(0, parseFloat($("vat").value) || 0);
         var depPct = Math.min(100, Math.max(0, parseFloat($("deposit").value) || 0));
-        var disc = sub * discPct / 100;
-        var vat = (sub - disc) * vatPct / 100;
-        var total = sub - disc + vat;
+        var afterDisc = sub - disc;
+        var vat = afterDisc * vatPct / 100;
+        var total = afterDisc + vat;
         var deposit = total * depPct / 100;
-        return { items: items, sub: sub, discPct: discPct, disc: disc, vatPct: vatPct, vat: vat, total: total, depPct: depPct, deposit: deposit };
+        return { items: items, sub: sub, disc: disc, afterDisc: afterDisc, vatPct: vatPct, vat: vat, total: total, depPct: depPct, deposit: deposit };
       }
 
       function quoteData() {
@@ -1088,7 +1250,7 @@
           biz: $("bizName").value.trim(), bizPhone: $("bizPhone").value.trim(), bizAddr: $("bizAddr").value.trim(),
           client: $("cName").value.trim(), cPhone: $("cPhone").value.trim(), cAddr: $("cAddr").value.trim(),
           title: $("qTitle").value.trim(), notes: $("qNotes").value,
-          items: c.items, sub: c.sub, discPct: c.discPct, disc: c.disc, vatPct: c.vatPct, vat: c.vat,
+          items: c.items, sub: c.sub, disc: c.disc, afterDisc: c.afterDisc, vatPct: c.vatPct, vat: c.vat,
           total: c.total, depPct: c.depPct, deposit: c.deposit
         };
       }
@@ -1097,12 +1259,13 @@
         var q = quoteData();
         var rows = q.items.filter(function (i) { return i.name || i.amount; }).map(function (i, idx) {
           return "<tr><td>" + (idx + 1) + "</td><td>" + esc(i.name || "—") + "</td><td>" + esc(i.unit) + "</td>" +
-            '<td class="num">' + i.qty + '</td><td class="num">' + fmt(i.price) + '</td><td class="num">' + fmt(i.amount) + "</td></tr>";
+            '<td class="num">' + i.qty + '</td><td class="num">' + fmt(i.price) + '</td><td class="num">' + (i.discPct ? i.discPct + "%" : "0%") + '</td><td class="num">' + fmt(i.amount) + "</td></tr>";
         }).join("");
-        if (!rows) rows = '<tr><td colspan="6" style="text-align:center;color:#8a968e">Chưa có hạng mục nào</td></tr>';
+        if (!rows) rows = '<tr><td colspan="7" style="text-align:center;color:#8a968e">Chưa có hạng mục nào</td></tr>';
         var sumRows =
           '<div class="row"><span>Tạm tính</span><span>' + fmt(q.sub) + "</span></div>" +
-          (q.disc ? '<div class="row"><span>Chiết khấu ' + q.discPct + '%</span><span>−' + fmt(q.disc) + "</span></div>" : "") +
+          (q.disc ? '<div class="row"><span>Chiết khấu</span><span>−' + fmt(q.disc) + "</span></div>" +
+          '<div class="row"><span>Sau chiết khấu</span><span>' + fmt(q.afterDisc) + "</span></div>" : "") +
           (q.vat ? '<div class="row"><span>VAT ' + q.vatPct + '%</span><span>' + fmt(q.vat) + "</span></div>" : "") +
           '<div class="row grand"><span>TỔNG CỘNG</span><span>' + fmt(q.total) + "</span></div>" +
           (q.depPct ? '<div class="row"><span>Tạm ứng ' + q.depPct + '%</span><span>' + fmt(q.deposit) + "</span></div>" +
@@ -1114,32 +1277,33 @@
           '<div class="meta"><span><b>Kính gửi:</b> ' + esc(q.client || "…") + "</span><span><b>SĐT:</b> " + esc(q.cPhone || "…") + "</span>" +
           "<span><b>Địa điểm:</b> " + esc(q.cAddr || "…") + '</span><span><b>Hiệu lực:</b> ' + esc(q.valid) + " ngày</span></div>" +
           (q.title ? '<p style="margin:8px 0 2px"><b>Công việc:</b> ' + esc(q.title) + "</p>" : "") +
-          '<table><thead><tr><th style="width:30px">STT</th><th>Hạng mục</th><th>ĐVT</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr></thead><tbody>' + rows + "</tbody></table>" +
+          '<table><thead><tr><th style="width:30px">STT</th><th>Hạng mục</th><th>ĐVT</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">CK %</th><th class="num">Thành tiền</th></tr></thead><tbody>' + rows + "</tbody></table>" +
           '<div class="sum">' + sumRows + "</div>" +
           (q.notes ? '<div class="notes">' + esc(q.notes) + "</div>" : "") +
           '<p style="margin-top:16px;color:#5a6660;font-size:.78rem">Báo giá được tạo bằng công cụ Báo Giá &amp; Hợp Đồng Mẫu. Vui lòng xác nhận lại qua điện thoại/Zalo trước khi tiến hành.</p>';
         $("totals").innerHTML =
           '<div class="row"><span>Tạm tính</span><span>' + fmt(q.sub) + "</span></div>" +
-          (q.disc ? '<div class="row"><span>Chiết khấu (' + q.discPct + '%)</span><span>−' + fmt(q.disc) + "</span></div>" : "") +
+          (q.disc ? '<div class="row"><span>Chiết khấu</span><span>−' + fmt(q.disc) + "</span></div>" +
+          '<div class="row"><span>Sau chiết khấu</span><span>' + fmt(q.afterDisc) + "</span></div>" : "") +
           (q.vat ? '<div class="row"><span>VAT (' + q.vatPct + '%)</span><span>' + fmt(q.vat) + "</span></div>" : "") +
           '<div class="row grand"><span>Tổng cộng</span><span>' + fmt(q.total) + "</span></div>" +
           (q.depPct ? '<div class="row"><span>Tạm ứng ' + q.depPct + '% · Còn lại ' + fmt(q.total - q.deposit) + "</span><span>" + fmt(q.deposit) + "</span></div>" : "");
         persistDraft(q);
       }
 
-      var QUOTE_FIELDS = ["bizName", "bizPhone", "bizAddr", "cName", "cPhone", "cAddr", "qNo", "qDate", "qValid", "qTitle", "discount", "vat", "deposit", "qNotes"];
+      var QUOTE_FIELDS = ["bizName", "bizPhone", "bizAddr", "cName", "cPhone", "cAddr", "qNo", "qDate", "qValid", "qTitle", "vat", "deposit", "qNotes"];
       function persistDraft(q) {
         try {
           var f = {};
           QUOTE_FIELDS.forEach(function (id) { var el = $(id); if (el) f[id] = el.value; });
           localStorage.setItem(DRAFT_KEY, JSON.stringify({
             fields: f,
-            items: (q ? q.items : []).map(function (i) { return { name: i.name, unit: i.unit, qty: i.qty, price: i.price }; })
+            items: (q ? q.items : []).map(function (i) { return { name: i.name, unit: i.unit, qty: i.qty, price: i.price, discPct: i.discPct || 0 }; })
           }));
         } catch (e) {}
       }
 
-      ["bizName", "bizPhone", "bizAddr", "cName", "cPhone", "cAddr", "qNo", "qDate", "qValid", "qTitle", "discount", "vat", "deposit", "qNotes"].forEach(function (id) {
+      ["bizName", "bizPhone", "bizAddr", "cName", "cPhone", "cAddr", "qNo", "qDate", "qValid", "qTitle", "vat", "deposit", "qNotes"].forEach(function (id) {
         $(id).addEventListener("input", renderQuote);
         $(id).addEventListener("change", renderQuote);
       });
@@ -1173,10 +1337,12 @@
         var lines = ["BÁO GIÁ " + q.no + " — " + (q.biz || ""), "Ngày: " + fmtDate(q.date) + " · Hiệu lực: " + q.valid + " ngày",
           "Kính gửi: " + (q.client || "") + (q.cPhone ? " (" + q.cPhone + ")" : ""), ""];
         q.items.filter(function (i) { return i.name || i.amount; }).forEach(function (i, idx) {
-          lines.push((idx + 1) + ". " + i.name + " — " + i.qty + " " + i.unit + " × " + fmt(i.price) + " = " + fmt(i.amount));
+          var line = (idx + 1) + ". " + i.name + " — " + i.qty + " " + i.unit + " × " + fmt(i.price) + " = " + fmt(i.amount);
+          if (i.discPct) line += " (CK " + i.discPct + "%: −" + fmt(i.disc || 0) + ")";
+          lines.push(line);
         });
         lines.push("", "Tạm tính: " + fmt(q.sub));
-        if (q.disc) lines.push("Chiết khấu " + q.discPct + "%: −" + fmt(q.disc));
+        if (q.disc) { lines.push("Chiết khấu: −" + fmt(q.disc)); lines.push("Sau chiết khấu: " + fmt(q.afterDisc)); }
         if (q.vat) lines.push("VAT " + q.vatPct + "%: " + fmt(q.vat));
         lines.push("TỔNG CỘNG: " + fmt(q.total));
         if (q.depPct) lines.push("Tạm ứng " + q.depPct + "%: " + fmt(q.deposit) + " · Còn lại: " + fmt(q.total - q.deposit));
@@ -1262,10 +1428,11 @@
         $("cName").value = d.client || ""; $("cPhone").value = d.cPhone || ""; $("cAddr").value = d.cAddr || "";
         $("qNo").value = d.no || x.no; $("qDate").value = d.date || x.date || todayISO(); $("qValid").value = d.valid || "7";
         $("qTitle").value = d.title || ""; $("qNotes").value = d.notes || "";
-        $("discount").value = d.discPct || 0; $("vat").value = d.vatPct || 0; $("deposit").value = d.depPct == null ? 30 : d.depPct;
+        $("vat").value = d.vatPct || 0; $("deposit").value = d.depPct == null ? 30 : d.depPct;
         $("items").innerHTML = "";
-        (d.items && d.items.length ? d.items : [{ name: "", unit: "gói", qty: 1, price: 0 }]).forEach(function (i) {
-          addItemRow(i.name, i.unit, i.qty, i.price);
+        (d.items && d.items.length ? d.items : [{ name: "", unit: "gói", qty: 1, price: 0, discPct: 0 }]).forEach(function (i) {
+          var dp = (i.discPct != null ? i.discPct : (d.discPct != null ? d.discPct : 0));
+          addItemRow(i.name, i.unit, i.qty, i.price, dp);
         });
         switchTab("quote"); renderQuote();
         toast("quoteToast", "Đã mở lại báo giá " + x.no + " vào form — sửa xong nhớ bấm Lưu để tạo bản theo dõi mới hoặc Tải PDF gửi khách.");
@@ -1428,7 +1595,7 @@
       /* ---------------- Templates grid ---------------- */
       function applyTemplateItems(name, items) {
         $("items").innerHTML = "";
-        items.forEach(function (i) { addItemRow(i[0], i[1], i[2], i[3]); });
+        items.forEach(function (i) { addItemRow(i[0], i[1], i[2], i[3], i[4] || 0); });
         if (!$("qTitle").value.trim()) $("qTitle").value = name;
         switchTab("quote"); renderQuote();
         toast("quoteToast", "Đã nạp mẫu “" + name + "” — nhớ sửa giá theo mặt bằng của bạn.");
@@ -1437,7 +1604,7 @@
         var grid = $("tplGrid");
         grid.innerHTML = "";
         TEMPLATES.forEach(function (t) {
-          var total = t.items.reduce(function (s, i) { return s + i[2] * i[3]; }, 0);
+          var total = t.items.reduce(function (s, i) { var amt = i[2] * i[3]; var dp = i[4] || 0; return s + amt - amt * dp / 100; }, 0);
           var b = document.createElement("button");
           b.type = "button"; b.className = "tpl";
           b.innerHTML = "<b>" + esc(t.name) + "</b><span>" + esc(t.desc) + '</span><span class="tpl-price">Tổng mẫu: ' + fmt(total) + " · " + t.items.length + " hạng mục</span>";
@@ -1445,7 +1612,7 @@
           grid.appendChild(b);
         });
         state.customTemplates.forEach(function (t, idx) {
-          var total = t.items.reduce(function (s, i) { return s + i[2] * i[3]; }, 0);
+          var total = t.items.reduce(function (s, i) { var amt = i[2] * i[3]; var dp = i[4] || 0; return s + amt - amt * dp / 100; }, 0);
           var box = document.createElement("div");
           box.className = "tpl";
           box.innerHTML = "<b>" + esc(t.name) + '<span class="tpl-tag">Mẫu riêng</span></b><span>' + esc(t.desc || "Mẫu bạn tự lưu từ hạng mục đã sửa.") + '</span><span class="tpl-price">Tổng mẫu: ' + fmt(total) + " · " + t.items.length + " hạng mục</span>";
@@ -1471,7 +1638,7 @@
         var name = $("qTitle").value.trim() || ("Mẫu riêng " + new Date().toLocaleDateString("vi-VN"));
         state.customTemplates.unshift({
           name: name, desc: "Mẫu bạn tự lưu từ hạng mục đã sửa.",
-          items: items.map(function (i) { return [i.name, i.unit, i.qty, i.price]; })
+          items: items.map(function (i) { return [i.name, i.unit, i.qty, i.price, i.discPct || 0]; })
         });
         persist(); renderTemplates();
         toast("quoteToast", "Đã lưu mẫu riêng “" + name + "” trên thiết bị này — xem và dùng lại ở thẻ “Khách hàng & mẫu”.");
@@ -1601,10 +1768,10 @@
       }
       if (!$("qNo").value.trim()) $("qNo").value = nextQuoteNo();
       if (draft && Array.isArray(draft.items) && draft.items.length) {
-        draft.items.forEach(function (i) { addItemRow(i.name, i.unit, i.qty, i.price); });
+        draft.items.forEach(function (i) { addItemRow(i.name, i.unit, i.qty, i.price, i.discPct || 0); });
       } else {
-        addItemRow("Khảo sát & tư vấn tại nhà", "lần", 1, 0);
-        addItemRow("", "gói", 1, 0);
+        addItemRow("Khảo sát & tư vấn tại nhà", "lần", 1, 0, 0);
+        addItemRow("", "gói", 1, 0, 0);
       }
       renderQuote(); renderContract(); renderClients(); renderTemplates(); renderTrack();
     </script>
