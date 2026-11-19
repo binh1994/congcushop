@@ -191,8 +191,16 @@
       .gaps li{ margin-bottom:6px; }
       .gaps li:last-child{ margin-bottom:0; }
 
-      .history{ margin-top:22px; }
-      .history h3{ font-size:16px; margin:0 0 8px; }
+      .history{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        border-top:4px solid var(--accent);
+        box-shadow:var(--shadow); padding:20px; margin:26px 0;
+      }
+      .history h3{ font-size:18px; margin:0 0 8px; }
+      .history-note{
+        background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
+        border-radius:10px; padding:10px 14px; font-size:14.5px; margin:12px 0 0;
+      }
       .history ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
       .history li{
         display:flex; justify-content:space-between; align-items:center; gap:10px;
@@ -455,13 +463,16 @@
           </div>
         </div>
 
-        <div class="history">
-          <h3>Lịch sử tra cứu (lưu trên máy này)</h3>
-          <p class="empty" id="history-empty">Chưa có tra cứu nào. Kết quả tra cứu sẽ được lưu tại đây để bạn xem lại nhanh.</p>
-          <ul id="history-list"></ul>
-          <button type="button" class="clear" id="history-clear" hidden>Xóa lịch sử tra cứu</button>
-        </div>
       </section>
+
+      <!-- Lịch sử tra cứu: dữ liệu của chính người dùng trên máy này, luôn hiển thị kể cả khi công cụ đang khóa -->
+      <div class="history" id="history-section">
+        <h3>Lịch sử tra cứu (lưu trên máy này)</h3>
+        <p class="empty" id="history-empty">Chưa có tra cứu nào. Kết quả tra cứu sẽ được lưu tại đây để bạn xem lại nhanh.</p>
+        <ul id="history-list"></ul>
+        <p class="history-note" id="history-lock-note" role="status" hidden></p>
+        <button type="button" class="clear" id="history-clear" hidden>Xóa lịch sử tra cứu</button>
+      </div>
 
       <!-- ================= SO SÁNH CÔNG CỤ QUỐC TẾ ================= -->
       <section class="block">
@@ -566,6 +577,96 @@
           <summary>Lịch sử tra cứu của tôi được lưu ở đâu?</summary>
           <p>Lịch sử tra cứu chỉ lưu trong trình duyệt trên máy của bạn (localStorage) để bạn mở lại nhanh. Xóa lịch sử trình duyệt hoặc bấm “Xóa lịch sử tra cứu” trong công cụ là mất. Tên miền bạn nhập không được gửi lên máy chủ của chúng tôi.</p>
         </details>
+      </section>
+
+      <!-- ================= HỖ TRỢ KHÁCH HÀNG ================= -->
+      <section id="support" aria-labelledby="sp-title">
+        <style>
+          #support{
+            background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+            border-top:4px solid var(--accent); box-shadow:var(--shadow);
+            padding:22px 20px; margin:44px 0 0;
+          }
+          #support h2{ font-size:22px; font-weight:800; margin:0 0 6px; }
+          #support h2::before{
+            content:""; display:inline-block; width:10px; height:10px;
+            background:var(--accent); transform:rotate(45deg); margin-right:10px;
+          }
+          #support .sp-lead{ color:var(--ink-2); margin:0 0 16px; max-width:62ch; }
+          #support .sp-zalo-btn{
+            display:inline-flex; align-items:center; justify-content:center;
+            background:var(--accent); color:var(--accent-ink); text-decoration:none;
+            font-weight:800; font-size:16px; border-radius:10px; padding:13px 24px;
+            min-height:52px; box-shadow:0 6px 16px rgba(185,28,28,.30); width:100%;
+          }
+          @media (min-width:640px){ #support .sp-zalo-btn{ width:auto; } }
+          #support .sp-zalo-btn:hover{ filter:brightness(1.08); }
+          #support .sp-zalo-num{ font-size:15px; margin:10px 0 0; color:var(--ink); }
+          #support .sp-zalo-num b{ color:var(--accent); font-size:17px; letter-spacing:.02em; }
+          #support .sp-form-title{ font-size:18px; font-weight:800; margin:26px 0 4px; padding-top:20px; border-top:1px solid var(--line); }
+          #support .sp-form-sub{ color:var(--ink-2); font-size:14.5px; margin:0 0 14px; }
+          #support form{ display:grid; gap:12px; }
+          @media (min-width:720px){
+            #support form .sp-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+          }
+          #support label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+          #support label .sp-opt{ font-weight:400; color:var(--ink-2); }
+          #support input, #support select, #support textarea{
+            width:100%; border:1.5px solid var(--line); border-radius:10px;
+            background:var(--surface); color:var(--ink);
+            font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+          }
+          #support textarea{ min-height:96px; resize:vertical; }
+          #support input:focus, #support select:focus, #support textarea:focus{ border-color:var(--accent); }
+          #support .sp-submit{
+            border:0; border-radius:10px; cursor:pointer; min-height:52px;
+            background:var(--accent); color:var(--accent-ink);
+            font:inherit; font-weight:800; font-size:16px; padding:12px 26px; width:100%;
+          }
+          @media (min-width:640px){ #support .sp-submit{ width:auto; } }
+          #support .sp-submit:hover{ filter:brightness(1.08); }
+          #support .sp-submit:disabled{ opacity:.55; cursor:wait; }
+          #support #sp-msg{ font-size:14.5px; margin:4px 0 0; min-height:1.5em; font-weight:600; }
+          #support #sp-msg.ok{ color:var(--good); }
+          #support #sp-msg.err{ color:var(--danger); }
+        </style>
+        <h2 id="sp-title">Cần hỗ trợ?</h2>
+        <p class="sp-lead">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+        <a class="sp-zalo-btn" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+        <p class="sp-zalo-num">Số Zalo của shop: <b>0327047928</b> — nếu nút không mở được, hãy tìm số này trên Zalo để nhắn trực tiếp.</p>
+
+        <h3 class="sp-form-title">Gửi yêu cầu hỗ trợ</h3>
+        <p class="sp-form-sub">Điền thông tin bên dưới, shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.</p>
+        <form id="sp-form" novalidate>
+          <div class="sp-row" style="display:grid;gap:12px">
+            <div>
+              <label for="sp-name">Họ tên <span class="sp-opt">(không bắt buộc)</span></label>
+              <input id="sp-name" type="text" autocomplete="name" placeholder="Tên của bạn" />
+            </div>
+            <div>
+              <label for="sp-contact">Số điện thoại hoặc email *</label>
+              <input id="sp-contact" type="text" autocomplete="email" placeholder="vd: 09xx xxx xxx hoặc email" required />
+            </div>
+          </div>
+          <div>
+            <label for="sp-issue">Vấn đề</label>
+            <select id="sp-issue">
+              <option value="Lỗi trang">Lỗi trang</option>
+              <option value="Hết dùng thử">Hết dùng thử</option>
+              <option value="Thanh toán">Thanh toán</option>
+              <option value="Gói Pro">Gói Pro</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+          <div>
+            <label for="sp-message">Mô tả ngắn *</label>
+            <textarea id="sp-message" placeholder="Bạn đang gặp vấn đề gì? Mô tả ngắn gọn giúp shop xử lý nhanh hơn." required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="sp-submit" id="sp-submit">Gửi yêu cầu</button>
+            <p id="sp-msg" role="status" aria-live="polite"></p>
+          </div>
+        </form>
       </section>
 
       <footer>
@@ -1120,6 +1221,20 @@
         domainInput.value = h.domain || "";
         industrySelect.value = h.industry;
         runLookupSilent(h.domain, h.industry);
+        var toolEl = document.getElementById("tool");
+        var isLocked = !toolEl || toolEl.style.display === "none" || window.getComputedStyle(toolEl).display === "none";
+        var note = document.getElementById("history-lock-note");
+        if (isLocked) {
+          if (note) {
+            note.textContent = "Đã điền lại tra cứu \u201C" + (h.label || "") + "\u201D. Đăng nhập / dùng thử để xem kết quả trong công cụ.";
+            note.hidden = false;
+          }
+          var authEl = document.getElementById("ccs-auth");
+          if (authEl) authEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          if (note) { note.hidden = true; note.textContent = ""; }
+          if (results) results.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       });
     });
   }
@@ -1156,6 +1271,100 @@
   });
 
   renderHistory();
+})();
+</script>
+
+<script>
+(function () {
+  "use strict";
+  var form = document.getElementById("sp-form");
+  if (!form) return;
+  var nameEl = document.getElementById("sp-name");
+  var contactEl = document.getElementById("sp-contact");
+  var issueEl = document.getElementById("sp-issue");
+  var messageEl = document.getElementById("sp-message");
+  var msgEl = document.getElementById("sp-msg");
+  var submitBtn = document.getElementById("sp-submit");
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+  var spClient = null;
+
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+  function readPageConfig() {
+    // Dùng đúng 2 biến đã có sẵn trong trang (SUPABASE_URL / SUPABASE_ANON_KEY
+    // trong khối đăng nhập) — đọc giá trị của chúng từ mã nguồn trang,
+    // không hardcode URL/key mới.
+    if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+      return { url: window.SUPABASE_URL, key: window.SUPABASE_ANON_KEY };
+    }
+    var scripts = document.querySelectorAll("script");
+    var url = null, key = null;
+    for (var i = 0; i < scripts.length; i++) {
+      var t = scripts[i].textContent || "";
+      if (!url) { var m1 = t.match(/SUPABASE_URL\s*=\s*"([^"]+)"/); if (m1) url = m1[1]; }
+      if (!key) { var m2 = t.match(/SUPABASE_ANON_KEY\s*=\s*"([^"]+)"/); if (m2) key = m2[1]; }
+      if (url && key) break;
+    }
+    if (url && key) return { url: url, key: key };
+    return null;
+  }
+  function getClient() {
+    // Ưu tiên client sẵn có của trang nếu truy cập được (biến `client`
+    // trong khối đăng nhập nằm trong closure nên thường không lộ ra window;
+    // khi đó tạo client riêng từ SUPABASE_URL / SUPABASE_ANON_KEY của trang).
+    if (window.client && window.client.from) return Promise.resolve(window.client);
+    if (spClient) return Promise.resolve(spClient);
+    return loadSupabaseUmd().then(function () {
+      var cfg = readPageConfig();
+      if (!cfg) throw new Error("missing_supabase_config");
+      spClient = window.supabase.createClient(cfg.url, cfg.key);
+      return spClient;
+    });
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var contact = (contactEl.value || "").trim();
+    var message = (messageEl.value || "").trim();
+    if (!contact || !message) {
+      msgEl.textContent = "Vui lòng nhập Số điện thoại hoặc email và Mô tả ngắn.";
+      msgEl.className = "err";
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang gửi…";
+    msgEl.textContent = "";
+    msgEl.className = "";
+    getClient().then(function (client) {
+      return client.from("support_tickets").insert([{
+        name: (nameEl.value || "").trim(),
+        contact: contact,
+        issue_type: issueEl.value,
+        message: message,
+        page: "nghien-cuu-doi-thu-canh-tranh",
+        status: "new"
+      }]);
+    }).then(function (res) {
+      if (res && res.error) throw res.error;
+      msgEl.textContent = "Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.";
+      msgEl.className = "ok";
+      form.reset();
+    }).catch(function () {
+      msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+      msgEl.className = "err";
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Gửi yêu cầu";
+    });
+  });
 })();
 </script>
   </body>
