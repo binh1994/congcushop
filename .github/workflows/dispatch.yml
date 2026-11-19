@@ -1,0 +1,62 @@
+name: Dub Worker (free auto dubbing)
+
+# Chạy mỗi 5 phút: lấy job lồng tiếng/podcast đang chờ trong bảng dubbing_jobs,
+# xử lý bằng công cụ miễn phí (faster-whisper + Edge TTS + ffmpeg), upload
+# file kết quả lên Supabase Storage, cập nhật trạng thái job.
+# Repo công khai nên số phút GitHub Actions miễn phí (Linux).
+# File này đặt tại .github/workflows/dub-worker.yml khi deploy (bản gốc giữ
+# tại backend/dub-worker/dispatch.yml).
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+# Không cho 2 lượt chạy chồng lên nhau (job đang xử lý dở sẽ bị chạy lại).
+concurrency:
+  group: dub-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cài ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Cài Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/dub-worker/requirements.txt
+
+      - name: Cài thư viện
+        run: pip install -r backend/dub-worker/requirements.txt
+
+      # Giọng Piper dự phòng khi Edge TTS lỗi (chạy local, không cần mạng).
+      # Chỉ tải 2 giọng hay dùng nhất (Việt + Anh); ngôn ngữ khác dùng Edge TTS.
+      - name: Tải giọng Piper dự phòng
+        run: |
+          mkdir -p piper-voices
+          curl -sL -o piper-voices/vi_VN-vais1000-medium.onnx https://huggingface.co/rhasspy/piper-voices/resolve/main/vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx
+          curl -sL -o piper-voices/vi_VN-vais1000-medium.onnx.json https://huggingface.co/rhasspy/piper-voices/resolve/main/vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx.json
+          curl -sL -o piper-voices/en_US-lessac-medium.onnx https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx
+          curl -sL -o piper-voices/en_US-lessac-medium.onnx.json https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json
+
+      - name: Chạy worker 1 lượt
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          WHISPER_MODEL: base
+          MAX_JOBS_PER_RUN: "5"
+          RUN_TIMEOUT_MINUTES: "50"
+          PIPER_VOICE_VI: piper-voices/vi_VN-vais1000-medium.onnx
+          PIPER_VOICE_EN: piper-voices/en_US-lessac-medium.onnx
+        run: python backend/dub-worker/dub_worker.py --run-once
