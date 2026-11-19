@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Nghiên Cứu Đối Thủ Cạnh Tranh — so sánh doanh nghiệp cùng ngành theo giá công khai, kênh bán, điểm mạnh và điểm yếu. Dùng thử 3 ngày miễn phí, sau đó 49.000đ/tháng." />
+    <link rel="icon" href="data:," />
+    <title>Nghiên Cứu Đối Thủ Cạnh Tranh — 49.000đ/tháng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f7f5;
+        --surface:#ffffff;
+        --surface-2:#e7edea;
+        --ink:#12211b;
+        --ink-2:#43564d;
+        --line:#cfdcd4;
+        --accent:#0b7a55;
+        --accent-ink:#ffffff;
+        --accent-soft:#d9efe4;
+        --danger:#c22f2f;
+        --good:#0b7a55;
+        --warn-bg:#fdf3e0;
+        --warn-ink:#7a5410;
+        --warn-line:#ecd9ae;
+        --shadow:0 10px 30px rgba(18,33,27,.10);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1310;
+          --surface:#16201b;
+          --surface-2:#1f2c26;
+          --ink:#e9f2ed;
+          --ink-2:#a9bcb2;
+          --line:#2d3f36;
+          --accent:#2fbf8f;
+          --accent-ink:#08130e;
+          --accent-soft:#173a2d;
+          --danger:#ff8a7a;
+          --good:#2fbf8f;
+          --warn-bg:#33270f;
+          --warn-ink:#f0cd8a;
+          --warn-line:#5c4a1e;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      *{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+        font-size:16px; line-height:1.6;
+      }
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height:2.75rem; }
+      .wrap{ max-width:960px; margin:0 auto; padding:0 16px 56px; }
+      h1,h2,h3{ line-height:1.25; }
+      section.block{ margin:34px 0 0; }
+      section.block > h2{ font-size:23px; font-weight:800; margin:0 0 8px; }
+      section.block > p.lead{ color:var(--ink-2); margin:0 0 16px; max-width:65ch; }
+
+      /* ---------- HERO ---------- */
+      .hero{ padding:34px 0 6px; }
+      .hero h1{ font-size:clamp(28px,6vw,42px); font-weight:900; margin:0 0 12px; letter-spacing:-.01em; }
+      .hero .sub{ font-size:17px; color:var(--ink-2); margin:0 0 20px; max-width:62ch; }
+      .hero-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        box-shadow:var(--shadow); padding:20px;
+        display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;
+      }
+      .hero-price .amount{ font-size:32px; font-weight:900; color:var(--accent); }
+      .hero-price .per{ font-size:16px; color:var(--ink-2); font-weight:600; }
+      .hero-price .note{ font-size:14px; color:var(--ink-2); margin-top:2px; }
+      .hero-actions{ display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+      .btn{
+        border:0; border-radius:10px; cursor:pointer; min-height:52px;
+        background:var(--accent); color:var(--accent-ink);
+        font:inherit; font-weight:800; font-size:16px; padding:12px 26px;
+      }
+      .btn:active{ transform:translateY(1px); }
+      .btn-ghost{
+        background:transparent; color:var(--accent);
+        border:1.5px solid var(--accent);
+      }
+      .trial-left{ font-size:14px; font-weight:700; color:var(--accent); min-height:1.4em; }
+      .hero-points{ display:grid; gap:10px; margin:20px 0 0; padding:0; list-style:none; }
+      @media (min-width:720px){ .hero-points{ grid-template-columns:repeat(3,1fr); } }
+      .hero-points li{
+        background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+        font-size:14.5px;
+      }
+      .hero-points b{ display:block; font-size:15px; margin-bottom:2px; }
+
+      /* ---------- PAYWALL ---------- */
+      .paywall{
+        background:var(--surface); border:1.5px dashed var(--accent); border-radius:var(--radius);
+        padding:26px 20px; text-align:center; margin:22px 0;
+      }
+      .paywall h2{ font-size:20px; margin:0 0 6px; }
+      .paywall p{ color:var(--ink-2); margin:0 auto 14px; max-width:52ch; }
+      .paywall .btn{ display:inline-block; text-decoration:none; line-height:1.4; padding-top:14px; }
+
+      /* ---------- TOOL ---------- */
+      .tool{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        box-shadow:var(--shadow); padding:20px; margin:22px 0;
+      }
+      .tool h2{ font-size:21px; font-weight:800; margin:0 0 4px; }
+      .tool .tool-sub{ color:var(--ink-2); font-size:14.5px; margin:0 0 16px; }
+      .sample-note{
+        background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
+        border-radius:10px; padding:10px 14px; font-size:14px; margin:0 0 16px;
+      }
+      .tool-form{ display:grid; gap:12px; }
+      @media (min-width:720px){ .tool-form{ grid-template-columns:1fr 1fr auto; align-items:end; } }
+      .field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+      .field input, .field select{
+        width:100%; border:1.5px solid var(--line); border-radius:10px;
+        background:var(--surface); color:var(--ink);
+        font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+      }
+      .field input:focus, .field select:focus{ border-color:var(--accent); }
+      .tool-form .btn{ width:100%; }
+      @media (min-width:720px){ .tool-form .btn{ width:auto; } }
+      .tool-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+      .tool-msg.err{ color:var(--danger); }
+
+      .results{ margin-top:20px; }
+      .results h3{ font-size:18px; margin:0 0 4px; }
+      .results .res-sub{ color:var(--ink-2); font-size:14px; margin:0 0 12px; }
+      .cmp-table{ width:100%; border-collapse:collapse; font-size:14.5px; }
+      .cmp-table th, .cmp-table td{
+        border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;
+      }
+      .cmp-table thead th{ background:var(--surface-2); font-weight:700; }
+      .cmp-table tbody th{ font-weight:700; background:var(--surface); }
+      .cmp-table .you{ background:var(--accent-soft); }
+      @media (max-width:719px){
+        .cmp-table, .cmp-table thead, .cmp-table tbody, .cmp-table tr, .cmp-table th, .cmp-table td{ display:block; }
+        .cmp-table thead{ display:none; }
+        .cmp-table tr{ border:1px solid var(--line); border-radius:12px; margin-bottom:12px; overflow:hidden; }
+        .cmp-table td, .cmp-table tbody th{ border:0; border-bottom:1px solid var(--line); }
+        .cmp-table tr > *:last-child{ border-bottom:0; }
+        .cmp-table td::before{
+          content:attr(data-label); display:block; font-size:12.5px; font-weight:700;
+          color:var(--ink-2); text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px;
+        }
+      }
+      .gaps{
+        background:var(--accent-soft); border-radius:12px; padding:16px 18px; margin-top:16px;
+      }
+      .gaps h3{ font-size:17px; margin:0 0 8px; }
+      .gaps ul{ margin:0; padding-left:20px; }
+      .gaps li{ margin-bottom:6px; }
+      .gaps li:last-child{ margin-bottom:0; }
+
+      .history{ margin-top:22px; }
+      .history h3{ font-size:16px; margin:0 0 8px; }
+      .history ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+      .history li{
+        display:flex; justify-content:space-between; align-items:center; gap:10px;
+        border:1px solid var(--line); border-radius:10px; padding:8px 8px 8px 14px; font-size:14.5px;
+      }
+      .history .h-meta{ color:var(--ink-2); font-size:13px; display:block; }
+      .history .h-btn{
+        border:1.5px solid var(--accent); background:transparent; color:var(--accent);
+        border-radius:8px; font:inherit; font-weight:700; font-size:14px;
+        padding:8px 14px; cursor:pointer; min-height:40px; flex-shrink:0;
+      }
+      .history .clear{
+        margin-top:10px; background:none; border:0; color:var(--ink-2);
+        font:inherit; font-size:14px; text-decoration:underline; cursor:pointer; padding:8px 4px;
+      }
+      .history .empty{ color:var(--ink-2); font-size:14.5px; margin:0; }
+
+      /* ---------- COMPARE / PRICING / FAQ ---------- */
+      .vs-table{ width:100%; border-collapse:collapse; font-size:15px; background:var(--surface);
+        border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+      .vs-table th, .vs-table td{ padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+      .vs-table thead th{ background:var(--surface-2); }
+      .vs-table tr:last-child td{ border-bottom:0; }
+      .vs-table .hl td{ background:var(--accent-soft); font-weight:600; }
+      @media (max-width:719px){
+        .vs-table, .vs-table thead, .vs-table tbody, .vs-table tr, .vs-table th, .vs-table td{ display:block; }
+        .vs-table thead{ display:none; }
+        .vs-table tr{ border-bottom:1px solid var(--line); padding:8px 0; }
+        .vs-table td{ border-bottom:0; padding:6px 14px; }
+        .vs-table td::before{
+          content:attr(data-label); display:block; font-size:12.5px; font-weight:700;
+          color:var(--ink-2); text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px;
+        }
+      }
+      .price-grid{ display:grid; gap:14px; }
+      @media (min-width:720px){ .price-grid{ grid-template-columns:1fr 1fr; } }
+      .price-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        padding:22px; box-shadow:var(--shadow);
+      }
+      .price-card.featured{ border:2px solid var(--accent); }
+      .price-card h3{ margin:0 0 4px; font-size:18px; }
+      .price-card .p-amount{ font-size:30px; font-weight:900; color:var(--accent); }
+      .price-card .p-per{ color:var(--ink-2); font-weight:600; }
+      .price-card ul{ margin:12px 0 0; padding-left:20px; }
+      .price-card li{ margin-bottom:6px; font-size:15px; }
+      .faq details{
+        background:var(--surface); border:1px solid var(--line); border-radius:12px;
+        padding:4px 18px; margin-bottom:10px;
+      }
+      .faq summary{ font-weight:700; cursor:pointer; padding:12px 0; font-size:16px; }
+      .faq details p{ margin:0 0 14px; color:var(--ink-2); }
+      footer{ margin-top:44px; padding-top:18px; border-top:1px solid var(--line);
+        color:var(--ink-2); font-size:13.5px; }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <h1>Nghiên Cứu Đối Thủ Cạnh Tranh</h1>
+        <p class="sub">
+          Tìm doanh nghiệp cùng ngành với bạn, xem giá công khai, kênh bán,
+          điểm mạnh và điểm yếu của từng đối thủ — rồi nhận gợi ý khoảng trống
+          thị trường để chen vào. Làm thủ công việc này thường mất cả buổi;
+          ở đây bạn có bảng so sánh trong vài giây.
+        </p>
+        <div class="hero-card">
+          <div class="hero-price">
+            <span class="amount">49.000đ</span><span class="per">/tháng</span>
+            <div class="note">Dùng thử 3 ngày miễn phí — hết trial mới bắt đầu tính phí.</div>
+          </div>
+          <div class="hero-actions">
+            <button type="button" class="btn" id="hero-cta">Dùng thử 3 ngày</button>
+            <span class="trial-left" data-trial-days-left></span>
+          </div>
+        </div>
+        <ul class="hero-points">
+          <li><b>So sánh theo ngành</b>Chọn ngành hoặc nhập tên miền của bạn để xem các đối thủ đang bán gì, ở đâu, giá bao nhiêu.</li>
+          <li><b>Điểm mạnh — điểm yếu rõ ràng</b>Mỗi đối thủ đều có nhận xét hai mặt để bạn biết nên tránh đối đầu ở đâu, nên tấn công ở đâu.</li>
+          <li><b>Gợi ý khoảng trống thị trường</b>Từ bảng so sánh, công cụ chỉ ra nhu cầu mà đối thủ chưa phục vụ tốt — chỗ bạn có thể chen vào.</li>
+        </ul>
+      </header>
+
+      <!-- ================= ĐĂNG NHẬP / DÙNG THỬ (khối dùng chung CongCuShop) ================= -->
+<section class="ccs-auth" id="ccs-auth" data-product="p8">
+  <style>
+    /* Khớp tông trang mẫu: dùng biến CSS sẵn có của trang (--bg, --surface,
+       --ink, --ink-2, --line, --accent, --accent-soft, --danger, --shadow).
+       Có fallback nếu trang chưa định nghĩa biến. Hỗ trợ dark mode theo
+       prefers-color-scheme của trang. Mobile-first, nút cao tối thiểu 44px. */
+    .ccs-auth{
+      --ccs-accent:var(--accent,#0b7a55);
+      --ccs-accent-ink:var(--accent-ink,#fff);
+      --ccs-soft:var(--accent-soft,#d9efe4);
+      background:var(--surface,#fff);
+      border:1px solid var(--line,#cfdcd4);
+      border-radius:14px;
+      box-shadow:var(--shadow,0 10px 30px rgba(18,33,27,.10));
+      padding:20px;
+      margin:22px 0;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .ccs-auth h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+    .ccs-auth .ccs-sub{ color:var(--ink-2,#43564d); font-size:14px; margin:0 0 16px; }
+    .ccs-auth .ccs-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+    .ccs-auth .ccs-tab{
+      border:1.5px solid var(--line,#cfdcd4); background:var(--surface-2,#e3ebe7);
+      color:var(--ink,#12211b); border-radius:10px; padding:10px 6px;
+      font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-height:48px;
+    }
+    .ccs-auth .ccs-tab[aria-pressed="true"]{ border-color:var(--ccs-accent); background:var(--ccs-soft); }
+    .ccs-auth .ccs-field{ margin-bottom:12px; }
+    .ccs-auth .ccs-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+    .ccs-auth .ccs-field input{
+      width:100%; border:1.5px solid var(--line,#cfdcd4); border-radius:10px;
+      background:var(--surface,#fff); color:var(--ink,#12211b);
+      font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+    }
+    .ccs-auth .ccs-field input:focus{ border-color:var(--ccs-accent); }
+    .ccs-auth .ccs-btn{
+      width:100%; border:0; border-radius:10px; cursor:pointer; min-height:48px;
+      background:var(--ccs-accent); color:var(--ccs-accent-ink);
+      font:inherit; font-weight:800; font-size:16px; padding:12px 16px;
+    }
+    .ccs-auth .ccs-btn:disabled{ opacity:.55; cursor:wait; }
+    .ccs-auth .ccs-btn-ghost{
+      background:transparent; color:var(--ccs-accent);
+      border:1.5px solid var(--ccs-accent); margin-top:10px;
+    }
+    .ccs-auth .ccs-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+    .ccs-auth .ccs-msg.err{ color:var(--danger,#c22f2f); }
+    .ccs-auth .ccs-msg.ok{ color:var(--good,#0b7a55); }
+    .ccs-auth .ccs-status{
+      background:var(--ccs-soft); border-radius:10px; padding:12px 14px;
+      font-size:14.5px; margin:0 0 12px;
+    }
+    .ccs-auth .ccs-status b{ font-weight:800; }
+    .ccs-auth .ccs-email{ font-weight:700; word-break:break-all; }
+    .ccs-auth .ccs-fine{ color:var(--ink-2,#43564d); font-size:13.5px; margin:12px 0 0; }
+    .ccs-auth .ccs-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .ccs-auth .ccs-row .ccs-btn{ flex:1; min-width:180px; }
+    @media (min-width:640px){ .ccs-auth .ccs-btn{ width:auto; min-width:220px; } }
+  </style>
+
+  <!-- Trạng thái CHƯA đăng nhập -->
+  <div data-ccs-view="guest">
+    <h2>Đăng nhập để dùng thử 3 ngày miễn phí</h2>
+    <p class="ccs-sub">
+      <span data-ccs-product-name>Tính Lợi Nhuận Sàn</span> —
+      <b data-ccs-price>29.000đ/tháng</b> sau 3 ngày dùng thử.
+      Tài khoản lưu trên hệ thống, không lưu mật khẩu trên máy bạn.
+    </p>
+    <div class="ccs-tabs" role="group" aria-label="Đăng nhập hoặc đăng ký">
+      <button type="button" class="ccs-tab" data-ccs-mode="signin" aria-pressed="true">Đăng nhập</button>
+      <button type="button" class="ccs-tab" data-ccs-mode="signup" aria-pressed="false">Đăng ký mới</button>
+    </div>
+    <form data-ccs-form novalidate>
+      <div class="ccs-field">
+        <label for="ccs-email">Email</label>
+        <input id="ccs-email" name="email" type="email" required autocomplete="email"
+               placeholder="vidu@email.com" />
+      </div>
+      <div class="ccs-field">
+        <label for="ccs-password">Mật khẩu <span data-ccs-pw-hint>(ít nhất 8 ký tự)</span></label>
+        <input id="ccs-password" name="password" type="password" required autocomplete="current-password"
+               minlength="8" placeholder="••••••••" />
+      </div>
+      <button type="submit" class="ccs-btn" data-ccs-submit>Đăng nhập</button>
+      <p class="ccs-msg" data-ccs-msg role="status"></p>
+    </form>
+    <p class="ccs-fine">
+      Đăng ký xong, bấm “Bắt đầu dùng thử 3 ngày” để kích hoạt trial.
+      Hết 3 ngày chưa trả tiền thì công cụ sẽ khóa lại cho tới khi bạn gia hạn.
+    </p>
+  </div>
+
+  <!-- Trạng thái ĐÃ đăng nhập -->
+  <div data-ccs-view="user" hidden>
+    <h2>Tài khoản của bạn</h2>
+    <p class="ccs-sub">Đã đăng nhập: <span class="ccs-email" data-ccs-user-email></span></p>
+    <p class="ccs-status" data-ccs-status>Đang kiểm tra quyền dùng…</p>
+    <div class="ccs-row">
+      <button type="button" class="ccs-btn" data-ccs-trial hidden>Bắt đầu dùng thử 3 ngày</button>
+      <button type="button" class="ccs-btn" data-ccs-pay hidden>Gia hạn bằng VietQR — <span data-ccs-price>29.000đ/tháng</span></button>
+      <button type="button" class="ccs-btn ccs-btn-ghost" data-ccs-logout>Đăng xuất</button>
+    </div>
+    <p class="ccs-msg" data-ccs-msg role="status"></p>
+    <p class="ccs-fine">
+      Thanh toán bằng VietQR qua payOS, tiền về tài khoản của chủ shop.
+      Hết tháng, bấm “Gia hạn bằng VietQR” để tạo mã mới và quét lại.
+    </p>
+  </div>
+</section>
+
+      <!-- ================= PAYWALL (khách chưa có quyền) ================= -->
+      <div class="paywall" data-paywall>
+        <h2>Khu vực dành cho tài khoản dùng thử</h2>
+        <p data-paywall-reason>Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.</p>
+        <a class="btn" href="#ccs-auth">Đăng nhập / Đăng ký</a>
+      </div>
+
+      <!-- ================= CÔNG CỤ ================= -->
+      <section class="tool" id="tool" data-requires-access style="display:none">
+        <h2>Tra cứu đối thủ theo ngành</h2>
+        <p class="tool-sub">
+          Nhập tên miền của bạn (không bắt buộc) và chọn ngành — công cụ hiện bảng
+          so sánh các đối thủ trong ngành: giá công khai, kênh bán, điểm mạnh, điểm yếu,
+          kèm gợi ý khoảng trống thị trường.
+        </p>
+        <p class="sample-note">
+          <b>Lưu ý về dữ liệu:</b> bảng so sánh hiện dùng <b>dữ liệu mẫu</b> theo ngành
+          để bạn hình dung cách đọc và cách ra quyết định. Dữ liệu đối thủ thật đang
+          được mở rộng dần theo từng ngành — đừng dùng số liệu mẫu này để chốt
+          quyết định kinh doanh lớn.
+        </p>
+        <form class="tool-form" id="lookup-form" novalidate>
+          <div class="field">
+            <label for="f-domain">Tên miền của bạn (không bắt buộc)</label>
+            <input id="f-domain" type="text" inputmode="url" autocomplete="off"
+                   placeholder="vd: shopcuaban.vn" />
+          </div>
+          <div class="field">
+            <label for="f-industry">Ngành kinh doanh</label>
+            <select id="f-industry">
+              <option value="thoi-trang">Thời trang &amp; phụ kiện</option>
+              <option value="my-pham">Mỹ phẩm &amp; chăm sóc cá nhân</option>
+              <option value="an-uong">Ăn uống &amp; F&amp;B</option>
+              <option value="noi-that">Nội thất &amp; gia dụng</option>
+              <option value="dien-tu">Điện tử &amp; phụ kiện công nghệ</option>
+              <option value="me-be">Mẹ &amp; bé</option>
+            </select>
+          </div>
+          <button type="submit" class="btn">Tra cứu đối thủ</button>
+        </form>
+        <p class="tool-msg" id="tool-msg" role="status"></p>
+
+        <div class="results" id="results" hidden>
+          <h3 id="res-title">Kết quả tra cứu</h3>
+          <p class="res-sub" id="res-sub"></p>
+          <table class="cmp-table">
+            <thead>
+              <tr>
+                <th scope="col">Đối thủ (dữ liệu mẫu)</th>
+                <th scope="col">Giá công khai</th>
+                <th scope="col">Kênh bán</th>
+                <th scope="col">Điểm mạnh</th>
+                <th scope="col">Điểm yếu</th>
+              </tr>
+            </thead>
+            <tbody id="res-body"></tbody>
+          </table>
+          <div class="gaps">
+            <h3>Khoảng trống thị trường gợi ý</h3>
+            <ul id="res-gaps"></ul>
+          </div>
+        </div>
+
+        <div class="history">
+          <h3>Lịch sử tra cứu (lưu trên máy này)</h3>
+          <p class="empty" id="history-empty">Chưa có tra cứu nào. Kết quả tra cứu sẽ được lưu tại đây để bạn xem lại nhanh.</p>
+          <ul id="history-list"></ul>
+          <button type="button" class="clear" id="history-clear" hidden>Xóa lịch sử tra cứu</button>
+        </div>
+      </section>
+
+      <!-- ================= SO SÁNH CÔNG CỤ QUỐC TẾ ================= -->
+      <section class="block">
+        <h2>So với các công cụ quốc tế thì sao?</h2>
+        <p class="lead">
+          Các công cụ nghiên cứu đối thủ nổi tiếng thế giới rất mạnh, nhưng giá
+          của chúng tính cho thị trường Mỹ và châu Âu. Bảng dưới là giá niêm yết
+          công khai của gói thấp nhất tại thời điểm viết trang này — bạn nên tự
+          kiểm tra lại trên trang chủ của họ trước khi quyết định.
+        </p>
+        <table class="vs-table">
+          <thead>
+            <tr>
+              <th scope="col">Công cụ</th>
+              <th scope="col">Giá từ</th>
+              <th scope="col">Tập trung</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Công cụ">SpyFu</td>
+              <td data-label="Giá từ">$39/tháng</td>
+              <td data-label="Tập trung">Nghiên cứu đối thủ SEO/ quảng cáo, dữ liệu chủ yếu thị trường Mỹ</td>
+            </tr>
+            <tr>
+              <td data-label="Công cụ">Ahrefs</td>
+              <td data-label="Giá từ">$129/tháng</td>
+              <td data-label="Tập trung">SEO chuyên sâu, dữ liệu toàn cầu</td>
+            </tr>
+            <tr>
+              <td data-label="Công cụ">Semrush</td>
+              <td data-label="Giá từ">$139/tháng</td>
+              <td data-label="Tập trung">Marketing tổng thể, dữ liệu toàn cầu</td>
+            </tr>
+            <tr class="hl">
+              <td data-label="Công cụ">Nghiên Cứu Đối Thủ Cạnh Tranh (trang này)</td>
+              <td data-label="Giá từ">49.000đ/tháng</td>
+              <td data-label="Tập trung">Doanh nghiệp Việt Nam: ngành hàng, kênh bán và giá bán trong nước</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="lead" style="margin-top:12px">
+          Nếu bạn cần dữ liệu SEO toàn cầu chuyên sâu, các công cụ trên là lựa chọn
+          đúng. Nếu bạn chỉ cần nhìn rõ đối thủ cùng ngành tại Việt Nam để quyết
+          định giá và kênh bán, mức 49.000đ/tháng hợp lý hơn nhiều.
+        </p>
+      </section>
+
+      <!-- ================= GIÁ ================= -->
+      <section class="block" id="gia">
+        <h2>Giá</h2>
+        <p class="lead">Dùng thử 3 ngày miễn phí, không cần thẻ. Hết 3 ngày, chọn gói lẻ của công cụ này hoặc gói Bundle cho cả 10 công cụ.</p>
+        <div class="price-grid">
+          <div class="price-card featured">
+            <h3>Nghiên Cứu Đối Thủ Cạnh Tranh</h3>
+            <span class="p-amount">49.000đ</span><span class="p-per">/tháng</span>
+            <ul>
+              <li>3 ngày dùng thử miễn phí</li>
+              <li>Tra cứu đối thủ theo ngành không giới hạn số lần</li>
+              <li>Bảng so sánh giá công khai, kênh bán, điểm mạnh, điểm yếu</li>
+              <li>Gợi ý khoảng trống thị trường theo từng ngành</li>
+              <li>Lưu lịch sử tra cứu trên máy của bạn</li>
+            </ul>
+          </div>
+          <div class="price-card">
+            <h3>Gói Bundle — cả 10 công cụ</h3>
+            <span class="p-amount">149.000đ</span><span class="p-per">/tháng</span>
+            <ul>
+              <li>Trả theo năm: 1.490.000đ/năm</li>
+              <li>Mở cả 10 công cụ trong hệ thống, gồm công cụ này</li>
+              <li>Rẻ hơn mua lẻ từng công cụ cộng lại</li>
+              <li>Thanh toán bằng VietQR qua payOS</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="block faq">
+        <h2>Câu hỏi thường gặp</h2>
+        <details>
+          <summary>Dữ liệu đối thủ trong bảng so sánh có thật không?</summary>
+          <p>Hiện tại bảng so sánh dùng dữ liệu mẫu theo từng ngành — trang có ghi rõ điều này ngay trong công cụ. Dữ liệu mẫu giúp bạn làm quen với cách so sánh và cách đọc điểm mạnh/ điểm yếu. Dữ liệu đối thủ thật đang được mở rộng dần theo ngành; khi một ngành có dữ liệu thật, ghi chú trong công cụ sẽ được cập nhật tương ứng.</p>
+        </details>
+        <details>
+          <summary>Dùng thử 3 ngày có cần thẻ ngân hàng không?</summary>
+          <p>Không. Bạn chỉ cần đăng ký tài khoản bằng email, bấm “Bắt đầu dùng thử 3 ngày” là dùng được ngay. Hết 3 ngày, nếu muốn dùng tiếp bạn mới thanh toán 49.000đ/tháng bằng VietQR.</p>
+        </details>
+        <details>
+          <summary>Hết dùng thử mà chưa trả tiền thì sao?</summary>
+          <p>Công cụ sẽ khóa lại và hiện khung gia hạn. Dữ liệu lịch sử tra cứu lưu trên máy của bạn vẫn còn; khi gia hạn xong bạn dùng tiếp bình thường.</p>
+        </details>
+        <details>
+          <summary>Công cụ này khác gì SpyFu, Ahrefs hay Semrush?</summary>
+          <p>Các công cụ quốc tế mạnh về dữ liệu SEO và quảng cáo toàn cầu, giá từ $39 tới $139/tháng. Công cụ này tập trung vào doanh nghiệp Việt Nam: đối thủ cùng ngành trong nước, giá bán công khai và kênh bán tại Việt Nam, với giá 49.000đ/tháng. Hai nhóm phục vụ nhu cầu khác nhau — hãy chọn theo việc bạn thực sự cần làm.</p>
+        </details>
+        <details>
+          <summary>Gói Bundle 149.000đ/tháng gồm những gì?</summary>
+          <p>Bundle mở cả 10 công cụ trong cùng hệ thống (tính lợi nhuận sàn, quản lý đơn cọc công nợ, nội dung đa nền tảng, sổ thu chi, tạo ảnh sản phẩm, báo giá hợp đồng mẫu, tìm nhà cung cấp, nghiên cứu đối thủ, dịch thuyết minh video, podcast AI). Trả theo năm là 1.490.000đ/năm.</p>
+        </details>
+        <details>
+          <summary>Lịch sử tra cứu của tôi được lưu ở đâu?</summary>
+          <p>Lịch sử tra cứu chỉ lưu trong trình duyệt trên máy của bạn (localStorage) để bạn mở lại nhanh. Xóa lịch sử trình duyệt hoặc bấm “Xóa lịch sử tra cứu” trong công cụ là mất. Tên miền bạn nhập không được gửi lên máy chủ của chúng tôi.</p>
+        </details>
+      </section>
+
+      <footer>
+        Nghiên Cứu Đối Thủ Cạnh Tranh — một công cụ trong bộ 10 công cụ Micro-SaaS cho hộ kinh doanh và doanh nghiệp nhỏ tại Việt Nam. Giá công cụ quốc tế nêu trên trang là giá niêm yết công khai tại thời điểm viết, có thể thay đổi theo chính sách của từng hãng.
+      </footer>
+    </main>
+
+    <!-- Thứ tự script bắt buộc: supabase-js UMD → checkAccess.js → khối đăng nhập -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="assets/checkAccess.js"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==== 1. CẤU HÌNH — THAY 2 GIÁ TRỊ NÀY BẰNG KEY THẬT (xem đầu file) ==== */
+  var SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";         // vd: https://abcdefghijkl.supabase.co
+  var SUPABASE_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq"; // anon public key (được phép lộ)
+  /* ======================================================================= */
+
+  // Bảng giá + tên hiển thị — KHỚP products.json. Chỉ để hiển thị;
+  // giá thu thật do Edge Function create-payment quyết trên server.
+  var PRODUCTS = {
+    p1:     { name: "Tính Lợi Nhuận Sàn",        price: 29000 },
+    p2:     { name: "Quản Lý Đơn Cọc Công Nợ",   price: 39000 },
+    p3:     { name: "Nội Dung Đa Nền Tảng",      price: 39000 },
+    p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
+    p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
+    p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
+    p7:     { name: "Tìm Nhà Cung Cấp Sản Xuất", price: 49000 },
+    p8:     { name: "Nghiên Cứu Đối Thủ Cạnh Tranh", price: 49000 },
+    p9:     { name: "Dịch Thuyết Minh Video Đa Ngôn Ngữ", price: 49000 },
+    p10:    { name: "Podcast AI",                price: 39000 },
+    bundle: { name: "Gói Bundle 10 công cụ",     price: 149000 }
+  };
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+
+  var root = document.getElementById("ccs-auth");
+  if (!root) return;
+  var product = (root.getAttribute("data-product") || "p1").trim();
+  if (!PRODUCTS[product]) product = "p1";
+  var meta = PRODUCTS[product];
+
+  var $ = function (sel) { return root.querySelector(sel); };
+  var $$ = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+  var viewGuest = $('[data-ccs-view="guest"]');
+  var viewUser = $('[data-ccs-view="user"]');
+  var msgEls = $$('[data-ccs-msg]');
+  var statusEl = $('[data-ccs-status]');
+  var trialBtn = $('[data-ccs-trial]');
+  var payBtn = $('[data-ccs-pay]');
+  var logoutBtn = $('[data-ccs-logout]');
+  var submitBtn = $('[data-ccs-submit]');
+  var form = $('[data-ccs-form]');
+  var mode = "signin";
+  var client = null;   // supabase client (tạo ở init)
+  var accessCache = null;
+
+  function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+    catch (e) { return iso; }
+  }
+  function say(text, kind) {
+    msgEls.forEach(function (el) {
+      el.textContent = text || "";
+      el.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+    });
+  }
+  function show(view) {
+    viewGuest.hidden = view !== "guest";
+    viewUser.hidden = view !== "user";
+  }
+  function configMissing() {
+    return !SUPABASE_URL || SUPABASE_URL.indexOf("__SUPABASE_") === 0 ||
+           !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("__SUPABASE_") === 0;
+  }
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ==== 2. HỎI QUYỀN TỪ SERVER (qua checkAccess.js nếu có, tự gọi RPC nếu không) ==== */
+  function askAccess() {
+    if (window.CongCuShop && window.CongCuShop.checkAccess) {
+      return window.CongCuShop.checkAccess(product);
+    }
+    // Dự phòng khi checkAccess.js chưa nạp: gọi trực tiếp RPC get_access.
+    return client.auth.getSession().then(function (r) {
+      if (!r.data.session) return { access: false, reason: "login_required" };
+      return client.rpc("get_access", { p_product: product }).then(function (res) {
+        if (res.error) return { access: false, reason: "rpc_error", detail: res.error.message };
+        return res.data;
+      });
+    });
+  }
+  function applyAccess(access) {
+    accessCache = access;
+    if (window.CongCuShop && window.CongCuShop.applyAccessToPage) {
+      window.CongCuShop.applyAccessToPage(access);
+    } else {
+      // Dự phòng: tự khóa/mở theo cùng quy ước data-* của checkAccess.js.
+      var locked = !access.access;
+      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
+      document.querySelectorAll("[data-paywall]").forEach(function (el) { el.style.display = locked ? "" : "none"; });
+      document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
+        el.textContent = (access.reason === "trial" && access.days_left != null)
+          ? ("Còn " + access.days_left + " ngày dùng thử") : "";
+      });
+      document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+        el.textContent = window.CongCuShop && window.CongCuShop.paywallMessage
+          ? window.CongCuShop.paywallMessage(access.reason) : "Gia hạn để dùng tiếp.";
+      });
+    }
+    renderStatus(access);
+  }
+  function renderStatus(a) {
+    if (!statusEl) return;
+    var days = (a.days_left != null) ? a.days_left : null;
+    trialBtn.hidden = true;
+    payBtn.hidden = true;
+    switch (a.reason) {
+      case "trial":
+        statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "paid":
+        statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "bundle_active":
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 10 công cụ tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "no_trial":
+      case "no_subscription":
+        statusEl.innerHTML = "Bạn chưa bắt đầu dùng thử <b>" + meta.name + "</b>.";
+        trialBtn.hidden = false;
+        break;
+      case "trial_expired":
+        statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "subscription_expired":
+        statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "verification_required":
+        statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
+          "Vui lòng liên hệ hỗ trợ để được duyệt.";
+        break;
+      case "rpc_error":
+        statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
+        break;
+      default:
+        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        if (!a.access) payBtn.hidden = false;
+    }
+  }
+
+  /* ==== 3. ĐĂNG NHẬP / ĐĂNG KÝ (Supabase Auth, email + mật khẩu) ==== */
+  function setMode(next) {
+    mode = next;
+    $$('[data-ccs-mode]').forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-ccs-mode") === next ? "true" : "false");
+    });
+    submitBtn.textContent = next === "signup" ? "Đăng ký" : "Đăng nhập";
+    $('[data-ccs-pw-hint]').textContent = next === "signup" ? "(ít nhất 8 ký tự)" : "";
+    say("");
+  }
+  $$('[data-ccs-mode]').forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-ccs-mode")); });
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var email = $("#ccs-email").value.trim();
+    var password = $("#ccs-password").value;
+    if (!email || password.length < 8) {
+      say("Email chưa đúng hoặc mật khẩu dưới 8 ký tự.", "err");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang xử lý…";
+    var call = mode === "signup"
+      ? client.auth.signUp({ email: email, password: password })
+      : client.auth.signInWithPassword({ email: email, password: password });
+    call.then(function (res) {
+      if (res.error) {
+        say("Không đăng nhập được: " + friendlyAuthError(res.error.message), "err");
+        return;
+      }
+      if (mode === "signup" && res.data && !res.data.session) {
+        // Email xác nhận đang BẬT: Supabase gửi link, chưa có session.
+        say("Đã gửi email xác nhận tới " + email + ". Bấm link trong email rồi đăng nhập lại.", "ok");
+        return;
+      }
+      say("Đăng nhập thành công.", "ok");
+      refresh();
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = mode === "signup" ? "Đăng ký" : "Đăng nhập";
+    });
+  });
+  function friendlyAuthError(msg) {
+    msg = String(msg || "");
+    if (/invalid login credentials/i.test(msg)) return "Sai email hoặc mật khẩu.";
+    if (/user already registered/i.test(msg)) return "Email này đã đăng ký — hãy bấm tab “Đăng nhập”.";
+    if (/email not confirmed/i.test(msg)) return "Email chưa xác nhận — hãy bấm link trong email rồi thử lại.";
+    if (/password/i.test(msg)) return "Mật khẩu chưa đạt yêu cầu (ít nhất 8 ký tự).";
+    return msg;
+  }
+
+  logoutBtn.addEventListener("click", function () {
+    client.auth.signOut().then(refresh);
+  });
+
+  /* ==== 4. DÙNG THỬ 3 NGÀY / GIA HẠN VIETQR (qua checkAccess.js) ==== */
+  trialBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.startTrial) {
+      say("Chưa nạp được checkAccess.js — không bắt đầu trial được. Kiểm tra lại thứ tự script.", "err");
+      return;
+    }
+    trialBtn.disabled = true;
+    say("Đang kích hoạt dùng thử…");
+    window.CongCuShop.startTrial(product).then(function (res) {
+      if (res && res.access) {
+        say("Đã kích hoạt dùng thử 3 ngày.", "ok");
+        refresh();
+      } else if (res && res.needs_verification) {
+        say("Tài khoản cần xác minh thêm trước khi dùng thử. Vui lòng liên hệ hỗ trợ.", "err");
+        refresh();
+      } else {
+        say("Không kích hoạt được dùng thử: " + (res && (res.reason || res.error) || "lỗi không rõ") + ".", "err");
+      }
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () { trialBtn.disabled = false; });
+  });
+  payBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.createPayment) {
+      say("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
+      return;
+    }
+    payBtn.disabled = true;
+    say("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
+    window.CongCuShop.createPayment(product).then(function (res) {
+      if (res && !res.checkoutUrl) {
+        say("Không tạo được link thanh toán: " + (res.error || "lỗi không rõ") + ".", "err");
+        payBtn.disabled = false;
+      }
+      // Có checkoutUrl thì createPayment tự redirect sang payOS.
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      payBtn.disabled = false;
+    });
+  });
+
+  /* ==== 5. LÀM MỚI TRẠNG THÁI + XỬ LÝ QUAY VỀ TỪ PAYOS ==== */
+  function refresh() {
+    return client.auth.getSession().then(function (r) {
+      var session = r.data.session;
+      if (!session) {
+        show("guest");
+        // Chưa đăng nhập = chưa có quyền: khóa công cụ NGAY, không được
+        // return sớm mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
+        applyAccess({ access: false, reason: "login_required" });
+        return;
+      }
+      show("user");
+      $('[data-ccs-user-email]').textContent = session.user.email || "";
+      return askAccess().then(applyAccess).catch(function (err) {
+        statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+        say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      });
+    });
+  }
+  function handlePayReturn() {
+    var q = new URLSearchParams(window.location.search);
+    var pay = q.get("pay");
+    if (!pay) return;
+    if (pay === "success") {
+      say("Đã nhận thanh toán, đang chờ payOS xác nhận (webhook)…", "ok");
+      // Webhook có thể về chậm vài giây — hỏi lại quyền vài lần.
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        refresh().then(function () {
+          if ((accessCache && accessCache.access) || tries >= 6) {
+            clearInterval(timer);
+            if (accessCache && accessCache.access) say("Thanh toán đã xác nhận — gói đã kích hoạt.", "ok");
+          }
+        });
+      }, 5000);
+    } else if (pay === "cancelled") {
+      say("Bạn đã hủy thanh toán — gói chưa được kích hoạt.", "err");
+    }
+  }
+
+  /* ==== 6. KHỞI ĐỘNG ==== */
+  function init() {
+    // Điền tên + giá theo sản phẩm của trang.
+    $$('[data-ccs-product-name]').forEach(function (el) { el.textContent = meta.name; });
+    $$('[data-ccs-price]').forEach(function (el) { el.textContent = fmtVnd(meta.price) + "/tháng"; });
+    if (configMissing()) {
+      say("Chưa cấu hình Supabase (thiếu SUPABASE_URL / SUPABASE_ANON_KEY). " +
+          "Thay 2 giá trị ở đầu khối này rồi mới đăng nhập được.", "err");
+      show("guest");
+      // Chưa cấu hình thì cũng chưa có quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+      return;
+    }
+    loadSupabaseUmd().then(function () {
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // Nối checkAccess.js vào cùng client (để nó dùng chung session).
+      if (window.CongCuShop && window.CongCuShop.init) {
+        return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
+      }
+    }).then(function () {
+      client.auth.onAuthStateChange(function () { refresh(); });
+      handlePayReturn();
+      return refresh();
+    }).catch(function (err) {
+      say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
+          ". Kiểm tra mạng rồi tải lại trang.", "err");
+      show("guest");
+      // Không tải được Supabase thì chưa xác minh được quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else { init(); }
+})();
+</script>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Nút hero "Dùng thử 3 ngày" ---------- */
+  var PRODUCT = "p8";
+  var heroBtn = document.getElementById("hero-cta");
+  heroBtn.addEventListener("click", function () {
+    function scrollToAuth() {
+      var el = document.getElementById("ccs-auth");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (window.CongCuShop && window.CongCuShop.getSession && window.CongCuShop.startTrial) {
+      window.CongCuShop.getSession().then(function (session) {
+        if (!session) { scrollToAuth(); return; }
+        heroBtn.disabled = true;
+        heroBtn.textContent = "Đang kích hoạt dùng thử…";
+        window.CongCuShop.startTrial(PRODUCT).then(function (res) {
+          if (res && res.access) {
+            return window.CongCuShop.checkAccess(PRODUCT).then(function (access) {
+              window.CongCuShop.applyAccessToPage(access);
+              var tool = document.getElementById("tool");
+              if (tool) tool.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          }
+          // Đã có trial / đã trả tiền / cần xác minh: cuộn tới khối tài khoản để xem trạng thái.
+          scrollToAuth();
+        }).catch(function () { scrollToAuth(); })
+          .finally(function () {
+            heroBtn.disabled = false;
+            heroBtn.textContent = "Dùng thử 3 ngày";
+          });
+      }).catch(scrollToAuth);
+    } else {
+      scrollToAuth();
+    }
+  });
+
+  /* ---------- Dữ liệu mẫu theo ngành ---------- */
+  var DATA = {
+    "thoi-trang": {
+      label: "Thời trang & phụ kiện",
+      rows: [
+        { name: "Đối thủ mẫu A — shop thời trang nữ tầm trung", price: "Áo 199.000–399.000đ, váy 350.000–690.000đ", channels: "Shopee, TikTok Shop, fanpage Facebook", strong: "Mẫu mới ra hằng tuần, livestream bán hàng đều, ảnh sản phẩm đẹp", weak: "Ít bán trên website riêng, chính sách đổi trả ghi chưa rõ" },
+        { name: "Đối thủ mẫu B — thương hiệu local brand trẻ", price: "Áo thun 250.000–450.000đ, hoodie 550.000–850.000đ", channels: "Website riêng, Instagram, cửa hàng offline", strong: "Thương hiệu rõ nét, cộng đồng khách trung thành", weak: "Giá cao hơn mặt bằng, ít chạy khuyến mãi trên sàn" },
+        { name: "Đối thủ mẫu C — xưởng sỉ bán lẻ giá rẻ", price: "Hầu hết dưới 150.000đ/món", channels: "Shopee, Lazada, chợ sỉ online", strong: "Giá rẻ nhất khu vực, nguồn hàng sẵn số lượng lớn", weak: "Chất lượng không đều, đánh giá 1–2 sao khá nhiều, không có thương hiệu" }
+      ],
+      gaps: [
+        "Phân khúc giá 300.000–500.000đ nhưng cam kết đổi trả 30 ngày rõ ràng: đối thủ A chưa rõ chính sách, đối thủ C gần như không có.",
+        "Bán qua website riêng kèm tư vấn phối đồ theo dáng người — cả ba đối thủ mẫu đều dồn lực cho sàn, mảng nội dung tư vấn còn trống.",
+        "Khách tỉnh lẻ ngoài Hà Nội/TP.HCM: đối thủ mẫu ít đầu tư giao nhanh và COD linh hoạt ở khu vực này."
+      ]
+    },
+    "my-pham": {
+      label: "Mỹ phẩm & chăm sóc cá nhân",
+      rows: [
+        { name: "Đối thủ mẫu A — shop mỹ phẩm xách tay", price: "Son 180.000–320.000đ, serum 350.000–700.000đ", channels: "Shopee, TikTok Shop", strong: "Giá tốt nhờ hàng xách tay, nhiều mã hàng hot", weak: "Khách hay lo về nguồn gốc, thiếu giấy tờ công bố sản phẩm" },
+        { name: "Đối thủ mẫu B — nhà phân phối chính hãng", price: "Cao hơn hàng xách tay khoảng 15–25%", channels: "Website riêng, Shopee Mall, chuỗi cửa hàng", strong: "Chính hãng 100%, có hóa đơn và bảo hành đổi trả", weak: "Ít nội dung review thật, chạy quảng cáo chưa mạnh trên TikTok" },
+        { name: "Đối thủ mẫu C — KOL bán hàng livestream", price: "Theo phiên live, giảm sâu 30–50% theo đợt", channels: "TikTok Live, Facebook Live", strong: "Lượng xem live lớn, chốt đơn nhanh theo cảm xúc", weak: "Chỉ mạnh khi có live, khách khó mua lại ngoài giờ live" }
+      ],
+      gaps: [
+        "Tư vấn theo loại da bằng bài kiểm tra ngắn trước khi bán — chưa đối thủ mẫu nào làm bài bản.",
+        "Combo theo vấn đề da (mụn, nám, khô) với giá trọn gói minh bạch thay vì bán lẻ từng món.",
+        "Chính sách kiểm tra hàng và đổi trả khi kích ứng — điểm khách lo nhất ở hàng xách tay, còn trống ở phân khúc giá trung bình."
+      ]
+    },
+    "an-uong": {
+      label: "Ăn uống & F&B",
+      rows: [
+        { name: "Đối thủ mẫu A — quán ăn địa phương lâu năm", price: "Món chính 35.000–65.000đ", channels: "Bán tại quán, GrabFood", strong: "Khách quen đông, hương vị ổn định nhiều năm", weak: "Không có ShopeeFood/Baemin, giờ mở cửa ngắn, không bán online chủ động" },
+        { name: "Đối thủ mẫu B — chuỗi nhượng quyền nhỏ", price: "Món chính 55.000–95.000đ, combo 99.000–149.000đ", channels: "Nhiều chi nhánh, đủ các app giao đồ ăn", strong: "Nhận diện đồng nhất, combo thiết kế tốt cho nhóm 2–4 người", weak: "Chất lượng lệch nhau giữa các chi nhánh, phí app cao nên biên lợi nhuận mỏng" },
+        { name: "Đối thủ mẫu C — bếp online chỉ bán mang đi", price: "Món chính 30.000–55.000đ", channels: "ShopeeFood, GrabFood, Zalo OA", strong: "Chi phí mặt bằng bằng 0 nên giá cạnh tranh, ra món mới nhanh", weak: "Khách không trải nghiệm được không gian, phụ thuộc hoàn toàn vào phí hoa hồng app" }
+      ],
+      gaps: [
+        "Suất ăn văn phòng theo tuần/tháng trả trước — nhu cầu đều đặn mà cả ba đối thủ mẫu chưa khai thác.",
+        "Khung giờ khuya 22h–2h: đối thủ mẫu A đóng sớm, chuỗi B ít chi nhánh mở khuya.",
+        "Đặt món qua Zalo OA tích điểm đổi món miễn phí — giảm phụ thuộc hoa hồng app giao đồ ăn."
+      ]
+    },
+    "noi-that": {
+      label: "Nội thất & gia dụng",
+      rows: [
+        { name: "Đối thủ mẫu A — xưởng sản xuất bán trực tiếp", price: "Bàn làm việc 890.000–1.900.000đ, kệ 450.000–1.200.000đ", channels: "Shopee, fanpage, xưởng trưng bày nhỏ", strong: "Giá xưởng không qua trung gian, nhận đóng theo kích thước", weak: "Ảnh sản phẩm chụp thô, thời gian giao hàng lâu và không báo rõ" },
+        { name: "Đối thủ mẫu B — showroom thương hiệu", price: "Cao hơn giá xưởng khoảng 30–60%", channels: "Showroom, website riêng, sàn TMĐT", strong: "Trải nghiệm xem hàng thật, bảo hành rõ ràng, trả góp 0%", weak: "Ít mẫu cho căn hộ nhỏ dưới 40m², phí vận chuyển lắp đặt cao" },
+        { name: "Đối thủ mẫu C — shop nhập khẩu nội thất lắp ráp", price: "Hầu hết 300.000–1.500.000đ/món", channels: "Shopee, Lazada, TikTok Shop", strong: "Mẫu mã đa dạng, giá rẻ, giao nhanh vì hàng có sẵn", weak: "Chất liệu mỏng, hướng dẫn lắp ráp khó hiểu, khó bảo hành" }
+      ],
+      gaps: [
+        "Nội thất đo ni đóng giày cho căn hộ nhỏ 25–45m² kèm bản vẽ 3D miễn phí trước khi chốt.",
+        "Cam kết ngày giao và lắp đặt tận nơi ghi rõ ngay trên trang sản phẩm — đối thủ mẫu A và C đều mơ hồ ở điểm này.",
+        "Cho thuê nội thất theo tháng cho căn hộ dịch vụ và homestay — cả ba đối thủ mẫu đều chỉ bán đứt."
+      ]
+    },
+    "dien-tu": {
+      label: "Điện tử & phụ kiện công nghệ",
+      rows: [
+        { name: "Đối thủ mẫu A — chuỗi cửa hàng điện máy nhỏ", price: "Theo giá hãng, chênh lệch ít giữa các cửa hàng", channels: "Cửa hàng offline, website, Shopee Mall", strong: "Có kỹ thuật viên tại chỗ, bảo hành nhanh trong ngày", weak: "Phụ kiện đi kèm giá cao, ít nội dung hướng dẫn sử dụng" },
+        { name: "Đối thủ mẫu B — shop phụ kiện online giá rẻ", price: "Cáp sạc 39.000–99.000đ, ốp lưng 49.000–129.000đ", channels: "Shopee, TikTok Shop, Lazada", strong: "Giá rẻ, mẫu mã cập nhật theo từng đời máy mới", weak: "Bảo hành gần như không có, tỷ lệ hoàn hàng cao" },
+        { name: "Đối thủ mẫu C — gian hàng chính hãng trên sàn", price: "Giá niêm yết hãng, khuyến mãi theo đợt sale lớn", channels: "Shopee Mall, Lazada Mall, website hãng", strong: "Uy tín tuyệt đối, đổi trả theo chính sách hãng", weak: "Ngoài đợt sale giá cứng, tư vấn chậm do quá tải tin nhắn" }
+      ],
+      gaps: [
+        "Phụ kiện tầm trung có bảo hành 12 tháng đổi mới — nằm giữa shop giá rẻ không bảo hành và hàng chính hãng giá cao.",
+        "Nội dung video hướng dẫn chọn phụ kiện đúng đời máy — đối thủ mẫu gần như bỏ trống mảng nội dung hữu ích.",
+        "Thu cũ đổi mới phụ kiện (tai nghe, sạc dự phòng) cho khách quen — chưa đối thủ mẫu nào làm."
+      ]
+    },
+    "me-be": {
+      label: "Mẹ & bé",
+      rows: [
+        { name: "Đối thủ mẫu A — cửa hàng mẹ bé địa phương", price: "Sữa bột 350.000–650.000đ/hộp, bỉm 180.000–320.000đ/bịch", channels: "Cửa hàng offline, Zalo, Facebook", strong: "Chủ shop tư vấn tận tâm, giao nhanh trong khu vực, cho nợ khách quen", weak: "Không bán trên sàn nên mất khách so giá online, ít chương trình tích điểm" },
+        { name: "Đối thủ mẫu B — chuỗi mẹ bé toàn quốc", price: "Theo giá niêm yết chuỗi, khuyến mãi theo tháng", channels: "Chuỗi cửa hàng, website, app riêng", strong: "Hàng chính hãng, tích điểm và quà tặng sinh nhật bé", weak: "Giá cao hơn shop nhỏ ở nhiều mặt hàng, tư vấn tại quầy không sâu bằng chủ shop nhỏ" },
+        { name: "Đối thủ mẫu C — shop online chuyên hàng nhập", price: "Cao hơn hàng nội khoảng 20–40%", channels: "Shopee, TikTok Shop", strong: "Nhiều mã hàng nhập khẩu khó tìm ở địa phương", weak: "Thời gian giao 3–7 ngày, khách khó kiểm chứng hạn sử dụng trước khi mua" }
+      ],
+      gaps: [
+        "Gói đăng ký giao định kỳ sữa/bỉm theo tháng với giá khóa cố định — giúp mẹ không lo hết hàng, đối thủ mẫu chưa ai làm bài bản ở quy mô địa phương.",
+        "Nhóm Zalo tư vấn theo tháng tuổi của bé kèm lịch nhắc tiêm chủng, ăn dặm — xây cộng đồng thay vì chỉ bán hàng.",
+        "Cam kết chụp ảnh hạn sử dụng thật của lô hàng trước khi gửi — giải quyết đúng nỗi lo lớn nhất khi mua hàng nhập online."
+      ]
+    }
+  };
+
+  /* ---------- Tra cứu + hiển thị ---------- */
+  var form = document.getElementById("lookup-form");
+  var domainInput = document.getElementById("f-domain");
+  var industrySelect = document.getElementById("f-industry");
+  var msg = document.getElementById("tool-msg");
+  var results = document.getElementById("results");
+  var resTitle = document.getElementById("res-title");
+  var resSub = document.getElementById("res-sub");
+  var resBody = document.getElementById("res-body");
+  var resGaps = document.getElementById("res-gaps");
+  var LS_KEY = "ccs-p8-lookup-history";
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function cleanDomain(raw) {
+    var d = String(raw || "").trim().toLowerCase()
+      .replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0].split("?")[0];
+    return d;
+  }
+  function cell(label, text) {
+    return '<td data-label="' + label + '">' + esc(text) + "</td>";
+  }
+  function runLookup(domain, industryKey) {
+    var data = DATA[industryKey];
+    if (!data) return;
+    var d = cleanDomain(domain);
+    resTitle.textContent = "Đối thủ trong ngành: " + data.label;
+    resSub.textContent = d
+      ? ("Đang đặt " + d + " cạnh các đối thủ mẫu cùng ngành để bạn đối chiếu. Tên miền chỉ dùng để hiển thị — công cụ không quét dữ liệu thật từ website của bạn.")
+      : "Bạn chưa nhập tên miền — bảng dưới là các đối thủ mẫu điển hình của ngành này.";
+    var html = "";
+    if (d) {
+      html += '<tr class="you"><th scope="row">Bạn — ' + esc(d) + "</th>" +
+        cell("Giá công khai", "— (bạn tự đối chiếu)") +
+        cell("Kênh bán", "—") +
+        cell("Điểm mạnh", "—") +
+        cell("Điểm yếu", "—") + "</tr>";
+    }
+    data.rows.forEach(function (r) {
+      html += '<tr><th scope="row">' + esc(r.name) + "</th>" +
+        cell("Giá công khai", r.price) +
+        cell("Kênh bán", r.channels) +
+        cell("Điểm mạnh", r.strong) +
+        cell("Điểm yếu", r.weak) + "</tr>";
+    });
+    resBody.innerHTML = html;
+    resGaps.innerHTML = data.gaps.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("");
+    results.hidden = false;
+    saveHistory(d, industryKey, data.label);
+  }
+
+  /* ---------- Lịch sử tra cứu (localStorage) ---------- */
+  function loadHistory() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function saveHistory(domain, industryKey, industryLabel) {
+    var arr = loadHistory();
+    arr.unshift({ domain: domain, industry: industryKey, label: industryLabel, at: Date.now() });
+    arr = arr.slice(0, 10);
+    try { localStorage.setItem(LS_KEY, JSON.stringify(arr)); } catch (e) {}
+    renderHistory();
+  }
+  function renderHistory() {
+    var arr = loadHistory();
+    var list = document.getElementById("history-list");
+    var empty = document.getElementById("history-empty");
+    var clearBtn = document.getElementById("history-clear");
+    empty.hidden = arr.length > 0;
+    clearBtn.hidden = arr.length === 0;
+    list.innerHTML = arr.map(function (h, i) {
+      var when = new Date(h.at).toLocaleString("vi-VN", {
+        day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
+      });
+      var title = h.domain ? h.domain : "(không nhập tên miền)";
+      return "<li><span><b>" + esc(title) + '</b> — ' + esc(h.label) +
+        '<span class="h-meta">' + esc(when) + "</span></span>" +
+        '<button type="button" class="h-btn" data-h-idx="' + i + '">Xem lại</button></li>';
+    }).join("");
+    Array.prototype.forEach.call(list.querySelectorAll("[data-h-idx]"), function (btn) {
+      btn.addEventListener("click", function () {
+        var h = loadHistory()[Number(btn.getAttribute("data-h-idx"))];
+        if (!h) return;
+        domainInput.value = h.domain || "";
+        industrySelect.value = h.industry;
+        runLookupSilent(h.domain, h.industry);
+      });
+    });
+  }
+  // Xem lại từ lịch sử: chạy tra cứu nhưng không ghi thêm bản ghi mới.
+  var suppressSave = false;
+  function runLookupSilent(domain, industryKey) {
+    suppressSave = true;
+    runLookup(domain, industryKey);
+    suppressSave = false;
+  }
+  var _saveHistory = saveHistory;
+  saveHistory = function (domain, industryKey, industryLabel) {
+    if (suppressSave) { renderHistory(); return; }
+    _saveHistory(domain, industryKey, industryLabel);
+  };
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var raw = domainInput.value.trim();
+    var d = cleanDomain(raw);
+    if (raw && d.indexOf(".") === -1) {
+      msg.textContent = "Tên miền chưa đúng định dạng (vd: shopcuaban.vn). Bạn có thể bỏ trống tên miền và chỉ chọn ngành.";
+      msg.className = "tool-msg err";
+      return;
+    }
+    msg.textContent = "";
+    msg.className = "tool-msg";
+    runLookup(d, industrySelect.value);
+    results.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.getElementById("history-clear").addEventListener("click", function () {
+    try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    renderHistory();
+  });
+
+  renderHistory();
+})();
+</script>
+  </body>
+</html>
