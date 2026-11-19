@@ -1,0 +1,1388 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <meta name="description" content="Dịch kịch bản video tiếng Việt và xem trước phụ đề 7 ngôn ngữ: Anh, Nhật, Hàn, Trung, Pháp, Đức, Tây Ban Nha. Dùng thử 3 ngày miễn phí, sau đó 49.000đ/tháng." />
+    <title>Dịch Thuyết Minh Video Đa Ngôn Ngữ — 49.000đ/tháng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f7f5;
+        --surface:#ffffff;
+        --surface-2:#e9f0ec;
+        --ink:#12211b;
+        --ink-2:#43564d;
+        --line:#cfdcd4;
+        --accent:#0b7a55;
+        --accent-strong:#095c40;
+        --accent-ink:#ffffff;
+        --accent-soft:#d9efe4;
+        --warn-bg:#fdf3e0;
+        --warn-line:#e8cf9a;
+        --warn-ink:#6d5310;
+        --danger:#c22f2f;
+        --good:#0b7a55;
+        --shadow:0 10px 30px rgba(18,33,27,.10);
+        color-scheme:light;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1512;
+          --surface:#16211c;
+          --surface-2:#1e2c25;
+          --ink:#e8f1ec;
+          --ink-2:#a9bcb1;
+          --line:#2e4238;
+          --accent:#2fbf8f;
+          --accent-strong:#4ad3a4;
+          --accent-ink:#07231a;
+          --accent-soft:#173d2e;
+          --warn-bg:#2c2410;
+          --warn-line:#5c4a1c;
+          --warn-ink:#ecd28a;
+          --danger:#ff8a80;
+          --good:#2fbf8f;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+          color-scheme:dark;
+        }
+      }
+      *{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      @media (prefers-reduced-motion: reduce){
+        html{ scroll-behavior:auto; }
+        *{ transition:none !important; animation:none !important; }
+      }
+      body{
+        margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+        font-size:16px; line-height:1.6;
+        -webkit-font-smoothing:antialiased;
+      }
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){ min-height:2.75rem; }
+      .wrap{ max-width:1060px; margin:0 auto; padding:0 16px; }
+      h1,h2,h3{ line-height:1.25; margin:0; }
+      h2{ font-size:clamp(22px,4.5vw,30px); font-weight:800; margin-bottom:8px; }
+      .sec{ padding:34px 0 6px; }
+      .sec-sub{ color:var(--ink-2); margin:0 0 18px; max-width:640px; }
+
+      /* ---------- HERO ---------- */
+      .hero{ padding:36px 0 8px; }
+      .hero-grid{ display:grid; gap:22px; }
+      @media (min-width:860px){ .hero-grid{ grid-template-columns:1.15fr .85fr; align-items:start; } }
+      .hero h1{ font-size:clamp(28px,6vw,42px); font-weight:900; letter-spacing:-.01em; }
+      .hero h1 .hl{ color:var(--accent); }
+      .hero-lead{ color:var(--ink-2); font-size:17px; margin:14px 0 0; max-width:560px; }
+      .price-line{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:20px 0 4px; }
+      .price-big{ font-size:34px; font-weight:900; color:var(--accent); }
+      .price-per{ color:var(--ink-2); font-weight:600; }
+      .trial-note{ color:var(--ink-2); font-size:14.5px; margin:0 0 18px; }
+      .trial-note b{ color:var(--ink); }
+      .cta-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+      .btn{
+        display:inline-flex; align-items:center; justify-content:center; gap:8px;
+        border:0; border-radius:10px; cursor:pointer; text-decoration:none;
+        background:var(--accent); color:var(--accent-ink);
+        font:inherit; font-weight:800; font-size:16px; padding:12px 22px; min-height:48px;
+      }
+      .btn:hover{ background:var(--accent-strong); }
+      .btn-ghost{
+        background:transparent; color:var(--accent);
+        border:1.5px solid var(--accent);
+      }
+      .btn-ghost:hover{ background:var(--accent-soft); }
+      .btn-sm{ padding:9px 16px; font-size:15px; min-height:44px; }
+      .trial-days{ font-weight:700; color:var(--accent); font-size:14.5px; }
+      .trial-days:empty{ display:none; }
+      .lang-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:22px; }
+      .lang-chip{
+        background:var(--surface); border:1px solid var(--line); border-radius:999px;
+        padding:6px 13px; font-size:14px; font-weight:600;
+      }
+      .lang-chip span{ color:var(--ink-2); font-weight:500; }
+      .hero-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:14px;
+        box-shadow:var(--shadow); padding:20px;
+      }
+      .hero-card h3{ font-size:16px; font-weight:800; margin-bottom:12px; }
+      .mini-flow{ list-style:none; margin:0; padding:0; display:grid; gap:0; }
+      .mini-flow li{ display:flex; gap:12px; padding:9px 0; border-bottom:1px dashed var(--line); }
+      .mini-flow li:last-child{ border-bottom:0; }
+      .mini-flow .n{
+        flex:0 0 auto; width:28px; height:28px; border-radius:50%;
+        background:var(--accent-soft); color:var(--accent);
+        display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;
+      }
+      .mini-flow p{ margin:0; font-size:14.5px; }
+      .mini-flow p b{ display:block; font-size:15px; }
+
+      /* ---------- NOTICE ---------- */
+      .notice{
+        background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
+        border-radius:12px; padding:14px 16px; font-size:14.5px; margin:18px 0 0;
+      }
+      .notice b{ font-weight:800; }
+
+      /* ---------- TOOL ---------- */
+      .tool-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:14px;
+        box-shadow:var(--shadow); padding:20px;
+      }
+      .tool-card label.lbl{ display:block; font-weight:700; font-size:15px; margin:0 0 6px; }
+      .tool-card .hint{ color:var(--ink-2); font-size:13.5px; margin:0 0 8px; }
+      textarea#scriptInput{
+        width:100%; min-height:170px; resize:vertical;
+        border:1.5px solid var(--line); border-radius:10px;
+        background:var(--surface); color:var(--ink);
+        font:inherit; font-size:16px; line-height:1.65; padding:12px 14px; outline:none;
+      }
+      textarea#scriptInput:focus{ border-color:var(--accent); }
+      .script-meta{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:6px; }
+      .script-meta span{ color:var(--ink-2); font-size:13.5px; }
+      .script-meta .saved{ color:var(--good); font-weight:600; }
+      .tool-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+      .btn-soft{
+        background:var(--surface-2); color:var(--ink); border:1px solid var(--line);
+        font-weight:700;
+      }
+      .btn-soft:hover{ background:var(--accent-soft); }
+      .grid-2{ display:grid; gap:16px; margin-top:20px; }
+      @media (min-width:720px){ .grid-2{ grid-template-columns:1fr 1fr; } }
+      .field-box{ background:var(--surface-2); border-radius:12px; padding:14px 16px; }
+      .field-box h4{ margin:0 0 10px; font-size:15px; font-weight:800; }
+      .lang-tabs{ display:flex; flex-wrap:wrap; gap:8px; }
+      .lang-tab{
+        border:1.5px solid var(--line); background:var(--surface); color:var(--ink);
+        border-radius:999px; padding:8px 14px; font:inherit; font-size:14.5px; font-weight:700;
+        cursor:pointer; min-height:44px;
+      }
+      .lang-tab[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+      .voice-row{ display:flex; gap:8px; flex-wrap:wrap; }
+      .voice-opt{
+        display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+        border:1.5px solid var(--line); background:var(--surface); border-radius:10px;
+        padding:10px 16px; font-weight:700; min-height:48px;
+      }
+      .voice-opt input{ width:18px; height:18px; accent-color:var(--accent); }
+      .speed-row{ display:flex; align-items:center; gap:12px; margin-top:14px; }
+      .speed-row input[type="range"]{ flex:1; accent-color:var(--accent); min-height:44px; }
+      .speed-val{ font-weight:800; min-width:52px; text-align:right; }
+      .run-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+      .steps{ list-style:none; margin:18px 0 0; padding:0; display:none; gap:8px; }
+      .steps.show{ display:grid; }
+      .steps li{
+        display:flex; align-items:center; gap:10px; font-size:15px; color:var(--ink-2);
+        background:var(--surface-2); border-radius:10px; padding:10px 14px;
+      }
+      .steps li .dot{
+        flex:0 0 auto; width:22px; height:22px; border-radius:50%;
+        border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+        font-size:13px; font-weight:800; color:transparent;
+      }
+      .steps li.active{ color:var(--ink); }
+      .steps li.active .dot{ border-color:var(--accent); }
+      .steps li.done{ color:var(--ink); }
+      .steps li.done .dot{ background:var(--accent); border-color:var(--accent); color:#fff; }
+      .result{ margin-top:20px; display:none; }
+      .result.show{ display:block; }
+      .result-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+      .result-head h4{ margin:0; font-size:16px; font-weight:800; }
+      .cue-list{ display:grid; gap:10px; }
+      .cue{
+        border:1px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--surface);
+      }
+      .cue-time{ font-size:13px; font-weight:700; color:var(--accent); letter-spacing:.02em; }
+      .cue-vi{ margin:4px 0 2px; font-size:15px; }
+      .cue-tr{ margin:0; font-size:15px; color:var(--ink-2); }
+      .cue-tr.sample-miss{ font-style:italic; }
+      .result-foot{ color:var(--ink-2); font-size:13.5px; margin-top:12px; }
+
+      /* ---------- PAYWALL ---------- */
+      .paywall{
+        background:var(--surface); border:1.5px dashed var(--accent); border-radius:14px;
+        padding:26px 20px; text-align:center; margin:0 0 4px;
+      }
+      .paywall .lock{
+        width:52px; height:52px; margin:0 auto 12px; border-radius:50%;
+        background:var(--accent-soft); color:var(--accent);
+        display:flex; align-items:center; justify-content:center;
+      }
+      .paywall h3{ font-size:19px; font-weight:800; margin-bottom:6px; }
+      .paywall p{ color:var(--ink-2); margin:0 auto 16px; max-width:440px; }
+
+      /* ---------- FEATURES / STEPS ---------- */
+      .cards{ display:grid; gap:14px; }
+      @media (min-width:720px){ .cards.c3{ grid-template-columns:repeat(3,1fr); } .cards.c2{ grid-template-columns:repeat(2,1fr); } }
+      @media (min-width:720px) and (max-width:1023px){ .cards.c4{ grid-template-columns:repeat(2,1fr); } }
+      @media (min-width:1024px){ .cards.c4{ grid-template-columns:repeat(4,1fr); } }
+      .card{
+        background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px;
+      }
+      .card h3{ font-size:16.5px; font-weight:800; margin-bottom:6px; }
+      .card p{ margin:0; color:var(--ink-2); font-size:14.5px; }
+      .card .num{
+        width:34px; height:34px; border-radius:10px; margin-bottom:12px;
+        background:var(--accent-soft); color:var(--accent);
+        display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;
+      }
+
+      /* ---------- COMPARE ---------- */
+      .compare-scroll{ border:1px solid var(--line); border-radius:14px; background:var(--surface); }
+      table.compare{ border-collapse:collapse; width:100%; font-size:15px; }
+      @media (max-width:640px){
+        table.compare{ font-size:13.5px; }
+        table.compare th, table.compare td{ padding:10px; }
+        table.compare td.price{ white-space:normal; }
+      }
+      table.compare th, table.compare td{ padding:13px 16px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+      table.compare thead th{ background:var(--surface-2); font-weight:800; }
+      table.compare tbody tr:last-child td{ border-bottom:0; }
+      table.compare .us{ background:var(--accent-soft); font-weight:700; }
+      table.compare td.price{ font-weight:800; white-space:nowrap; }
+
+      /* ---------- PRICING ---------- */
+      .price-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px;
+        display:flex; flex-direction:column; gap:0;
+      }
+      .price-card.featured{ border:2px solid var(--accent); box-shadow:var(--shadow); }
+      .price-card .tag{
+        align-self:flex-start; background:var(--accent); color:var(--accent-ink);
+        font-size:13px; font-weight:800; border-radius:999px; padding:4px 12px; margin-bottom:12px;
+      }
+      .price-card h3{ font-size:18px; font-weight:800; }
+      .price-card .amount{ font-size:32px; font-weight:900; color:var(--accent); margin:8px 0 2px; }
+      .price-card .amount small{ font-size:15px; color:var(--ink-2); font-weight:600; }
+      .price-card ul{ margin:14px 0 20px; padding:0; list-style:none; display:grid; gap:8px; }
+      .price-card ul li{ display:flex; gap:9px; font-size:15px; }
+      .price-card ul li::before{ content:"✓"; color:var(--accent); font-weight:900; flex:0 0 auto; }
+      .price-card .btn{ margin-top:auto; width:100%; }
+
+      /* ---------- FAQ ---------- */
+      .faq{ display:grid; gap:10px; }
+      details.faq-item{
+        background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:4px 18px;
+      }
+      details.faq-item summary{
+        cursor:pointer; font-weight:700; font-size:16px; padding:12px 0; list-style:none;
+        display:flex; justify-content:space-between; align-items:center; gap:10px;
+      }
+      details.faq-item summary::-webkit-details-marker{ display:none; }
+      details.faq-item summary::after{ content:"+"; font-size:22px; color:var(--accent); font-weight:800; }
+      details.faq-item[open ] summary::after{ content:"–"; }
+      details.faq-item p{ margin:0 0 14px; color:var(--ink-2); font-size:15px; }
+
+      footer{ margin-top:44px; border-top:1px solid var(--line); padding:22px 0 34px; color:var(--ink-2); font-size:14px; }
+      footer .wrap{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <h1>Dịch &amp; thuyết minh video <span class="hl">đa ngôn ngữ</span> từ kịch bản tiếng Việt</h1>
+            <p class="hero-lead">
+              Dán kịch bản tiếng Việt, xem trước phụ đề dịch sang 7 ngôn ngữ, chọn giọng đọc và tải file phụ đề SRT.
+              Bản đầy đủ sau khi đăng ký sẽ dịch toàn bộ kịch bản và tạo giọng thuyết minh AI cho video của bạn.
+            </p>
+            <div class="price-line">
+              <span class="price-big">49.000đ</span>
+              <span class="price-per">/tháng</span>
+            </div>
+            <p class="trial-note"><b>Dùng thử 3 ngày miễn phí</b> — hết 3 ngày mới thu phí, hủy bất cứ lúc nào. <span class="trial-days" data-trial-days-left></span></p>
+            <div class="cta-row">
+              <button type="button" class="btn" id="heroTrialBtn">Dùng thử 3 ngày</button>
+              <a class="btn btn-ghost" href="#cong-cu">Xem công cụ demo</a>
+            </div>
+            <div class="lang-chips" aria-label="7 ngôn ngữ hỗ trợ">
+              <span class="lang-chip">Anh <span>English</span></span>
+              <span class="lang-chip">Nhật <span>日本語</span></span>
+              <span class="lang-chip">Hàn <span>한국어</span></span>
+              <span class="lang-chip">Trung <span>中文</span></span>
+              <span class="lang-chip">Pháp <span>Français</span></span>
+              <span class="lang-chip">Đức <span>Deutsch</span></span>
+              <span class="lang-chip">Tây Ban Nha <span>Español</span></span>
+            </div>
+          </div>
+          <aside class="hero-card" aria-label="Quy trình xử lý">
+            <h3>Quy trình xử lý một video</h3>
+            <ol class="mini-flow">
+              <li><span class="n">1</span><p><b>Dán kịch bản tiếng Việt</b>Mỗi dòng là một đoạn phụ đề.</p></li>
+              <li><span class="n">2</span><p><b>Dịch sang ngôn ngữ đích</b>Chọn 1 trong 7 ngôn ngữ hỗ trợ.</p></li>
+              <li><span class="n">3</span><p><b>Chọn giọng đọc</b>Giọng nam hoặc nữ, chỉnh tốc độ đọc.</p></li>
+              <li><span class="n">4</span><p><b>Tải phụ đề SRT</b>Đưa vào phần mềm dựng video để ghép thuyết minh.</p></li>
+            </ol>
+          </aside>
+        </div>
+      </section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+      <script src="assets/checkAccess.js"></script>
+
+<!--
+  ============================================================================
+  CongCuShop — auth-ui-snippet.html
+  ----------------------------------------------------------------------------
+  Khối đăng nhập / đăng ký + trạng thái dùng thử cho 10 trang Micro-SaaS.
+  Dán NGUYÊN KHỐI này vào mỗi trang sản phẩm (xem INTEGRATION-CHECKLIST.md).
+  Không sửa gì khác trong file này ngoài 2 giá trị cấu hình ở dưới.
+
+  ⚠️  TRƯỚC KHI DÁN VÀO TRANG THẬT, THAY 2 GIÁ TRỊ NÀY:
+      https://azsaucfdgplkxvqseheh.supabase.co      → Project URL thật, dạng https://<ref>.supabase.co
+      sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq → anon public key thật (Dashboard → Settings → API)
+      Lấy 2 giá trị này ở đâu: xem backend/SETUP.md Giai đoạn 1, bước 3.
+      CHỈ dùng anon key. KHÔNG BAO GIỜ dán service_role key lên trang tĩnh.
+
+  THỨ TỰ SCRIPT TRÊN TRANG (bắt buộc):
+      1. supabase-js UMD (khối này tự tải nếu chưa có)
+      2. checkAccess.js (backend/checkAccess.js, copy lên /shared/ của repo)
+      3. Khối này (auth-ui-snippet.html) — đặt SAU 2 script trên, cuối <body>.
+  Khối này tự tạo supabase client riêng và dùng CongCuShop (checkAccess.js)
+  để hỏi quyền / bắt đầu trial / tạo link payOS. Nếu checkAccess.js chưa
+  nạp, phần đăng nhập vẫn chạy nhưng nút dùng thử / gia hạn sẽ báo lỗi
+  và không khóa/mở tính năng — xem mục "Yêu cầu" trong checklist.
+
+  CÁCH CHỌN SẢN PHẨM: sửa data-product trên <section> theo từng trang:
+      p1 tinh-loi-nhuan-san (29.000đ)   p4 so-thu-chi-ho-kinh-doanh (39.000đ)
+      p2 quan-ly-don-coc-cong-no (39k)  p5 tao-anh-san-pham (29.000đ)
+      p3 noi-dung-da-nen-tang (39k)     p6 bao-gia-hop-dong-mau (29.000đ)
+      p7 tim-nha-cung-cap-san-xuat (49.000đ)
+      p8 nghien-cuu-doi-thu-canh-tranh (49.000đ)
+      p9 dich-thuyet-minh-video-da-ngon-ngu (49.000đ)
+      p10 podcast-ai (39.000đ)
+      bundle — chỉ dùng ở trang hub (Gói Bundle 149.000đ/tháng).
+  Giá hiển thị lấy từ bảng dưới (PRODUCTS) — khớp products.json.
+  Giá THU TIỀN THẬT do server quyết (Edge Function create-payment), không
+  tin giá hiển thị ở client.
+  ============================================================================
+-->
+<section class="ccs-auth" id="ccs-auth" data-product="p9">
+  <style>
+    /* Khớp tông trang mẫu: dùng biến CSS sẵn có của trang (--bg, --surface,
+       --ink, --ink-2, --line, --accent, --accent-soft, --danger, --shadow).
+       Có fallback nếu trang chưa định nghĩa biến. Hỗ trợ dark mode theo
+       prefers-color-scheme của trang. Mobile-first, nút cao tối thiểu 44px. */
+    .ccs-auth{
+      --ccs-accent:var(--accent,#0b7a55);
+      --ccs-accent-ink:var(--accent-ink,#fff);
+      --ccs-soft:var(--accent-soft,#d9efe4);
+      background:var(--surface,#fff);
+      border:1px solid var(--line,#cfdcd4);
+      border-radius:14px;
+      box-shadow:var(--shadow,0 10px 30px rgba(18,33,27,.10));
+      padding:20px;
+      margin:22px 0;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .ccs-auth h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+    .ccs-auth .ccs-sub{ color:var(--ink-2,#43564d); font-size:14px; margin:0 0 16px; }
+    .ccs-auth .ccs-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+    .ccs-auth .ccs-tab{
+      border:1.5px solid var(--line,#cfdcd4); background:var(--surface-2,#e3ebe7);
+      color:var(--ink,#12211b); border-radius:10px; padding:10px 6px;
+      font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-height:48px;
+    }
+    .ccs-auth .ccs-tab[aria-pressed="true"]{ border-color:var(--ccs-accent); background:var(--ccs-soft); }
+    .ccs-auth .ccs-field{ margin-bottom:12px; }
+    .ccs-auth .ccs-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+    .ccs-auth .ccs-field input{
+      width:100%; border:1.5px solid var(--line,#cfdcd4); border-radius:10px;
+      background:var(--surface,#fff); color:var(--ink,#12211b);
+      font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+    }
+    .ccs-auth .ccs-field input:focus{ border-color:var(--ccs-accent); }
+    .ccs-auth .ccs-btn{
+      width:100%; border:0; border-radius:10px; cursor:pointer; min-height:48px;
+      background:var(--ccs-accent); color:var(--ccs-accent-ink);
+      font:inherit; font-weight:800; font-size:16px; padding:12px 16px;
+    }
+    .ccs-auth .ccs-btn:disabled{ opacity:.55; cursor:wait; }
+    .ccs-auth .ccs-btn-ghost{
+      background:transparent; color:var(--ccs-accent);
+      border:1.5px solid var(--ccs-accent); margin-top:10px;
+    }
+    .ccs-auth .ccs-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+    .ccs-auth .ccs-msg.err{ color:var(--danger,#c22f2f); }
+    .ccs-auth .ccs-msg.ok{ color:var(--good,#0b7a55); }
+    .ccs-auth .ccs-status{
+      background:var(--ccs-soft); border-radius:10px; padding:12px 14px;
+      font-size:14.5px; margin:0 0 12px;
+    }
+    .ccs-auth .ccs-status b{ font-weight:800; }
+    .ccs-auth .ccs-email{ font-weight:700; word-break:break-all; }
+    .ccs-auth .ccs-fine{ color:var(--ink-2,#43564d); font-size:13.5px; margin:12px 0 0; }
+    .ccs-auth .ccs-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .ccs-auth .ccs-row .ccs-btn{ flex:1; min-width:180px; }
+    @media (min-width:640px){ .ccs-auth .ccs-btn{ width:auto; min-width:220px; } }
+  </style>
+
+  <!-- Trạng thái CHƯA đăng nhập -->
+  <div data-ccs-view="guest">
+    <h2>Đăng nhập để dùng thử 3 ngày miễn phí</h2>
+    <p class="ccs-sub">
+      <span data-ccs-product-name>Tính Lợi Nhuận Sàn</span> —
+      <b data-ccs-price>29.000đ/tháng</b> sau 3 ngày dùng thử.
+      Tài khoản lưu trên hệ thống, không lưu mật khẩu trên máy bạn.
+    </p>
+    <div class="ccs-tabs" role="group" aria-label="Đăng nhập hoặc đăng ký">
+      <button type="button" class="ccs-tab" data-ccs-mode="signin" aria-pressed="true">Đăng nhập</button>
+      <button type="button" class="ccs-tab" data-ccs-mode="signup" aria-pressed="false">Đăng ký mới</button>
+    </div>
+    <form data-ccs-form novalidate>
+      <div class="ccs-field">
+        <label for="ccs-email">Email</label>
+        <input id="ccs-email" name="email" type="email" required autocomplete="email"
+               placeholder="vidu@email.com" />
+      </div>
+      <div class="ccs-field">
+        <label for="ccs-password">Mật khẩu <span data-ccs-pw-hint>(ít nhất 8 ký tự)</span></label>
+        <input id="ccs-password" name="password" type="password" required autocomplete="current-password"
+               minlength="8" placeholder="••••••••" />
+      </div>
+      <button type="submit" class="ccs-btn" data-ccs-submit>Đăng nhập</button>
+      <p class="ccs-msg" data-ccs-msg role="status"></p>
+    </form>
+    <p class="ccs-fine">
+      Đăng ký xong, bấm “Bắt đầu dùng thử 3 ngày” để kích hoạt trial.
+      Hết 3 ngày chưa trả tiền thì công cụ sẽ khóa lại cho tới khi bạn gia hạn.
+    </p>
+  </div>
+
+  <!-- Trạng thái ĐÃ đăng nhập -->
+  <div data-ccs-view="user" hidden>
+    <h2>Tài khoản của bạn</h2>
+    <p class="ccs-sub">Đã đăng nhập: <span class="ccs-email" data-ccs-user-email></span></p>
+    <p class="ccs-status" data-ccs-status>Đang kiểm tra quyền dùng…</p>
+    <div class="ccs-row">
+      <button type="button" class="ccs-btn" data-ccs-trial hidden>Bắt đầu dùng thử 3 ngày</button>
+      <button type="button" class="ccs-btn" data-ccs-pay hidden>Gia hạn bằng VietQR — <span data-ccs-price>29.000đ/tháng</span></button>
+      <button type="button" class="ccs-btn ccs-btn-ghost" data-ccs-logout>Đăng xuất</button>
+    </div>
+    <p class="ccs-msg" data-ccs-msg role="status"></p>
+    <p class="ccs-fine">
+      Thanh toán bằng VietQR qua payOS, tiền về tài khoản của chủ shop.
+      Hết tháng, bấm “Gia hạn bằng VietQR” để tạo mã mới và quét lại.
+    </p>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==== 1. CẤU HÌNH — THAY 2 GIÁ TRỊ NÀY BẰNG KEY THẬT (xem đầu file) ==== */
+  var SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";         // vd: https://abcdefghijkl.supabase.co
+  var SUPABASE_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq"; // anon public key (được phép lộ)
+  /* ======================================================================= */
+
+  // Bảng giá + tên hiển thị — KHỚP products.json. Chỉ để hiển thị;
+  // giá thu thật do Edge Function create-payment quyết trên server.
+  var PRODUCTS = {
+    p1:     { name: "Tính Lợi Nhuận Sàn",        price: 29000 },
+    p2:     { name: "Quản Lý Đơn Cọc Công Nợ",   price: 39000 },
+    p3:     { name: "Nội Dung Đa Nền Tảng",      price: 39000 },
+    p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
+    p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
+    p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
+    p7:     { name: "Tìm Nhà Cung Cấp Sản Xuất", price: 49000 },
+    p8:     { name: "Nghiên Cứu Đối Thủ Cạnh Tranh", price: 49000 },
+    p9:     { name: "Dịch Thuyết Minh Video Đa Ngôn Ngữ", price: 49000 },
+    p10:    { name: "Podcast AI",                price: 39000 },
+    bundle: { name: "Gói Bundle 10 công cụ",     price: 149000 }
+  };
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+
+  var root = document.getElementById("ccs-auth");
+  if (!root) return;
+  var product = (root.getAttribute("data-product") || "p1").trim();
+  if (!PRODUCTS[product]) product = "p1";
+  var meta = PRODUCTS[product];
+
+  var $ = function (sel) { return root.querySelector(sel); };
+  var $$ = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+  var viewGuest = $('[data-ccs-view="guest"]');
+  var viewUser = $('[data-ccs-view="user"]');
+  var msgEls = $$('[data-ccs-msg]');
+  var statusEl = $('[data-ccs-status]');
+  var trialBtn = $('[data-ccs-trial]');
+  var payBtn = $('[data-ccs-pay]');
+  var logoutBtn = $('[data-ccs-logout]');
+  var submitBtn = $('[data-ccs-submit]');
+  var form = $('[data-ccs-form]');
+  var mode = "signin";
+  var client = null;   // supabase client (tạo ở init)
+  var accessCache = null;
+
+  function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+    catch (e) { return iso; }
+  }
+  function say(text, kind) {
+    msgEls.forEach(function (el) {
+      el.textContent = text || "";
+      el.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+    });
+  }
+  function show(view) {
+    viewGuest.hidden = view !== "guest";
+    viewUser.hidden = view !== "user";
+  }
+  function configMissing() {
+    return !SUPABASE_URL || SUPABASE_URL.indexOf("__SUPABASE_") === 0 ||
+           !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("__SUPABASE_") === 0;
+  }
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ==== 2. HỎI QUYỀN TỪ SERVER (qua checkAccess.js nếu có, tự gọi RPC nếu không) ==== */
+  function askAccess() {
+    if (window.CongCuShop && window.CongCuShop.checkAccess) {
+      return window.CongCuShop.checkAccess(product);
+    }
+    // Dự phòng khi checkAccess.js chưa nạp: gọi trực tiếp RPC get_access.
+    return client.auth.getSession().then(function (r) {
+      if (!r.data.session) return { access: false, reason: "login_required" };
+      return client.rpc("get_access", { p_product: product }).then(function (res) {
+        if (res.error) return { access: false, reason: "rpc_error", detail: res.error.message };
+        return res.data;
+      });
+    });
+  }
+  function applyAccess(access) {
+    accessCache = access;
+    if (window.CongCuShop && window.CongCuShop.applyAccessToPage) {
+      window.CongCuShop.applyAccessToPage(access);
+    } else {
+      // Dự phòng: tự khóa/mở theo cùng quy ước data-* của checkAccess.js.
+      var locked = !access.access;
+      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
+      document.querySelectorAll("[data-paywall]").forEach(function (el) { el.style.display = locked ? "" : "none"; });
+      document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
+        el.textContent = (access.reason === "trial" && access.days_left != null)
+          ? ("Còn " + access.days_left + " ngày dùng thử") : "";
+      });
+      document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+        el.textContent = window.CongCuShop && window.CongCuShop.paywallMessage
+          ? window.CongCuShop.paywallMessage(access.reason) : "Gia hạn để dùng tiếp.";
+      });
+    }
+    renderStatus(access);
+  }
+  function renderStatus(a) {
+    if (!statusEl) return;
+    var days = (a.days_left != null) ? a.days_left : null;
+    trialBtn.hidden = true;
+    payBtn.hidden = true;
+    switch (a.reason) {
+      case "trial":
+        statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "paid":
+        statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "bundle_active":
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 10 công cụ tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "no_trial":
+      case "no_subscription":
+        statusEl.innerHTML = "Bạn chưa bắt đầu dùng thử <b>" + meta.name + "</b>.";
+        trialBtn.hidden = false;
+        break;
+      case "trial_expired":
+        statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "subscription_expired":
+        statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "verification_required":
+        statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
+          "Vui lòng liên hệ hỗ trợ để được duyệt.";
+        break;
+      case "rpc_error":
+        statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
+        break;
+      default:
+        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        if (!a.access) payBtn.hidden = false;
+    }
+  }
+
+  /* ==== 3. ĐĂNG NHẬP / ĐĂNG KÝ (Supabase Auth, email + mật khẩu) ==== */
+  function setMode(next) {
+    mode = next;
+    $$('[data-ccs-mode]').forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-ccs-mode") === next ? "true" : "false");
+    });
+    submitBtn.textContent = next === "signup" ? "Đăng ký" : "Đăng nhập";
+    $('[data-ccs-pw-hint]').textContent = next === "signup" ? "(ít nhất 8 ký tự)" : "";
+    say("");
+  }
+  $$('[data-ccs-mode]').forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-ccs-mode")); });
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var email = $("#ccs-email").value.trim();
+    var password = $("#ccs-password").value;
+    if (!email || password.length < 8) {
+      say("Email chưa đúng hoặc mật khẩu dưới 8 ký tự.", "err");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang xử lý…";
+    var call = mode === "signup"
+      ? client.auth.signUp({ email: email, password: password })
+      : client.auth.signInWithPassword({ email: email, password: password });
+    call.then(function (res) {
+      if (res.error) {
+        say("Không đăng nhập được: " + friendlyAuthError(res.error.message), "err");
+        return;
+      }
+      if (mode === "signup" && res.data && !res.data.session) {
+        // Email xác nhận đang BẬT: Supabase gửi link, chưa có session.
+        say("Đã gửi email xác nhận tới " + email + ". Bấm link trong email rồi đăng nhập lại.", "ok");
+        return;
+      }
+      say("Đăng nhập thành công.", "ok");
+      refresh();
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = mode === "signup" ? "Đăng ký" : "Đăng nhập";
+    });
+  });
+  function friendlyAuthError(msg) {
+    msg = String(msg || "");
+    if (/invalid login credentials/i.test(msg)) return "Sai email hoặc mật khẩu.";
+    if (/user already registered/i.test(msg)) return "Email này đã đăng ký — hãy bấm tab “Đăng nhập”.";
+    if (/email not confirmed/i.test(msg)) return "Email chưa xác nhận — hãy bấm link trong email rồi thử lại.";
+    if (/password/i.test(msg)) return "Mật khẩu chưa đạt yêu cầu (ít nhất 8 ký tự).";
+    return msg;
+  }
+
+  logoutBtn.addEventListener("click", function () {
+    client.auth.signOut().then(refresh);
+  });
+
+  /* ==== 4. DÙNG THỬ 3 NGÀY / GIA HẠN VIETQR (qua checkAccess.js) ==== */
+  trialBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.startTrial) {
+      say("Chưa nạp được checkAccess.js — không bắt đầu trial được. Kiểm tra lại thứ tự script.", "err");
+      return;
+    }
+    trialBtn.disabled = true;
+    say("Đang kích hoạt dùng thử…");
+    window.CongCuShop.startTrial(product).then(function (res) {
+      if (res && res.access) {
+        say("Đã kích hoạt dùng thử 3 ngày.", "ok");
+        refresh();
+      } else if (res && res.needs_verification) {
+        say("Tài khoản cần xác minh thêm trước khi dùng thử. Vui lòng liên hệ hỗ trợ.", "err");
+        refresh();
+      } else {
+        say("Không kích hoạt được dùng thử: " + (res && (res.reason || res.error) || "lỗi không rõ") + ".", "err");
+      }
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () { trialBtn.disabled = false; });
+  });
+  payBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.createPayment) {
+      say("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
+      return;
+    }
+    payBtn.disabled = true;
+    say("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
+    window.CongCuShop.createPayment(product).then(function (res) {
+      if (res && !res.checkoutUrl) {
+        say("Không tạo được link thanh toán: " + (res.error || "lỗi không rõ") + ".", "err");
+        payBtn.disabled = false;
+      }
+      // Có checkoutUrl thì createPayment tự redirect sang payOS.
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      payBtn.disabled = false;
+    });
+  });
+
+  /* ==== 5. LÀM MỚI TRẠNG THÁI + XỬ LÝ QUAY VỀ TỪ PAYOS ==== */
+  function refresh() {
+    return client.auth.getSession().then(function (r) {
+      var session = r.data.session;
+      if (!session) {
+        show("guest");
+        // Chưa đăng nhập = chưa có quyền: khóa công cụ NGAY, không được
+        // return sớm mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
+        applyAccess({ access: false, reason: "login_required" });
+        return;
+      }
+      show("user");
+      $('[data-ccs-user-email]').textContent = session.user.email || "";
+      return askAccess().then(applyAccess).catch(function (err) {
+        statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+        say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      });
+    });
+  }
+  function handlePayReturn() {
+    var q = new URLSearchParams(window.location.search);
+    var pay = q.get("pay");
+    if (!pay) return;
+    if (pay === "success") {
+      say("Đã nhận thanh toán, đang chờ payOS xác nhận (webhook)…", "ok");
+      // Webhook có thể về chậm vài giây — hỏi lại quyền vài lần.
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        refresh().then(function () {
+          if ((accessCache && accessCache.access) || tries >= 6) {
+            clearInterval(timer);
+            if (accessCache && accessCache.access) say("Thanh toán đã xác nhận — gói đã kích hoạt.", "ok");
+          }
+        });
+      }, 5000);
+    } else if (pay === "cancelled") {
+      say("Bạn đã hủy thanh toán — gói chưa được kích hoạt.", "err");
+    }
+  }
+
+  /* ==== 6. KHỞI ĐỘNG ==== */
+  function init() {
+    // Điền tên + giá theo sản phẩm của trang.
+    $$('[data-ccs-product-name]').forEach(function (el) { el.textContent = meta.name; });
+    $$('[data-ccs-price]').forEach(function (el) { el.textContent = fmtVnd(meta.price) + "/tháng"; });
+    if (configMissing()) {
+      say("Chưa cấu hình Supabase (thiếu SUPABASE_URL / SUPABASE_ANON_KEY). " +
+          "Thay 2 giá trị ở đầu khối này rồi mới đăng nhập được.", "err");
+      show("guest");
+      // Chưa cấu hình thì cũng chưa có quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+      return;
+    }
+    loadSupabaseUmd().then(function () {
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // Nối checkAccess.js vào cùng client (để nó dùng chung session).
+      if (window.CongCuShop && window.CongCuShop.init) {
+        return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
+      }
+    }).then(function () {
+      client.auth.onAuthStateChange(function () { refresh(); });
+      handlePayReturn();
+      return refresh();
+    }).catch(function (err) {
+      say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
+          ". Kiểm tra mạng rồi tải lại trang.", "err");
+      show("guest");
+      // Không tải được Supabase thì chưa xác minh được quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else { init(); }
+})();
+</script>
+
+
+      <!-- ================= CÔNG CỤ ================= -->
+      <section class="sec" id="cong-cu">
+        <h2>Công cụ demo — chạy ngay trên trình duyệt</h2>
+        <p class="sec-sub">Dán kịch bản tiếng Việt của bạn vào, chọn ngôn ngữ đích và giọng đọc, rồi xem trước phụ đề và tải file SRT về máy.</p>
+
+        <div class="paywall" data-paywall>
+          <div class="lock" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </div>
+          <h3>Công cụ đang khóa</h3>
+          <p data-paywall-reason>Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.</p>
+          <a class="btn" href="#ccs-auth">Đăng nhập / Đăng ký</a>
+        </div>
+
+        <div data-requires-access style="display:none">
+          <div class="tool-card">
+            <label class="lbl" for="scriptInput">Kịch bản tiếng Việt</label>
+            <p class="hint">Mỗi dòng là một đoạn phụ đề. Kịch bản bạn nhập được lưu tự động trên trình duyệt này để lần sau mở lại không phải gõ lại.</p>
+            <textarea id="scriptInput" placeholder="Dán kịch bản tiếng Việt vào đây, mỗi dòng một câu…"></textarea>
+            <div class="script-meta">
+              <span id="scriptStats">0 dòng · 0 ký tự</span>
+              <span class="saved" id="saveState" role="status"></span>
+            </div>
+            <div class="tool-actions">
+              <button type="button" class="btn btn-soft btn-sm" id="sampleBtn">Điền kịch bản mẫu</button>
+              <button type="button" class="btn btn-soft btn-sm" id="clearBtn">Xóa kịch bản</button>
+            </div>
+
+            <div class="grid-2">
+              <div class="field-box">
+                <h4>Ngôn ngữ đích</h4>
+                <div class="lang-tabs" id="langTabs" role="group" aria-label="Chọn ngôn ngữ đích"></div>
+              </div>
+              <div class="field-box">
+                <h4>Giọng đọc thuyết minh</h4>
+                <div class="voice-row" role="radiogroup" aria-label="Chọn giọng đọc">
+                  <label class="voice-opt"><input type="radio" name="voiceGender" value="female" checked /> Giọng nữ</label>
+                  <label class="voice-opt"><input type="radio" name="voiceGender" value="male" /> Giọng nam</label>
+                </div>
+                <div class="speed-row">
+                  <label for="speedRange" style="font-weight:700;font-size:14.5px">Tốc độ</label>
+                  <input type="range" id="speedRange" min="0.75" max="1.5" step="0.25" value="1" />
+                  <span class="speed-val" id="speedVal">1.0×</span>
+                </div>
+                <div class="tool-actions">
+                  <button type="button" class="btn btn-soft btn-sm" id="listenBtn">Nghe thử câu đầu</button>
+                </div>
+                <p class="hint" style="margin-top:8px">Nút nghe thử dùng giọng đọc có sẵn trên thiết bị của bạn để bạn hình dung nhịp đọc. Giọng thuyết minh AI của bản đầy đủ được tạo trên hệ thống sau khi đăng ký.</p>
+              </div>
+            </div>
+
+            <div class="run-row">
+              <button type="button" class="btn" id="runBtn">Dịch &amp; tạo phụ đề xem trước</button>
+              <button type="button" class="btn btn-ghost" id="downloadBtn" disabled>Tải file phụ đề .SRT</button>
+            </div>
+
+            <ol class="steps" id="stepsList" aria-live="polite">
+              <li data-step><span class="dot">✓</span> Tách kịch bản thành từng đoạn phụ đề</li>
+              <li data-step><span class="dot">✓</span> Dịch từng đoạn sang ngôn ngữ đích (bản dịch mẫu)</li>
+              <li data-step><span class="dot">✓</span> Căn thời gian theo độ dài câu và tốc độ đọc</li>
+              <li data-step><span class="dot">✓</span> Ghép thành file phụ đề SRT</li>
+            </ol>
+
+            <div class="result" id="resultBox">
+              <div class="result-head">
+                <h4 id="resultTitle">Bản xem trước phụ đề</h4>
+                <span class="hint" id="resultMeta" style="margin:0"></span>
+              </div>
+              <div class="cue-list" id="cueList"></div>
+              <p class="result-foot" id="resultFoot"></p>
+            </div>
+          </div>
+
+          <div class="notice">
+            <b>Lưu ý về bản demo:</b> demo trên trình duyệt chỉ <b>xem trước kịch bản và phụ đề</b> bằng kho bản dịch mẫu có sẵn cho các câu phổ biến, và căn thời gian ước tính theo độ dài câu.
+            Câu nào chưa có trong kho mẫu sẽ được ghi rõ trong bản xem trước. <b>Lồng tiếng AI đầy đủ</b> — dịch toàn bộ kịch bản bất kỳ, tạo giọng đọc và đồng bộ với video — <b>chạy trên hệ thống sau khi bạn đăng ký</b> gói 49.000đ/tháng.
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TÍNH NĂNG ================= -->
+      <section class="sec">
+        <h2>Công cụ này làm được gì</h2>
+        <p class="sec-sub">Tập trung vào một việc: biến kịch bản video tiếng Việt thành bản dịch kèm phụ đề và thuyết minh ở 7 ngôn ngữ phổ biến với khán giả quốc tế.</p>
+        <div class="cards c3">
+          <div class="card">
+            <h3>7 ngôn ngữ đích</h3>
+            <p>Anh, Nhật, Hàn, Trung, Pháp, Đức và Tây Ban Nha — các thị trường có lượng khán giả xem video lớn. Chọn một ngôn ngữ cho mỗi lần xử lý.</p>
+          </div>
+          <div class="card">
+            <h3>Giọng đọc nam / nữ</h3>
+            <p>Chọn giọng nam hoặc giọng nữ cho bản thuyết minh và chỉnh tốc độ đọc từ 0.75× đến 1.5× để khớp nhịp video gốc.</p>
+          </div>
+          <div class="card">
+            <h3>Phụ đề SRT chuẩn</h3>
+            <p>Mỗi dòng kịch bản thành một đoạn phụ đề có mã thời gian. File SRT mở được trong Premiere, CapCut, DaVinci Resolve và hầu hết phần mềm dựng video.</p>
+          </div>
+          <div class="card">
+            <h3>Tối ưu cho kịch bản tiếng Việt</h3>
+            <p>Quy trình dịch được xây quanh câu văn tiếng Việt: giữ nguyên tên riêng, số liệu và cách xưng hô trong kịch bản gốc của bạn.</p>
+          </div>
+          <div class="card">
+            <h3>Xem trước trước khi trả tiền</h3>
+            <p>Bản demo trên trang này cho bạn xem trước cấu trúc phụ đề và cách căn thời gian ngay trên trình duyệt, trước khi quyết định đăng ký.</p>
+          </div>
+          <div class="card">
+            <h3>Giá theo tháng, hủy dễ dàng</h3>
+            <p>49.000đ/tháng, thanh toán VietQR qua payOS. Không tự trừ tiền ngầm: hết tháng bạn chủ động bấm gia hạn để dùng tiếp.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SO SÁNH ================= -->
+      <section class="sec">
+        <h2>So sánh giá với các công cụ quốc tế</h2>
+        <p class="sec-sub">Các công cụ quốc tế dưới đây là nền tảng lớn, nhiều tính năng hơn. Trang này chọn cách làm hẹp hơn — chỉ dịch và thuyết minh từ kịch bản tiếng Việt — để giữ giá thấp cho người làm nội dung Việt.</p>
+        <div class="compare-scroll">
+          <table class="compare">
+            <thead>
+              <tr><th scope="col">Công cụ</th><th scope="col">Giá khởi điểm</th><th scope="col">Ghi chú</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>HeyGen</td>
+                <td class="price">từ $29/tháng</td>
+                <td>Nền tảng video AI quốc tế, mạnh về avatar và dịch video; giá niêm yết bằng USD, thanh toán thẻ quốc tế.</td>
+              </tr>
+              <tr>
+                <td>Rask AI</td>
+                <td class="price">từ $39/tháng</td>
+                <td>Chuyên dịch và lồng tiếng video đa ngôn ngữ; giá niêm yết bằng USD, thanh toán thẻ quốc tế.</td>
+              </tr>
+              <tr class="us">
+                <td>Dịch Thuyết Minh Video (trang này)</td>
+                <td class="price">49.000đ/tháng</td>
+                <td>Tập trung kịch bản tiếng Việt, phụ đề SRT và thuyết minh 7 ngôn ngữ; thanh toán VietQR, dùng thử 3 ngày miễn phí.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="sec-sub" style="margin-top:12px">Giá của HeyGen và Rask AI là giá gói thấp nhất công bố trên trang của họ tại thời điểm viết trang này; giá có thể thay đổi theo chính sách của từng hãng.</p>
+      </section>
+
+      <!-- ================= GIÁ ================= -->
+      <section class="sec" id="gia">
+        <h2>Bảng giá</h2>
+        <p class="sec-sub">Mọi gói đều bắt đầu bằng 3 ngày dùng thử miễn phí. Hết thời gian dùng thử, bạn gia hạn bằng VietQR nếu muốn dùng tiếp — không bị trừ tiền tự động.</p>
+        <div class="cards c2">
+          <div class="price-card featured">
+            <span class="tag">Dùng thử 3 ngày miễn phí</span>
+            <h3>Dịch Thuyết Minh Video Đa Ngôn Ngữ</h3>
+            <p class="amount">49.000đ<small>/tháng</small></p>
+            <ul>
+              <li>Dịch kịch bản tiếng Việt sang 7 ngôn ngữ</li>
+              <li>Giọng thuyết minh nam / nữ, chỉnh tốc độ đọc</li>
+              <li>Xuất phụ đề SRT cho mỗi video</li>
+              <li>Thanh toán VietQR qua payOS</li>
+            </ul>
+            <a class="btn" href="#ccs-auth">Bắt đầu dùng thử</a>
+          </div>
+          <div class="price-card">
+            <h3>Gói Bundle — cả 10 công cụ</h3>
+            <p class="amount">149.000đ<small>/tháng</small></p>
+            <p style="color:var(--ink-2);font-size:14.5px;margin:0">Hoặc 1.490.000đ/năm — dùng chung một tài khoản cho cả 10 công cụ trong hệ thống, gồm tính lợi nhuận sàn, sổ thu chi, tạo ảnh sản phẩm, podcast AI và các công cụ còn lại.</p>
+            <ul>
+              <li>Gồm Dịch Thuyết Minh Video Đa Ngôn Ngữ</li>
+              <li>Cả 10 công cụ Micro-SaaS trong một gói</li>
+              <li>Rẻ hơn mua lẻ từng công cụ</li>
+            </ul>
+            <a class="btn btn-ghost" href="#ccs-auth">Đăng nhập để kích hoạt Bundle</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="sec">
+        <h2>Câu hỏi thường gặp</h2>
+        <div class="faq">
+          <details class="faq-item">
+            <summary>Bản demo trên trang này làm được gì, khác gì bản đầy đủ?</summary>
+            <p>Demo chạy ngay trên trình duyệt: bạn dán kịch bản tiếng Việt, xem trước phụ đề dịch bằng kho bản dịch mẫu có sẵn cho các câu phổ biến, căn thời gian ước tính và tải file SRT. Bản đầy đủ sau khi đăng ký mới dịch được mọi kịch bản bất kỳ và tạo giọng thuyết minh AI đồng bộ với video.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Chất lượng bản dịch có đảm bảo chính xác tuyệt đối không?</summary>
+            <p>Không công cụ dịch máy nào đảm bảo chính xác tuyệt đối, và chúng tôi cũng không cam kết như vậy. Với nội dung quan trọng (hợp đồng, y tế, pháp lý), bạn nên nhờ người biết ngôn ngữ đích rà soát lại trước khi đăng tải. Với video bán hàng, review và nội dung giải trí thông thường, bản dịch đủ dùng để khán giả hiểu đúng nội dung chính.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Tôi cần chuẩn bị gì trước khi dịch một video?</summary>
+            <p>Bạn cần kịch bản tiếng Việt của video, viết mỗi câu trên một dòng. Kịch bản càng rõ ràng, ít tiếng lóng và viết tắt thì bản dịch càng sát nghĩa. Bản đầy đủ sẽ nhận thêm file video để đồng bộ giọng thuyết minh.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Dùng thử 3 ngày hoạt động thế nào?</summary>
+            <p>Bạn đăng ký tài khoản bằng email, bấm “Bắt đầu dùng thử 3 ngày” và dùng ngay không cần thẻ. Hết 3 ngày, công cụ khóa lại; bạn gia hạn 49.000đ/tháng bằng VietQR qua payOS nếu muốn dùng tiếp. Không gia hạn thì không mất tiền.</p>
+          </details>
+          <details class="faq-item">
+            <summary>File phụ đề SRT dùng được ở đâu?</summary>
+            <p>SRT là định dạng phụ đề phổ biến nhất: nạp được vào Premiere Pro, CapCut, DaVinci Resolve, Final Cut (qua chuyển đổi) và tải lên YouTube, TikTok dưới dạng phụ đề. Mỗi dòng kịch bản của bạn tương ứng một đoạn phụ đề có thời gian bắt đầu – kết thúc.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Tôi có thể hủy gói bất cứ lúc nào không?</summary>
+            <p>Có. Gói tính theo tháng và không tự động trừ tiền: khi hết tháng, bạn chỉ cần không gia hạn là gói dừng. Dữ liệu kịch bản bạn dán trong bản demo chỉ lưu trên trình duyệt của bạn, không gửi đi đâu.</p>
+          </details>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>Dịch Thuyết Minh Video Đa Ngôn Ngữ — một công cụ trong hệ CongCuShop.</span>
+        <span>49.000đ/tháng · Dùng thử 3 ngày miễn phí · Thanh toán VietQR qua payOS</span>
+      </div>
+    </footer>
+
+    <script>
+    (function () {
+      "use strict";
+
+      /* ================= DỮ LIỆU NGÔN NGỮ + BẢN DỊCH MẪU ================= */
+      var LANGS = [
+        { code: "en", name: "Anh",       native: "English" },
+        { code: "ja", name: "Nhật",      native: "日本語" },
+        { code: "ko", name: "Hàn",       native: "한국어" },
+        { code: "zh", name: "Trung",     native: "中文" },
+        { code: "fr", name: "Pháp",      native: "Français" },
+        { code: "de", name: "Đức",       native: "Deutsch" },
+        { code: "es", name: "Tây Ban Nha", native: "Español" }
+      ];
+
+      /* Kho bản dịch mẫu phía client: chỉ gồm các câu phổ biến trong kịch bản
+         video. Câu ngoài kho mẫu được ghi rõ là chưa có bản dịch mẫu. */
+      var SAMPLE = {
+        "Xin chào các bạn, chào mừng đến với kênh của mình.": {
+          en: "Hello everyone, welcome to my channel.",
+          ja: "皆さん、こんにちは。私のチャンネルへようこそ。",
+          ko: "안녕하세요 여러분, 제 채널에 오신 것을 환영합니다.",
+          zh: "大家好，欢迎来到我的频道。",
+          fr: "Bonjour à tous, bienvenue sur ma chaîne.",
+          de: "Hallo zusammen, willkommen auf meinem Kanal.",
+          es: "Hola a todos, bienvenidos a mi canal."
+        },
+        "Hôm nay mình sẽ giới thiệu một sản phẩm mới.": {
+          en: "Today I will introduce a new product.",
+          ja: "今日は新しい製品をご紹介します。",
+          ko: "오늘은 새로운 제품을 소개해 드리겠습니다.",
+          zh: "今天我要介绍一款新产品。",
+          fr: "Aujourd'hui, je vais vous présenter un nouveau produit.",
+          de: "Heute stelle ich euch ein neues Produkt vor.",
+          es: "Hoy les presentaré un producto nuevo."
+        },
+        "Sản phẩm này giúp bạn tiết kiệm thời gian mỗi ngày.": {
+          en: "This product helps you save time every day.",
+          ja: "この製品は、毎日の時間節約に役立ちます。",
+          ko: "이 제품은 매일 시간을 절약하는 데 도움이 됩니다.",
+          zh: "这款产品能帮你每天节省时间。",
+          fr: "Ce produit vous aide à gagner du temps chaque jour.",
+          de: "Dieses Produkt hilft dir, jeden Tag Zeit zu sparen.",
+          es: "Este producto te ayuda a ahorrar tiempo cada día."
+        },
+        "Giá chỉ từ bốn mươi chín nghìn đồng mỗi tháng.": {
+          en: "Prices start from just forty-nine thousand dong per month.",
+          ja: "料金は月額わずか4万9千ドンからです。",
+          ko: "가격은 월 49,000동부터 시작합니다.",
+          zh: "价格每月仅需49,000越南盾起。",
+          fr: "Le prix commence à seulement 49 000 dongs par mois.",
+          de: "Der Preis beginnt bei nur 49.000 Dong pro Monat.",
+          es: "El precio es desde solo 49.000 dongs al mes."
+        },
+        "Hãy đăng ký kênh để xem thêm nhiều video hay.": {
+          en: "Subscribe to the channel to watch more great videos.",
+          ja: "チャンネル登録して、もっと素敵な動画をご覧ください。",
+          ko: "채널을 구독하고 더 많은 좋은 영상을 시청하세요.",
+          zh: "订阅频道，观看更多精彩视频。",
+          fr: "Abonnez-vous à la chaîne pour voir plus de vidéos intéressantes.",
+          de: "Abonniere den Kanal, um weitere tolle Videos zu sehen.",
+          es: "Suscríbete al canal para ver más videos interesantes."
+        },
+        "Cảm ơn các bạn đã xem video, hẹn gặp lại ở video tiếp theo.": {
+          en: "Thank you for watching, see you in the next video.",
+          ja: "ご視聴ありがとうございました。次の動画でお会いしましょう。",
+          ko: "시청해 주셔서 감사합니다. 다음 영상에서 만나요.",
+          zh: "感谢观看，我们下期视频再见。",
+          fr: "Merci d'avoir regardé, à bientôt dans la prochaine vidéo.",
+          de: "Danke fürs Zuschauen, bis zum nächsten Video.",
+          es: "Gracias por ver el video, nos vemos en el próximo."
+        },
+        "Trong video này, mình sẽ chia sẻ cách làm đơn giản nhất.": {
+          en: "In this video, I will share the simplest way to do it.",
+          ja: "この動画では、最も簡単なやり方をご紹介します。",
+          ko: "이 영상에서는 가장 간단한 방법을 공유하겠습니다.",
+          zh: "在本期视频中，我将分享最简单的做法。",
+          fr: "Dans cette vidéo, je vais partager la méthode la plus simple.",
+          de: "In diesem Video zeige ich euch die einfachste Methode.",
+          es: "En este video, compartiré la forma más sencilla de hacerlo."
+        },
+        "Đừng quên nhấn nút đăng ký và bật chuông thông báo.": {
+          en: "Don't forget to hit subscribe and turn on the notification bell.",
+          ja: "チャンネル登録と通知ベルのオンをお忘れなく。",
+          ko: "구독 버튼을 누르고 알림 벨을 켜는 것을 잊지 마세요.",
+          zh: "别忘了点击订阅并打开通知铃铛。",
+          fr: "N'oubliez pas de vous abonner et d'activer la cloche de notification.",
+          de: "Vergiss nicht, auf Abonnieren zu klicken und die Glocke zu aktivieren.",
+          es: "No olvides suscribirte y activar la campana de notificaciones."
+        },
+        "Nếu thấy hay, hãy để lại bình luận bên dưới nhé.": {
+          en: "If you liked it, leave a comment below.",
+          ja: "気に入ったら、下にコメントを残してくださいね。",
+          ko: "좋으셨다면 아래에 댓글을 남겨 주세요.",
+          zh: "如果觉得不错，请在下方留言。",
+          fr: "Si vous avez aimé, laissez un commentaire ci-dessous.",
+          de: "Wenn es dir gefallen hat, hinterlasse unten einen Kommentar.",
+          es: "Si te gustó, deja un comentario abajo."
+        },
+        "Cảm ơn các bạn đã theo dõi.": {
+          en: "Thank you for following along.",
+          ja: "ご視聴ありがとうございました。",
+          ko: "시청해 주셔서 감사합니다.",
+          zh: "感谢您的关注。",
+          fr: "Merci de nous avoir suivis.",
+          de: "Danke, dass ihr dabei wart.",
+          es: "Gracias por seguirnos."
+        }
+      };
+
+      var SAMPLE_SCRIPT = [
+        "Xin chào các bạn, chào mừng đến với kênh của mình.",
+        "Hôm nay mình sẽ giới thiệu một sản phẩm mới.",
+        "Sản phẩm này giúp bạn tiết kiệm thời gian mỗi ngày.",
+        "Giá chỉ từ bốn mươi chín nghìn đồng mỗi tháng.",
+        "Hãy đăng ký kênh để xem thêm nhiều video hay.",
+        "Cảm ơn các bạn đã xem video, hẹn gặp lại ở video tiếp theo."
+      ].join("\n");
+
+      var LS_KEY = "ccs_p9_script";
+      var state = { lang: "en", cues: [], running: false };
+
+      var $ = function (id) { return document.getElementById(id); };
+      var scriptInput = $("scriptInput");
+      var scriptStats = $("scriptStats");
+      var saveState = $("saveState");
+      var speedRange = $("speedRange");
+      var speedVal = $("speedVal");
+      var runBtn = $("runBtn");
+      var downloadBtn = $("downloadBtn");
+      var stepsList = $("stepsList");
+      var resultBox = $("resultBox");
+      var cueList = $("cueList");
+      var resultTitle = $("resultTitle");
+      var resultMeta = $("resultMeta");
+      var resultFoot = $("resultFoot");
+
+      /* ---------- Tabs ngôn ngữ ---------- */
+      var langTabs = $("langTabs");
+      LANGS.forEach(function (l) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "lang-tab";
+        b.textContent = l.name;
+        b.setAttribute("data-lang", l.code);
+        b.setAttribute("aria-pressed", l.code === state.lang ? "true" : "false");
+        b.addEventListener("click", function () {
+          state.lang = l.code;
+          Array.prototype.forEach.call(langTabs.children, function (el) {
+            el.setAttribute("aria-pressed", el.getAttribute("data-lang") === state.lang ? "true" : "false");
+          });
+          if (state.cues.length) renderResult();
+        });
+        langTabs.appendChild(b);
+      });
+      function langMeta(code) {
+        for (var i = 0; i < LANGS.length; i++) if (LANGS[i].code === code) return LANGS[i];
+        return LANGS[0];
+      }
+
+      /* ---------- Lưu / khôi phục kịch bản (localStorage) ---------- */
+      var saveTimer = null;
+      function updateStats() {
+        var lines = scriptInput.value.split("\n").filter(function (s) { return s.trim() !== ""; });
+        scriptStats.textContent = lines.length + " dòng · " + scriptInput.value.length + " ký tự";
+      }
+      function saveScript() {
+        try {
+          localStorage.setItem(LS_KEY, scriptInput.value);
+          saveState.textContent = "Đã lưu trên trình duyệt này ✓";
+        } catch (e) {
+          saveState.textContent = "";
+        }
+      }
+      scriptInput.addEventListener("input", function () {
+        updateStats();
+        saveState.textContent = "Đang lưu…";
+        if (saveTimer) clearTimeout(saveTimer);
+        saveTimer = setTimeout(saveScript, 500);
+      });
+      try {
+        var saved = localStorage.getItem(LS_KEY);
+        if (saved) { scriptInput.value = saved; saveState.textContent = "Đã khôi phục kịch bản đã lưu ✓"; }
+      } catch (e) { /* trình duyệt chặn localStorage thì bỏ qua */ }
+      if (!scriptInput.value) scriptInput.value = SAMPLE_SCRIPT;
+      updateStats();
+
+      $("sampleBtn").addEventListener("click", function () {
+        scriptInput.value = SAMPLE_SCRIPT;
+        updateStats(); saveScript();
+        scriptInput.focus();
+      });
+      $("clearBtn").addEventListener("click", function () {
+        scriptInput.value = "";
+        updateStats(); saveScript();
+        scriptInput.focus();
+      });
+
+      /* ---------- Tốc độ đọc ---------- */
+      function currentSpeed() { return parseFloat(speedRange.value) || 1; }
+      speedRange.addEventListener("input", function () {
+        speedVal.textContent = currentSpeed().toFixed(2).replace(/0$/, "") + "×";
+      });
+
+      /* ---------- Nghe thử bằng giọng máy của thiết bị ---------- */
+      $("listenBtn").addEventListener("click", function () {
+        var lines = scriptInput.value.split("\n").filter(function (s) { return s.trim() !== ""; });
+        if (!lines.length) { scriptInput.focus(); return; }
+        if (!("speechSynthesis" in window)) {
+          saveState.textContent = "Thiết bị không hỗ trợ đọc thử.";
+          return;
+        }
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(lines[0]);
+        u.lang = "vi-VN";
+        u.rate = currentSpeed();
+        var gender = document.querySelector('input[name="voiceGender"]:checked');
+        u.pitch = gender && gender.value === "male" ? 0.7 : 1.15;
+        var voices = window.speechSynthesis.getVoices().filter(function (v) { return /^vi/i.test(v.lang); });
+        if (voices.length) u.voice = voices[0];
+        window.speechSynthesis.speak(u);
+      });
+
+      /* ---------- Căn thời gian + tạo cue ---------- */
+      function fmtSrtTime(sec) {
+        var ms = Math.round(sec * 1000);
+        var h = Math.floor(ms / 3600000); ms -= h * 3600000;
+        var m = Math.floor(ms / 60000); ms -= m * 60000;
+        var s = Math.floor(ms / 1000); ms -= s * 1000;
+        function p(n, l) { return String(n).padStart(l, "0"); }
+        return p(h, 2) + ":" + p(m, 2) + ":" + p(s, 2) + "," + p(ms, 3);
+      }
+      function buildCues() {
+        var speed = currentSpeed();
+        var lines = scriptInput.value.split("\n").map(function (s) { return s.trim(); })
+          .filter(function (s) { return s !== ""; });
+        var t = 0;
+        return lines.map(function (line, i) {
+          var words = line.split(/\s+/).length;
+          /* Ước tính: ~2.4 từ/giây ở tốc độ 1×, tối thiểu 1.6s, tối đa 8s mỗi đoạn. */
+          var dur = Math.min(8, Math.max(1.6, words / (2.4 * speed)));
+          var cue = { index: i + 1, start: t, end: t + dur, vi: line, tr: null };
+          var hit = SAMPLE[line];
+          if (hit && hit[state.lang]) cue.tr = hit[state.lang];
+          t += dur + 0.35; /* nghỉ 0.35s giữa các đoạn */
+          return cue;
+        });
+      }
+
+      /* ---------- Chạy quy trình xem trước ---------- */
+      var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      runBtn.addEventListener("click", function () {
+        if (state.running) return;
+        var lines = scriptInput.value.split("\n").filter(function (s) { return s.trim() !== ""; });
+        if (!lines.length) { scriptInput.focus(); return; }
+        state.running = true;
+        runBtn.disabled = true;
+        downloadBtn.disabled = true;
+        resultBox.classList.remove("show");
+        var steps = stepsList.querySelectorAll("[data-step]");
+        steps.forEach(function (li) { li.className = ""; });
+        stepsList.classList.add("show");
+        var delay = reduced ? 0 : 420;
+        var i = 0;
+        function next() {
+          if (i > 0) { steps[i - 1].classList.remove("active"); steps[i - 1].classList.add("done"); }
+          if (i >= steps.length) {
+            state.cues = buildCues();
+            renderResult();
+            state.running = false;
+            runBtn.disabled = false;
+            downloadBtn.disabled = false;
+            return;
+          }
+          steps[i].classList.add("active");
+          i++;
+          setTimeout(next, delay);
+        }
+        next();
+      });
+
+      function renderResult() {
+        state.cues = buildCues();
+        var meta = langMeta(state.lang);
+        var hits = state.cues.filter(function (c) { return c.tr; }).length;
+        resultTitle.textContent = "Phụ đề tiếng " + meta.name + " (" + meta.native + ") — bản xem trước";
+        resultMeta.textContent = state.cues.length + " đoạn · giọng " +
+          (document.querySelector('input[name="voiceGender"]:checked').value === "male" ? "nam" : "nữ") +
+          " · tốc độ " + currentSpeed() + "×";
+        cueList.innerHTML = "";
+        state.cues.forEach(function (cue) {
+          var div = document.createElement("div");
+          div.className = "cue";
+          var time = document.createElement("div");
+          time.className = "cue-time";
+          time.textContent = "#" + cue.index + " · " + fmtSrtTime(cue.start) + " → " + fmtSrtTime(cue.end);
+          var vi = document.createElement("p");
+          vi.className = "cue-vi";
+          vi.textContent = cue.vi;
+          var tr = document.createElement("p");
+          tr.className = "cue-tr" + (cue.tr ? "" : " sample-miss");
+          tr.textContent = cue.tr || "(Chưa có bản dịch mẫu cho câu này — bản dịch đầy đủ chạy sau khi đăng ký.)";
+          div.appendChild(time); div.appendChild(vi); div.appendChild(tr);
+          cueList.appendChild(div);
+        });
+        resultFoot.textContent = hits === state.cues.length
+          ? "Cả " + hits + "/" + state.cues.length + " câu đều có trong kho bản dịch mẫu. Thời gian là ước tính theo độ dài câu và tốc độ đọc đã chọn."
+          : "Có " + hits + "/" + state.cues.length + " câu có sẵn bản dịch mẫu trong demo. Các câu còn lại sẽ được dịch đầy đủ ở bản sau khi đăng ký. Thời gian là ước tính theo độ dài câu và tốc độ đọc đã chọn.";
+        resultBox.classList.add("show");
+      }
+
+      /* ---------- Xuất file SRT ---------- */
+      downloadBtn.addEventListener("click", function () {
+        if (!state.cues.length) state.cues = buildCues();
+        if (!state.cues.length) return;
+        var meta = langMeta(state.lang);
+        var body = state.cues.map(function (cue) {
+          return cue.index + "\n" + fmtSrtTime(cue.start) + " --> " + fmtSrtTime(cue.end) + "\n" +
+            (cue.tr || cue.vi) + "\n";
+        }).join("\n");
+        var blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "phu-de-" + meta.code + ".srt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      });
+
+      /* ---------- Nút hero "Dùng thử 3 ngày" ---------- */
+      var heroBtn = $("heroTrialBtn");
+      heroBtn.addEventListener("click", function () {
+        var authEl = document.getElementById("ccs-auth");
+        function goAuth() {
+          if (authEl) authEl.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+        }
+        if (!window.CongCuShop || !window.CongCuShop.getSession) { goAuth(); return; }
+        window.CongCuShop.getSession().then(function (session) {
+          if (!session) { goAuth(); return; }
+          heroBtn.disabled = true;
+          heroBtn.textContent = "Đang kích hoạt dùng thử…";
+          return window.CongCuShop.startTrial("p9").then(function (res) {
+            heroBtn.disabled = false;
+            heroBtn.textContent = "Dùng thử 3 ngày";
+            if (res && res.access) {
+              return window.CongCuShop.checkAccess("p9").then(function (access) {
+                window.CongCuShop.applyAccessToPage(access);
+                var tool = document.getElementById("cong-cu");
+                if (tool) tool.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+              });
+            }
+            goAuth();
+          });
+        }).catch(function () {
+          heroBtn.disabled = false;
+          heroBtn.textContent = "Dùng thử 3 ngày";
+          goAuth();
+        });
+      });
+    })();
+    </script>
+  </body>
+</html>
