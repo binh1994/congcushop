@@ -1965,7 +1965,7 @@
           var m = /\.([a-z0-9]+)$/i.exec(file.name || "");
           var inName = "probe." + (m ? m[1].toLowerCase() : "mp4");
           return ffmpeg.load({ coreURL: FFMPEG_CORE_JS_ABS, wasmURL: FFMPEG_CORE_WASM_ABS }).then(function () {
-            return WASM.fetchFile(file);
+            return fetchFile(file);
           }).then(function (data) {
             return ffmpeg.writeFile(inName, data);
           }).then(function () {
@@ -2435,12 +2435,26 @@
           document.head.appendChild(s);
         });
       }
+      /* Thay cho @ffmpeg/util fetchFile (API 0.11 WASM.fetchFile đã bị bỏ ở
+         0.12): nhận File/Blob hoặc URL chuỗi, trả về Uint8Array. */
+      function fetchFile(input) {
+        if (input instanceof Blob) {
+          return input.arrayBuffer().then(function (buf) { return new Uint8Array(buf); });
+        }
+        if (typeof input === "string") {
+          return fetch(input).then(function (res) {
+            if (!res.ok) throw new Error("fetchFile_failed: " + res.status + " " + input);
+            return res.arrayBuffer();
+          }).then(function (buf) { return new Uint8Array(buf); });
+        }
+        throw new Error("fetchFile_unsupported_input");
+      }
       function compressVideo(file, bitrateKbps, onProgress) {
         return loadFfmpeg().then(function (WASM) {
           var ffmpeg = new WASM.FFmpeg();
           if (onProgress) ffmpeg.on("progress", function (p) { onProgress(p && p.progress ? p.progress : 0); });
           return ffmpeg.load({ coreURL: FFMPEG_CORE_JS_ABS, wasmURL: FFMPEG_CORE_WASM_ABS }).then(function () {
-            return WASM.fetchFile(file);
+            return fetchFile(file);
           }).then(function (data) {
             return ffmpeg.writeFile("input.mp4", data);
           }).then(function () {
