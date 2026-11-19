@@ -1373,6 +1373,156 @@
       <a class="btn btn-primary btn-hero" href="#so">Bắt đầu dùng thử 3 ngày</a>
     </div>
 
+    <!-- ============ HỖ TRỢ KHÁCH HÀNG ============ -->
+    <section id="support" aria-label="Hỗ trợ khách hàng">
+      <style>
+        #support{padding:8px 0 40px}
+        #support .sp-card{background:var(--surface,#fff);border:1px solid var(--line,#cfe0da);border-top:3px solid #0f766e;border-radius:16px;box-shadow:var(--shadow,0 18px 44px rgba(15,46,43,.12));padding:24px}
+        #support h2{margin:0 0 8px;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:800;letter-spacing:-.015em;line-height:1.25;color:var(--ink,#0f2e2b)}
+        #support .sp-lede{margin:0 0 18px;color:var(--ink-2,#3d5a55);line-height:1.6;max-width:40rem}
+        #support .sp-zalo-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#0f766e;color:#fff;text-decoration:none;font-weight:800;font-size:1rem;padding:13px 24px;border-radius:999px;min-height:50px;box-shadow:0 10px 24px rgba(15,118,110,.28)}
+        #support .sp-zalo-btn:hover{background:#0b5e57}
+        #support .sp-zalo-num{margin:10px 0 0;color:var(--ink-2,#3d5a55);font-size:.95rem}
+        #support .sp-zalo-num strong{color:#0f766e;font-size:1.05rem;letter-spacing:.02em}
+        #support .sp-divider{border:0;border-top:1px solid var(--line,#cfe0da);margin:22px 0}
+        #support h3{margin:0 0 14px;font-size:1.05rem;font-weight:800;color:var(--ink,#0f2e2b)}
+        #support .sp-field{margin-bottom:13px}
+        #support .sp-field label{display:block;font-size:.88rem;font-weight:600;margin-bottom:6px;color:var(--ink,#0f2e2b)}
+        #support .sp-field label span{color:var(--ink-3,#6b8a83);font-weight:500}
+        #support .sp-field input,#support .sp-field select,#support .sp-field textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink,#0f2e2b);background:var(--surface,#fff);border:1.5px solid var(--line-strong,#a6c6bd);border-radius:10px;padding:10px 12px;min-height:46px}
+        #support .sp-field textarea{min-height:96px;resize:vertical}
+        #support .sp-field input:focus,#support .sp-field select:focus,#support .sp-field textarea:focus{outline:2px solid #0f766e;outline-offset:1px;border-color:#0f766e}
+        #support .sp-submit{width:100%;border:0;cursor:pointer;background:#0f766e;color:#fff;font:inherit;font-weight:800;font-size:1rem;padding:13px 22px;border-radius:999px;min-height:50px}
+        #support .sp-submit:hover{background:#0b5e57}
+        #support .sp-submit:disabled{opacity:.55;cursor:wait}
+        #support #sp-msg{margin:12px 0 0;font-size:.94rem;font-weight:600;line-height:1.55;min-height:1.4em}
+        #support #sp-msg.ok{color:#0f766e}
+        #support #sp-msg.err{color:var(--danger,#c2451e)}
+        @media (min-width:720px){#support .sp-submit{width:auto;min-width:220px}}
+        @media (prefers-color-scheme:dark){#support .sp-zalo-btn,#support .sp-submit{background:#0f766e;color:#fff}#support #sp-msg.ok{color:#2dd4bf}}
+      </style>
+      <div class="wrap">
+        <div class="sp-card">
+          <h2>Cần hỗ trợ?</h2>
+          <p class="sp-lede">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+          <a class="sp-zalo-btn" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+          <p class="sp-zalo-num">Số Zalo: <strong>0327047928</strong> — nếu nút không mở được, hãy tìm số này trên Zalo.</p>
+          <hr class="sp-divider" />
+          <h3>Gửi yêu cầu hỗ trợ</h3>
+          <form id="sp-form" novalidate>
+            <div class="sp-field">
+              <label for="sp-name">Họ tên <span>(không bắt buộc)</span></label>
+              <input id="sp-name" name="name" type="text" autocomplete="name" placeholder="Tên của bạn" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-contact">Số điện thoại hoặc email</label>
+              <input id="sp-contact" name="contact" type="text" required autocomplete="tel" placeholder="Số điện thoại hoặc email để shop liên hệ lại" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-issue">Vấn đề</label>
+              <select id="sp-issue" name="issue">
+                <option value="Lỗi trang">Lỗi trang</option>
+                <option value="Hết dùng thử">Hết dùng thử</option>
+                <option value="Thanh toán">Thanh toán</option>
+                <option value="Gói Pro">Gói Pro</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="sp-field">
+              <label for="sp-message">Mô tả ngắn</label>
+              <textarea id="sp-message" name="message" required placeholder="Bạn đang gặp vấn đề gì?"></textarea>
+            </div>
+            <button type="submit" class="sp-submit" id="sp-submit">Gửi yêu cầu</button>
+            <p id="sp-msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+      <script>
+      (function () {
+        "use strict";
+        var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+        var form = document.getElementById("sp-form");
+        if (!form) return;
+        var msgEl = document.getElementById("sp-msg");
+        var submitBtn = document.getElementById("sp-submit");
+        function loadSupabaseUmd() {
+          return new Promise(function (resolve, reject) {
+            if (window.supabase && window.supabase.createClient) return resolve();
+            var s = document.createElement("script");
+            s.src = SUPABASE_CDN;
+            s.onload = resolve;
+            s.onerror = function () { reject(new Error("load_supabase_failed")); };
+            document.head.appendChild(s);
+          });
+        }
+        function readPageConfig() {
+          // Đọc đúng 2 biến SUPABASE_URL / SUPABASE_ANON_KEY đã có sẵn trong
+          // khối đăng nhập của trang — không hardcode URL hay key mới nào.
+          var url = "", key = "";
+          var scripts = document.querySelectorAll("script");
+          for (var i = 0; i < scripts.length; i++) {
+            var t = scripts[i].textContent || "";
+            if (!url) { var m1 = t.match(/SUPABASE_URL\s*=\s*"([^"]+)"/); if (m1) url = m1[1]; }
+            if (!key) { var m2 = t.match(/SUPABASE_ANON_KEY\s*=\s*"([^"]+)"/); if (m2) key = m2[1]; }
+            if (url && key) break;
+          }
+          return { url: url, key: key };
+        }
+        function getSupportClient() {
+          // Ưu tiên client sẵn có của trang nếu truy cập được ở phạm vi toàn cục.
+          if (window.client && window.client.from) return Promise.resolve(window.client);
+          if (typeof client !== "undefined" && client && client.from) return Promise.resolve(client);
+          return loadSupabaseUmd().then(function () {
+            var cfg = readPageConfig();
+            if (!cfg.url || !cfg.key) throw new Error("missing_supabase_config");
+            return window.supabase.createClient(cfg.url, cfg.key, {
+              auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+            });
+          });
+        }
+        var sending = false;
+        form.addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          if (sending) return;
+          var name = document.getElementById("sp-name").value.trim();
+          var contact = document.getElementById("sp-contact").value.trim();
+          var issue = document.getElementById("sp-issue").value;
+          var message = document.getElementById("sp-message").value.trim();
+          msgEl.textContent = "";
+          msgEl.className = "";
+          if (!contact || !message) {
+            msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+            msgEl.className = "err";
+            return;
+          }
+          sending = true;
+          submitBtn.disabled = true;
+          getSupportClient().then(function (sb) {
+            return sb.from("support_tickets").insert([{
+              name: name || "",
+              contact: contact,
+              issue_type: issue,
+              message: message,
+              page: "so-thu-chi-ho-kinh-doanh",
+              status: "new"
+            }]);
+          }).then(function (res) {
+            if (res && res.error) throw res.error;
+            msgEl.textContent = "Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.";
+            msgEl.className = "ok";
+            form.reset();
+          }).catch(function () {
+            msgEl.textContent = "Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.";
+            msgEl.className = "err";
+          }).then(function () {
+            sending = false;
+            submitBtn.disabled = false;
+          });
+        });
+      })();
+      </script>
+    </section>
+
     <footer>
       <div class="wrap">
         <span>Sổ Thu Chi Hộ Kinh Doanh — dùng thử 3 ngày miễn phí, sau đó 39.000đ/tháng. Dữ liệu lưu trên máy của bạn.</span>
