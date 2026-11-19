@@ -1079,6 +1079,7 @@
               <li data-step><span class="dot">✓</span> Ghép tiếng mới vào video</li>
             </ol>
             <div class="done-note" id="dubDone" hidden></div>
+            <p class="hint" id="submitNote" hidden>Video gói Chuẩn được nén xuống 720p trước khi gửi để tải lên nhanh hơn — chất lượng hình ảnh có thể giảm nhẹ so với bản gốc. Video gói Pro giữ nguyên chất lượng gốc. Video lồng tiếng là dạng thuyết minh đè lên hình — môi người trong video không khớp theo tiếng mới.</p>
             <div class="run-row" id="submitRow" hidden>
               <button type="button" class="btn" id="submitJobBtn">Gửi video để lồng tiếng thật</button>
             </div>
@@ -1524,7 +1525,7 @@
 
       var LS_KEY = "ccs_p9_script";
       var LS_JOBS = "ccs_p9_jobs";
-      var state = { lang: "vi", cues: [], running: false, dubRunning: false, video: null, proAccess: false };
+      var state = { lang: "vi", cues: [], running: false, dubRunning: false, video: null, videoFile: null, proAccess: false };
 
       var $ = function (id) { return document.getElementById(id); };
       var scriptInput = $("scriptInput");
@@ -1858,6 +1859,7 @@
         dubDone.hidden = true;
         dubDone.textContent = "";
         submitRow.hidden = true;
+        var sn = $("submitNote"); if (sn) sn.hidden = true;
         state.dubRunning = false;
       }
 
@@ -1872,6 +1874,7 @@
         if (videoObjectUrl) { try { URL.revokeObjectURL(videoObjectUrl); } catch (e) {} }
         videoObjectUrl = URL.createObjectURL(file);
         state.video = null;
+        state.videoFile = file;
         videoName.textContent = file.name;
         videoSize.textContent = fmtSize(file.size);
         videoDuration.textContent = "đang đọc…";
@@ -1941,6 +1944,7 @@
         videoPreview.load();
         videoMeta.hidden = true;
         state.video = null;
+        state.videoFile = null;
         clearVideoError();
         resetDubUI();
         evaluateGate();
@@ -1984,6 +1988,7 @@
               ") sang tiếng " + dst + ". Đây là bản mô phỏng trên trình duyệt — video lồng tiếng thật sẽ được xử lý trên hệ thống sau khi bạn gửi.";
             dubDone.hidden = false;
             submitRow.hidden = false;
+            var sn = $("submitNote"); if (sn) sn.hidden = false;
             state.dubRunning = false;
             dubBtn.disabled = false;
             return;
@@ -1996,7 +2001,27 @@
         next();
       });
 
-      /* ================= GỬI JOB THẬT (LƯU LOCALSTORAGE) ================= */
+      /* ================= GỬI JOB THẬT (SUPABASE) =================
+         Luồng thật thay cho lưu localStorage cũ:
+         đăng nhập -> sinh job_id -> nén (Chuẩn) / chia chunk (Pro) ->
+         upload Storage -> insert dubbing_jobs -> poll 10s tới done/failed.
+         Job localStorage cũ vẫn hiển thị kèm bên dưới, đánh dấu bản nháp cũ. */
+      var SUPABASE_URL_JOB = "https://azsaucfdgplkxvqseheh.supabase.co";
+      var SUPABASE_ANON_KEY_JOB = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq";
+      var RESULT_BASE = SUPABASE_URL_JOB + "/storage/v1/object/public/dubbing-result/";
+      var CHUNK_SIZE = 40 * 1024 * 1024;        /* chunk Pro: <= 40 MB */
+      var MAX_UPLOAD_BYTES = 48 * 1024 * 1024;   /* 1 file tối đa 48 MB */
+      var LS_JOB_META = "ccs_p9_job_meta";       /* job_id -> { fileName } để hiển thị tên sau khi tải lại trang */
+      var FFMPEG_JS = "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/ffmpeg.js";
+      var FFMPEG_CORE_JS = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js";
+      var FFMPEG_CORE_WASM = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.wasm";
+      var SUPABASE_CDN_JOB = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+
+      var serverJobs = [];
+      var pollTimer = null;
+      var submittingJob = false;
+
+      /* ---------- Job localStorage cũ (chỉ để hiển thị, không gửi nữa) ---------- */
       function loadJobs() {
         try { return JSON.parse(localStorage.getItem(LS_JOBS) || "[]"); }
         catch (e) { return []; }
@@ -2004,11 +2029,198 @@
       function saveJobs(jobs) {
         try { localStorage.setItem(LS_JOBS, JSON.stringify(jobs)); } catch (e) {}
       }
+      function loadJobMeta() {
+        try { return JSON.parse(localStorage.getItem(LS_JOB_META) || "{}"); }
+        catch (e) { return {}; }
+      }
+      function saveJobMeta(meta) {
+        try { localStorage.setItem(LS_JOB_META, JSON.stringify(meta)); } catch (e) {}
+      }
+
+      /* ---------- Client Supabase đã xác thực cho job ----------
+         Dùng lại mẫu của khối hỗ trợ (sp-script): đọc URL/key anon, nạp UMD
+         supabase-js nếu chưa có, rồi auth.setSession() bằng token từ
+         CongCuShop.getSession() để Storage upload + insert job thỏa RLS
+         (auth.uid() = user_id). Ưu tiên client sẵn có window.client nếu có. */
+      var jobClient = null;
+      var jobClientReady = null;
+      function loadSupabaseUmdJob() {
+        return new Promise(function (resolve, reject) {
+          if (window.supabase && window.supabase.createClient) return resolve();
+          var s = document.createElement("script");
+          s.src = SUPABASE_CDN_JOB;
+          s.onload = resolve;
+          s.onerror = function () { reject(new Error("load_supabase_failed")); };
+          document.head.appendChild(s);
+        });
+      }
+      function getJobClient() {
+        if (jobClient) return Promise.resolve(jobClient);
+        if (jobClientReady) return jobClientReady;
+        jobClientReady = new Promise(function (resolve, reject) {
+          if (!window.CongCuShop || !window.CongCuShop.getSession) { reject(new Error("login_required")); return; }
+          window.CongCuShop.getSession().then(function (session) {
+            if (!session || !session.user || !session.access_token) { reject(new Error("login_required")); return; }
+            var useClient = function (client) {
+              if (session.refresh_token) {
+                client.auth.setSession({ access_token: session.access_token, refresh_token: session.refresh_token }).then(function (r) {
+                  if (r && r.error) { reject(new Error("set_session_failed")); return; }
+                  jobClient = client;
+                  resolve(client);
+                }).catch(function () { reject(new Error("set_session_failed")); });
+              } else {
+                jobClient = client;
+                resolve(client);
+              }
+            };
+            if (window.client && window.client.from) return useClient(window.client);
+            loadSupabaseUmdJob().then(function () {
+              useClient(window.supabase.createClient(SUPABASE_URL_JOB, SUPABASE_ANON_KEY_JOB));
+            }).catch(function (err) { reject(err); });
+          }).catch(function (err) { reject(err); });
+        });
+        jobClientReady.catch(function () { jobClientReady = null; });
+        return jobClientReady;
+      }
+
+      /* ---------- ffmpeg.wasm: nén Chuẩn xuống 720p ----------
+         @ffmpeg/ffmpeg 0.12.x UMD (global FFmpegWASM) + core 0.12.x 1 luồng
+         (ffmpeg-core.js thường, KHÔNG dùng bản -mt, không cần SharedArrayBuffer
+         hay COOP/COEP). */
+      var ffmpegLib = null;
+      function loadFfmpeg() {
+        return new Promise(function (resolve, reject) {
+          if (ffmpegLib) return resolve(ffmpegLib);
+          if (window.FFmpegWASM && window.FFmpegWASM.FFmpeg) { ffmpegLib = window.FFmpegWASM; return resolve(ffmpegLib); }
+          var s = document.createElement("script");
+          s.src = FFMPEG_JS;
+          s.onload = function () {
+            if (window.FFmpegWASM && window.FFmpegWASM.FFmpeg) { ffmpegLib = window.FFmpegWASM; resolve(ffmpegLib); }
+            else reject(new Error("ffmpeg_wasm_missing"));
+          };
+          s.onerror = function () { reject(new Error("ffmpeg_load_failed")); };
+          document.head.appendChild(s);
+        });
+      }
+      function compressVideo(file, bitrateKbps, onProgress) {
+        return loadFfmpeg().then(function (WASM) {
+          var ffmpeg = new WASM.FFmpeg();
+          if (onProgress) ffmpeg.on("progress", function (p) { onProgress(p && p.progress ? p.progress : 0); });
+          return ffmpeg.load({ coreURL: FFMPEG_CORE_JS, wasmURL: FFMPEG_CORE_WASM }).then(function () {
+            return WASM.fetchFile(file);
+          }).then(function (data) {
+            return ffmpeg.writeFile("input.mp4", data);
+          }).then(function () {
+            return ffmpeg.exec(["-i", "input.mp4", "-vf", "scale=-2:720", "-c:v", "libx264", "-preset", "veryfast",
+              "-b:v", bitrateKbps + "k", "-maxrate", bitrateKbps + "k", "-bufsize", (bitrateKbps * 2) + "k",
+              "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", "output.mp4"]);
+          }).then(function (rc) {
+            if (rc !== 0) throw new Error("ffmpeg_failed");
+            return ffmpeg.readFile("output.mp4");
+          }).then(function (data) {
+            var blob = new Blob([data], { type: "video/mp4" });
+            try { ffmpeg.terminate(); } catch (e) {}
+            return blob;
+          }).catch(function (err) {
+            try { ffmpeg.terminate(); } catch (e) {}
+            throw err;
+          });
+        });
+      }
+
+      /* ---------- Upload Storage ---------- */
+      function uploadToSource(client, uid, jobId, name, blob, contentType) {
+        return client.storage.from("dubbing-source").upload(uid + "/" + jobId + "/" + name, blob, { contentType: contentType, upsert: false }).then(function (res) {
+          if (res.error) throw res.error;
+          return res.data;
+        });
+      }
+      function uploadInChunks(client, uid, jobId, file) {
+        var total = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
+        var names = [];
+        var chain = Promise.resolve();
+        for (var i = 0; i < total; i++) {
+          (function (idx) {
+            chain = chain.then(function () {
+              var start = idx * CHUNK_SIZE;
+              var part = file.slice(start, Math.min(file.size, start + CHUNK_SIZE));
+              var name = "part-" + ("00" + (idx + 1)).slice(-3);
+              dubDone.textContent = "Đang tải lên… phần " + (idx + 1) + "/" + total + " (" + fmtSize(part.size) + ")";
+              return uploadToSource(client, uid, jobId, name, part, "application/octet-stream").then(function () { names.push(name); });
+            });
+          })(i);
+        }
+        return chain.then(function () {
+          return { sourcePath: uid + "/" + jobId + "/" + names[0], payload: { chunks: names } };
+        });
+      }
+      /* Chuẩn: nén 720p ~2 Mbps; nén xong vẫn > 48 MB thì nén lại ~1,2 Mbps;
+         vẫn > 48 MB thì chia chunk như gói Pro.
+         Pro: chia file gốc thành chunk <= 40 MB, giữ nguyên chất lượng. */
+      function prepareUpload(client, uid, jobId, isPro, file) {
+        if (isPro) return uploadInChunks(client, uid, jobId, file);
+        dubDone.textContent = "Đang nén video trước khi gửi…";
+        return compressVideo(file, 2000, function (p) {
+          dubDone.textContent = "Đang nén video trước khi gửi… " + Math.round(p * 100) + "%";
+        }).then(function (blob) {
+          if (blob.size <= MAX_UPLOAD_BYTES) return blob;
+          dubDone.textContent = "Video sau khi nén vẫn lớn — đang nén lại ở chất lượng thấp hơn…";
+          return compressVideo(file, 1200, function (p) {
+            dubDone.textContent = "Đang nén lại video… " + Math.round(p * 100) + "%";
+          });
+        }).then(function (blob) {
+          if (blob.size > MAX_UPLOAD_BYTES) return uploadInChunks(client, uid, jobId, blob);
+          dubDone.textContent = "Đang tải video lên… (" + fmtSize(blob.size) + ")";
+          return uploadToSource(client, uid, jobId, "source.mp4", blob, "video/mp4").then(function () {
+            return { sourcePath: uid + "/" + jobId + "/source.mp4", payload: null };
+          });
+        });
+      }
+
+      /* ---------- Danh sách "Video của tôi" ---------- */
+      function jobStatusText(job) {
+        if (job.status === "queued") return "Đang chờ xử lý — video sẽ được lồng tiếng trong vài phút.";
+        if (job.status === "processing") return "Đang lồng tiếng… — vui lòng chờ, trang tự cập nhật trạng thái.";
+        if (job.status === "done") return "Đã xong ✓ — bấm nút tải bên dưới để nhận video đã lồng tiếng.";
+        if (job.status === "failed") return "Video của bạn đang được xử lý thủ công, shop sẽ gửi lại qua Zalo/SĐT bạn để lại.";
+        return "Trạng thái: " + job.status;
+      }
       function renderJobs() {
-        var jobs = loadJobs();
-        myJobs.hidden = jobs.length === 0;
+        var legacy = loadJobs();
+        var meta = loadJobMeta();
+        myJobs.hidden = (serverJobs.length === 0 && legacy.length === 0);
         jobList.innerHTML = "";
-        jobs.forEach(function (job) {
+        serverJobs.forEach(function (job) {
+          var div = document.createElement("div");
+          div.className = "job";
+          var info = document.createElement("div");
+          var nm = document.createElement("p");
+          nm.className = "j-name";
+          nm.textContent = (meta[job.id] && meta[job.id].fileName) || "Video đã gửi";
+          var mt = document.createElement("p");
+          mt.className = "j-meta";
+          mt.textContent = fmtMMSS(job.duration_seconds || 0) + " · " +
+            (job.source_lang ? langMeta(job.source_lang).name : "Tự động nhận diện") + " → " +
+            langMeta(job.target_lang).name + " · Gói " + (job.product === "p9pro" ? "Pro" : "Chuẩn") +
+            " · gửi ngày " + fmtDateShort(job.created_at);
+          var st = document.createElement("p");
+          st.className = "j-status";
+          st.textContent = jobStatusText(job);
+          info.appendChild(nm); info.appendChild(mt); info.appendChild(st);
+          div.appendChild(info);
+          if (job.status === "done" && job.result_path) {
+            var dl = document.createElement("a");
+            dl.className = "btn btn-soft btn-sm";
+            dl.href = RESULT_BASE + job.result_path;
+            dl.setAttribute("download", "");
+            dl.target = "_blank";
+            dl.rel = "noopener";
+            dl.textContent = "Tải video đã lồng tiếng";
+            div.appendChild(dl);
+          }
+          jobList.appendChild(div);
+        });
+        legacy.forEach(function (job) {
           var div = document.createElement("div");
           div.className = "job";
           var info = document.createElement("div");
@@ -2017,12 +2229,13 @@
           nm.textContent = job.fileName;
           var mt = document.createElement("p");
           mt.className = "j-meta";
-          mt.textContent = fmtMMSS(job.durationSec) + " · " + langMeta(job.srcLang).name + " → " +
+          mt.textContent = fmtMMSS(job.durationSec) + " · " +
+            (job.srcLang === "auto" ? "Tự động nhận diện" : langMeta(job.srcLang).name) + " → " +
             langMeta(job.dstLang).name + " · Gói " + (job.plan === "pro" ? "Pro" : "Chuẩn") +
             " · gửi ngày " + fmtDateShort(job.createdAt);
           var st = document.createElement("p");
           st.className = "j-status";
-          st.textContent = "Chờ xử lý — video lồng tiếng sẽ được gửi sau khi đăng ký/kích hoạt gói.";
+          st.textContent = "Bản nháp cũ — gửi lại để xử lý thật.";
           info.appendChild(nm); info.appendChild(mt); info.appendChild(st);
           var del = document.createElement("button");
           del.type = "button";
@@ -2037,27 +2250,123 @@
           jobList.appendChild(div);
         });
       }
+
+      /* ---------- Poll trạng thái mỗi 10 giây tới khi done/failed ---------- */
+      function hasPendingJobs() {
+        return serverJobs.some(function (j) { return j.status === "queued" || j.status === "processing"; });
+      }
+      function startPolling() {
+        if (pollTimer || !hasPendingJobs()) return;
+        pollTimer = setInterval(pollServerJobs, 10000);
+      }
+      function stopPolling() {
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      }
+      function pollServerJobs() {
+        var pending = serverJobs.filter(function (j) { return j.status === "queued" || j.status === "processing"; });
+        if (!pending.length) { stopPolling(); return; }
+        getJobClient().then(function (client) {
+          return client.from("dubbing_jobs").select("id,status,result_path,error_message")
+            .in("id", pending.map(function (j) { return j.id; }));
+        }).then(function (res) {
+          if (res.error) return;
+          var changed = false;
+          (res.data || []).forEach(function (row) {
+            for (var i = 0; i < serverJobs.length; i++) {
+              if (serverJobs[i].id === row.id && serverJobs[i].status !== row.status) {
+                serverJobs[i].status = row.status;
+                serverJobs[i].result_path = row.result_path;
+                serverJobs[i].error_message = row.error_message;
+                changed = true;
+              }
+            }
+          });
+          if (changed) renderJobs();
+          if (!hasPendingJobs()) stopPolling();
+        }).catch(function () { /* lỗi mạng lần poll: thử lại kỳ sau */ });
+      }
+      function loadServerJobs() {
+        getJobClient().then(function (client) {
+          return client.from("dubbing_jobs").select("id,user_id,job_type,product,source_lang,target_lang,duration_seconds,source_path,result_path,status,error_message,payload,created_at")
+            .eq("job_type", "video").order("created_at", { ascending: false }).limit(20);
+        }).then(function (res) {
+          if (res.error) throw res.error;
+          serverJobs = res.data || [];
+          renderJobs();
+          startPolling();
+        }).catch(function () { renderJobs(); /* chưa đăng nhập hoặc lỗi mạng: chỉ hiện job localStorage cũ */ });
+      }
+
+      /* ---------- Nút "Gửi video để lồng tiếng thật" ---------- */
       $("submitJobBtn").addEventListener("click", function () {
-        if (!state.video) return;
-        var jobs = loadJobs();
-        jobs.unshift({
-          id: Date.now(),
-          fileName: state.video.name,
-          durationSec: Math.round(state.video.durationSec),
-          srcLang: srcLang.value === "auto" ? "auto" : srcLang.value,
-          dstLang: dstLang.value,
-          plan: state.video.durationSec > MAX_STD_SEC ? "pro" : "chuẩn",
-          createdAt: new Date().toISOString()
-        });
-        saveJobs(jobs);
-        renderJobs();
-        submitRow.hidden = true;
-        dubDone.innerHTML = "✓ Đã gửi video “" + state.video.name.replace(/</g, "&lt;") +
-          "” để lồng tiếng thật — xem trạng thái trong mục “Video của tôi” bên dưới.";
+        if (submittingJob) return;
+        if (!state.video || !state.videoFile) return;
+        if (srcLang.value !== "auto" && srcLang.value === dstLang.value) { evaluateGate(); return; }
+        var dur = state.video.durationSec;
+        if (dur > MAX_PRO_SEC) { evaluateGate(); return; }
+        if (dur > MAX_STD_SEC && !state.proAccess) { evaluateGate(); return; }
+        if (!window.CongCuShop || !window.CongCuShop.getSession) {
+          dubDone.textContent = "Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.";
+          dubDone.hidden = false;
+          return;
+        }
+        var btn = $("submitJobBtn");
+        submittingJob = true;
+        btn.disabled = true;
+        dubDone.textContent = "Đang kiểm tra đăng nhập…";
         dubDone.hidden = false;
-        document.getElementById("myJobs").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+        window.CongCuShop.getSession().then(function (session) {
+          if (!session || !session.user) throw new Error("login_required");
+          var uid = session.user.id;
+          var jobId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("job-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+          var isPro = dur > MAX_STD_SEC;
+          var product = isPro ? "p9pro" : "p9";
+          var src = srcLang.value === "auto" ? null : srcLang.value;
+          var dst = dstLang.value;
+          var durationSec = Math.round(dur);
+          var fileName = state.video.name;
+          var uploaded = null;
+          return getJobClient().then(function (client) {
+            return prepareUpload(client, uid, jobId, isPro, state.videoFile).then(function (up) {
+              uploaded = up;
+              dubDone.textContent = "Đang tạo yêu cầu xử lý…";
+              return client.from("dubbing_jobs").insert({
+                id: jobId, user_id: uid, job_type: "video", product: product,
+                source_lang: src, target_lang: dst, duration_seconds: durationSec,
+                source_path: up.sourcePath, payload: up.payload, status: "queued"
+              }).select("id").single();
+            });
+          }).then(function (res) {
+            if (res.error) throw res.error;
+            var meta = loadJobMeta();
+            meta[jobId] = { fileName: fileName };
+            saveJobMeta(meta);
+            serverJobs.unshift({
+              id: jobId, product: product, source_lang: src, target_lang: dst,
+              duration_seconds: durationSec, source_path: uploaded.sourcePath,
+              result_path: null, status: "queued", created_at: new Date().toISOString()
+            });
+            renderJobs();
+            startPolling();
+            submitRow.hidden = true;
+            var sn = $("submitNote"); if (sn) sn.hidden = true;
+            dubDone.textContent = "✓ Đã gửi video “" + fileName + "” để lồng tiếng thật — xem trạng thái trong mục “Video của tôi” bên dưới.";
+            dubDone.hidden = false;
+            document.getElementById("myJobs").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+          });
+        }).catch(function (err) {
+          if (err && err.message === "login_required") {
+            dubDone.textContent = "Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.";
+          } else {
+            dubDone.textContent = "Gửi chưa thành công (" + (err && err.message ? err.message : "lỗi không rõ") + ") — hãy thử gửi lại. Chưa tạo yêu cầu xử lý nên không mất lượt.";
+          }
+          dubDone.hidden = false;
+        }).finally(function () {
+          submittingJob = false;
+          btn.disabled = false;
+        });
       });
-      renderJobs();
+      loadServerJobs();
 
       /* ================= GÓI PRO (p9pro) — DÙNG THỬ / GIA HẠN ================= */
       function showProMsg(text, kind) {
@@ -2166,6 +2475,8 @@
       refreshProAccess();
       setTimeout(refreshProAccess, 2000);
       setTimeout(refreshProAccess, 5000);
+      setTimeout(loadServerJobs, 2000);
+      setTimeout(loadServerJobs, 5000);
 
       /* ---------- Nút hero "Dùng thử 3 ngày" ---------- */
       var heroBtn = $("heroTrialBtn");
