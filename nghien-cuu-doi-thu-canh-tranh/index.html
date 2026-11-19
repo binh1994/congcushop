@@ -401,7 +401,7 @@
 </section>
 
       <!-- ================= PAYWALL (khách chưa có quyền) ================= -->
-      <div class="paywall" data-paywall>
+      <div class="paywall" data-paywall style="display:none">
         <h2>Khu vực dành cho tài khoản dùng thử</h2>
         <p data-paywall-reason>Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.</p>
         <a class="btn" href="#ccs-auth">Đăng nhập / Đăng ký</a>
@@ -724,6 +724,11 @@
   var mode = "signin";
   var client = null;   // supabase client (tạo ở init)
   var accessCache = null;
+  // Cờ "auth đã sẵn sàng": chỉ true sau khi onAuthStateChange chạy ít nhất
+  // 1 lần, tức Supabase đã khôi phục xong phiên đăng nhập đã lưu. Trước lúc
+  // đó, getSession() có thể trả null tạm thời dù khách đã đăng nhập — tuyệt
+  // đối không được khóa công cụ dựa trên kết quả null đó (lỗi nhấp nháy khóa).
+  var authReady = false;
 
   function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
   function fmtDate(iso) {
@@ -832,8 +837,12 @@
       case "rpc_error":
         statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
         break;
+      case "login_required":
+        statusEl.innerHTML = "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.";
+        break;
       default:
-        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        // Không bao giờ hiện mã lỗi thô (vd "login_required") cho người dùng.
+        statusEl.innerHTML = "Đang kiểm tra tài khoản…";
     }
   }
 
@@ -942,9 +951,18 @@
     return client.auth.getSession().then(function (r) {
       var session = r.data.session;
       if (!session) {
+        if (!authReady) {
+          // Supabase chưa khôi phục xong phiên đã lưu nên getSession() trả
+          // null TẠM THỜI — chưa thể kết luận khách chưa đăng nhập. Giữ
+          // nguyên trạng thái chờ trung tính ("Đang kiểm tra quyền dùng…"),
+          // KHÔNG khóa, KHÔNG hiện paywall; onAuthStateChange sẽ đặt
+          // authReady=true rồi gọi lại refresh() khi phiên sẵn sàng.
+          return;
+        }
         show("guest");
-        // Chưa đăng nhập = chưa có quyền: khóa công cụ NGAY, không được
-        // return sớm mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
+        // Đã chắc chắn không có phiên đăng nhập (authReady=true mà vẫn
+        // null) = chưa có quyền: khóa công cụ NGAY, không được return sớm
+        // mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
         applyAccess({ access: false, reason: "login_required" });
         return;
       }
@@ -954,6 +972,12 @@
         statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
         say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
       });
+    }).catch(function (err) {
+      // Cùng cách chặn như nhánh không-có-session: khi auth chưa sẵn sàng
+      // thì chưa kết luận được gì — giữ trạng thái chờ, chờ sự kiện auth.
+      if (!authReady) return;
+      statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
     });
   }
   function handlePayReturn() {
@@ -998,8 +1022,14 @@
         return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
       }
     }).then(function () {
-      client.auth.onAuthStateChange(function () { refresh(); });
+      client.auth.onAuthStateChange(function () { authReady = true; refresh(); });
       handlePayReturn();
+      // Dự phòng: nếu sau 5 giây sự kiện auth vẫn chưa chạy (authReady còn
+      // false) thì coi như đã chắc chắn trạng thái đăng nhập và kiểm tra
+      // lại, để trang không kẹt mãi ở trạng thái chờ trung tính.
+      setTimeout(function () {
+        if (!authReady && client) { authReady = true; refresh(); }
+      }, 5000);
       return refresh();
     }).catch(function (err) {
       say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
