@@ -106,6 +106,8 @@
       @media (max-width:520px){ .grid{ grid-template-columns:1fr; } }
       .field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
       .field .hint{ font-size:12.5px; color:var(--ink-2); margin-top:4px; }
+      .field .check{ display:flex; gap:8px; align-items:flex-start; margin-top:8px; font-size:13.5px; font-weight:500; cursor:pointer; }
+      .field .check input{ width:18px; height:18px; margin-top:2px; flex:0 0 auto; accent-color:var(--accent); cursor:pointer; }
       .inwrap{ display:flex; align-items:stretch; border:1.5px solid var(--line); border-radius:10px; overflow:hidden; background:var(--surface); }
       .inwrap:focus-within{ border-color:var(--accent); }
       .inwrap input{ flex:1; min-width:0; border:0; background:transparent; color:var(--ink);
@@ -854,7 +856,8 @@
               <div class="field">
                 <label for="inReturnShip">Phí ship hoàn cho mỗi đơn bị hoàn</label>
                 <div class="inwrap"><input id="inReturnShip" aria-label="Phí ship hoàn cho mỗi đơn bị hoàn" class="vnd" inputmode="numeric" value="18.000" /><span class="unit">đ/đơn</span></div>
-                <div class="hint">Đơn hoàn giả định hàng còn bán lại được; phần mất là ship hoàn + đóng gói đã dùng.</div>
+                <div class="hint">Mỗi đơn hoàn mất: hoa hồng sàn + phí chương trình + phí xử lý 3.000đ + quảng cáo + ship chiều đi + đóng gói; không mất phí giao dịch, thuế, affiliate và không mất giá vốn nếu hàng còn bán lại được. Phí ship hoàn: nền tảng trả cho đơn đặt trước 07/12/2026; từ đơn đặt ngày 07/12/2026 shop thường chịu 100%, shop Mall chịu 50% — nên mặc định chưa tính khoản này.</div>
+                <label class="check" for="inReturnShipOn"><input type="checkbox" id="inReturnShipOn" /> Tính thêm phí ship hoàn (đơn đặt từ 07/12/2026 — shop thường chịu 100%, Mall 50%)</label>
               </div>
             </div>
           </fieldset>
@@ -936,7 +939,7 @@
                 <td><b>Phí cố định / hoa hồng</b></td>
                 <td data-label="Shopee">1,5–17% theo ngành hàng; Shopee Mall tới 20,8%</td>
                 <td data-label="TikTok Shop">Công cụ đang để mặc định 14% (mức tham chiếu, không phải mức sàn công bố cho mọi ngành); TikTok Shop Mall 16%</td>
-                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span></td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span><br />Từ 01/04/2026, TikTok Shop vẫn tính hoa hồng trên đơn đã giao thành công kể cả sau đó bị trả hàng/hoàn tiền.</td>
               </tr>
               <tr>
                 <td><b>Phí giao dịch / thanh toán</b></td>
@@ -948,6 +951,11 @@
                 <td><b>Phí cố định theo đơn</b></td>
                 <td data-label="Shopee">3.000đ/đơn (phí hạ tầng)</td>
                 <td data-label="TikTok Shop">3.000đ/đơn (phí xử lý đơn hàng)</td>
+                <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span><br />Phí xử lý 3.000đ không được hoàn lại khi đơn đã giao thành công rồi mới hoàn.</td>
+              </tr>
+              <tr>
+                <td><b>Phí ship hoàn</b></td>
+                <td colspan="2" data-label="Cả hai sàn">Nền tảng trả cho đơn đặt tới 06/12/2026; người bán chịu từ đơn đặt ngày 07/12/2026 (shop Mall chịu 50%)</td>
                 <td data-label="Ghi chú"><span class="tag ok">Đã kiểm chứng</span></td>
               </tr>
               <tr>
@@ -1050,7 +1058,7 @@
         </details>
         <details class="faq">
           <summary>Đơn hoàn được tính lỗ thế nào?</summary>
-          <div class="a"><p>Công cụ tính lãi kỳ vọng: mỗi đơn đặt hàng có xác suất bị hoàn bằng tỷ lệ bạn nhập. Đơn hoàn được giả định hàng còn bán lại được, phần mất là phí ship hoàn cộng chi phí đóng gói đã dùng. Nếu ngành của bạn hàng hoàn thường hỏng/không bán lại được, hãy cộng thêm phần hao hụt đó vào ô phí ship hoàn để ra số sát hơn.</p></div>
+          <div class="a"><p>Mỗi đơn hoàn được tính mất: hoa hồng sàn + phí chương trình (Voucher Xtra / chương trình giảm giá, tính theo % giá bán) + phí xử lý 3.000đ/đơn + quảng cáo đã chạy + ship chiều đi shop chịu + đóng gói. Từ 01/04/2026 TikTok Shop vẫn tính hoa hồng + phí Voucher Extra trên đơn đã giao thành công kể cả sau đó bị hoàn, còn phí giao dịch được loại vì cơ sở tính trừ phần hoàn tiền. Không tính phí giao dịch, thuế khấu trừ và hoa hồng affiliate — khi đơn hoàn toàn bộ, các khoản này được sàn hoàn lại hoặc thu hồi. Cũng không tính giá vốn vì hàng hoàn thường bán lại được; tuy vậy khoảng 20% hàng trả về không bán lại được nguyên giá, nên con số này là ước tính — nếu ngành của bạn hao hụt nhiều hơn, hãy cộng thêm phần hao hụt đó vào ô phí ship hoàn để ra số sát hơn. Riêng phí ship hoàn: nền tảng trả cho đơn đặt trước 07/12/2026; từ đơn đặt ngày 07/12/2026, shop thường chịu 100%, shop Mall chịu 50% — vì vậy ô “Tính thêm phí ship hoàn” mặc định tắt, chỉ bật khi tính cho đơn đặt từ ngày đó.</p></div>
         </details>
         <details class="faq">
           <summary>ROAS hòa vốn dùng để làm gì?</summary>
@@ -1313,7 +1321,18 @@
           var totalCost = 0;
           rows.forEach(function(r){ totalCost += r[1]; });
           var profitSuccess = price - totalCost;
-          var returnLoss = returnShip + packaging;
+          // Đơn hoàn toàn bộ: mất hoa hồng + phí chương trình (từ 01/04/2026
+          // TikTok Shop vẫn tính hoa hồng + phí giao dịch + phí Voucher Extra
+          // trên đơn đã giao thành công kể cả sau đó bị hoàn; phí giao dịch
+          // được loại vì cơ sở tính trừ phần hoàn tiền, còn phí chương trình
+          // tính theo % giá bán như hoa hồng nên mất luôn khi đơn hoàn), phí xử
+          // lý theo đơn (không được hoàn lại), quảng cáo đã chạy, ship chiều đi
+          // shop chịu và đóng gói. KHÔNG mất phí giao dịch, thuế khấu trừ,
+          // affiliate (được hoàn/thu hồi khi hoàn toàn bộ) và KHÔNG mất giá
+          // vốn (hàng hoàn bán lại được). Phí ship hoàn chỉ cộng vào khi bật
+          // ô "Tính thêm phí ship hoàn" (đơn đặt từ 07/12/2026 shop mới chịu).
+          var returnShipOn = $("inReturnShipOn") && $("inReturnShipOn").checked;
+          var returnLoss = price * commission / 100 + price * program / 100 + fixedFee + price * ads / 100 + shipping + packaging + (returnShipOn ? returnShip : 0);
           var profit = profitSuccess * (1 - rRate) - rRate * returnLoss;
           var margin = price > 0 ? profit / price * 100 : 0;
 
@@ -1416,7 +1435,7 @@
         var currentPlatform = "shopee";
         var STATE_KEY = "tlns-state-v1";
         var PRODUCTS_KEY = "tlns-products-v1";
-        var FIELD_IDS = ["inPrice","inCogs","inOrders","inCommission","inTransaction","inProgram","inTax","inFixedFee","inAds","inAffiliate","inShipping","inPackaging","inReturnRate","inReturnShip","inProductName"];
+        var FIELD_IDS = ["inPrice","inCogs","inOrders","inCommission","inTransaction","inProgram","inTax","inFixedFee","inAds","inAffiliate","inShipping","inPackaging","inReturnRate","inReturnShip","inReturnShipOn","inProductName"];
         var restoring = false;
 
         function setPlatformUI(key){
@@ -1438,7 +1457,7 @@
         }
         function collectState(){
           var s = { platform: currentPlatform, fields:{} };
-          FIELD_IDS.forEach(function(id){ var el = $(id); if (el) s.fields[id] = el.value; });
+          FIELD_IDS.forEach(function(id){ var el = $(id); if (el) s.fields[id] = el.type === "checkbox" ? (el.checked ? "1" : "0") : el.value; });
           return s;
         }
         function persistState(){
@@ -1449,7 +1468,7 @@
           if (!s || !s.fields) return false;
           restoring = true;
           if (s.platform && PRESETS[s.platform]) setPlatformUI(s.platform);
-          FIELD_IDS.forEach(function(id){ if (s.fields[id] != null && $(id)) $(id).value = s.fields[id]; });
+          FIELD_IDS.forEach(function(id){ var el = $(id); if (s.fields[id] != null && el){ if (el.type === "checkbox") el.checked = (s.fields[id] === "1" || s.fields[id] === true); else el.value = s.fields[id]; } });
           restoring = false;
           render();
           return true;
@@ -1498,6 +1517,7 @@
         ["tab-shopee","tab-tiktok","tab-custom"].forEach(function(id){
           $(id).addEventListener("click", function(){ applyPreset(id.replace("tab-","")); });
         });
+        $("inReturnShipOn").addEventListener("change", render);
 
         document.querySelectorAll("input").forEach(function(el){
           el.addEventListener("input", render);
@@ -1511,6 +1531,7 @@
           $("inPrice").value = "200.000"; $("inCogs").value = "90.000"; $("inOrders").value = "300";
           $("inAds").value = "8"; $("inAffiliate").value = "5"; $("inShipping").value = "0";
           $("inPackaging").value = "3.000"; $("inReturnRate").value = "3"; $("inReturnShip").value = "18.000";
+          $("inReturnShipOn").checked = false;
           applyPreset("shopee");
         });
 
@@ -1570,6 +1591,7 @@
             "Giá bán: " + fmtVND(price) + "/đơn",
             "Lãi ròng kỳ vọng: " + fmtVND(res.profit) + "/đơn (biên " + fmtPct(res.margin) + ")",
             "Lãi nếu giao thành công: " + fmtVND(res.profitSuccess) + "/đơn",
+            "Lỗ mỗi đơn bị hoàn: " + fmtVND(res.returnLoss) + "/đơn",
             "Giá bán hòa vốn: " + (res.breakeven != null ? fmtVND(res.breakeven) : "không hòa vốn được"),
             "ROAS hòa vốn: " + (res.roas != null ? res.roas.toFixed(1).replace(".", ",") : "—"),
             "Tổng chi phí/đơn: " + fmtVND(res.totalCost)
