@@ -408,6 +408,7 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
   var mode = "signin";
   var client = null;   // supabase client (tạo ở init)
   var accessCache = null;
+  var authReady = false; // true khi onAuthStateChange đã chạy ít nhất 1 lần (Supabase đã khôi phục xong phiên)
 
   function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
   function fmtDate(iso) {
@@ -540,8 +541,11 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
       case "rpc_error":
         statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
         break;
+      case "login_required":
+        statusEl.innerHTML = "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.";
+        break;
       default:
-        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        statusEl.innerHTML = "Đang kiểm tra tài khoản…";
     }
   }
 
@@ -649,7 +653,13 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
   function refresh() {
     return client.auth.getSession().then(function (r) {
       var session = r.data.session;
-      if (!session) { applyAccess({ access: false, reason: "login_required" }); show("guest"); return; }
+      if (!session) {
+        // Supabase chưa khôi phục xong phiên đã lưu: getSession() có thể trả
+        // null thoáng qua lúc mới tải trang. Chưa chắc chắn thì KHÔNG khóa —
+        // giữ trạng thái chờ trung tính, chờ onAuthStateChange gọi lại refresh().
+        if (!authReady) return;
+        applyAccess({ access: false, reason: "login_required" }); show("guest"); return;
+      }
       show("user");
       $('[data-ccs-user-email]').textContent = session.user.email || "";
       return askAccess().then(applyAccess).catch(function (err) {
@@ -699,7 +709,7 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
         return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
       }
     }).then(function () {
-      client.auth.onAuthStateChange(function () { refresh(); });
+      client.auth.onAuthStateChange(function () { authReady = true; refresh(); });
       handlePayReturn();
       return refresh();
     }).catch(function (err) {
@@ -708,6 +718,12 @@ footer{padding:36px 0 44px;color:var(--muted);font-size:13px;text-align:center}
           ". Kiểm tra mạng rồi tải lại trang.", "err");
       show("guest");
     });
+    // Dự phòng: nếu sau 5 giây sự kiện auth vẫn chưa chạy (authReady còn
+    // false) thì coi như đã chắc chắn và kiểm tra lại, để trang không kẹt
+    // mãi ở trạng thái chờ "Đang kiểm tra quyền dùng…".
+    setTimeout(function () {
+      if (!authReady && client) { authReady = true; refresh(); }
+    }, 5000);
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
