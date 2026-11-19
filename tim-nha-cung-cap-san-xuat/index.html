@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Tìm nhà máy, xưởng sản xuất, đại lý và nhà phân phối tại Việt Nam theo ngành, tỉnh và mặt hàng. Tạo sẵn tin nhắn hỏi giá (RFQ) tiếng Việt. Dùng thử 3 ngày miễn phí, sau đó 49.000đ/tháng." />
+    <link rel="icon" href="data:," />
+    <title>Tìm Nhà Cung Cấp Sản Xuất — Danh bạ nhà máy &amp; xưởng Việt Nam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f7f5;
+        --surface:#ffffff;
+        --surface-2:#e9efec;
+        --ink:#12211b;
+        --ink-2:#43564d;
+        --line:#cfdcd4;
+        --accent:#0b7a55;
+        --accent-ink:#ffffff;
+        --accent-soft:#d9efe4;
+        --danger:#c22f2f;
+        --good:#0b7a55;
+        --shadow:0 10px 30px rgba(18,33,27,.10);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0d1512;
+          --surface:#16211c;
+          --surface-2:#1e2c25;
+          --ink:#e8f1ec;
+          --ink-2:#a9bcb1;
+          --line:#2c4036;
+          --accent:#2fbf8f;
+          --accent-ink:#08130e;
+          --accent-soft:#173b2d;
+          --danger:#ff8a80;
+          --good:#2fbf8f;
+          --shadow:0 10px 30px rgba(0,0,0,.45);
+        }
+      }
+      *{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+        font-size:16px; line-height:1.6;
+      }
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){ min-height:2.75rem; }
+      .wrap{ max-width:960px; margin:0 auto; padding:0 16px 56px; }
+
+      /* ---------- Hero ---------- */
+      .hero{ padding:40px 0 8px; }
+      .hero h1{ font-size:32px; line-height:1.2; font-weight:800; margin:0 0 12px; letter-spacing:-.01em; }
+      .hero .lead{ font-size:17px; color:var(--ink-2); margin:0 0 20px; max-width:640px; }
+      .hero-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        box-shadow:var(--shadow); padding:20px;
+      }
+      .price-row{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
+      .price{ font-size:30px; font-weight:800; color:var(--accent); }
+      .price-note{ color:var(--ink-2); font-size:14.5px; }
+      .trial-left{ display:block; font-size:14.5px; font-weight:700; color:var(--accent); min-height:1.4em; margin:2px 0 0; }
+      .cta{
+        display:inline-block; width:100%; margin-top:14px; border:0; border-radius:10px; cursor:pointer;
+        background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:17px;
+        padding:14px 20px; min-height:52px; text-align:center;
+      }
+      .cta:active{ transform:translateY(1px); }
+      .hero-points{ list-style:none; margin:16px 0 0; padding:0; display:grid; gap:8px; }
+      .hero-points li{ display:flex; gap:10px; font-size:15px; }
+      .hero-points li::before{ content:"✓"; color:var(--accent); font-weight:800; }
+      .sample-note{
+        margin-top:16px; background:var(--accent-soft); border-radius:10px; padding:12px 14px; font-size:14.5px;
+      }
+      @media (min-width:640px){
+        .hero h1{ font-size:40px; }
+        .cta{ width:auto; min-width:280px; }
+        .hero-points{ grid-template-columns:1fr 1fr; }
+      }
+
+      /* ---------- Sections ---------- */
+      section.block{ margin-top:36px; }
+      section.block > h2{ font-size:23px; font-weight:800; margin:0 0 6px; }
+      section.block > .sub{ color:var(--ink-2); margin:0 0 18px; font-size:15px; }
+
+      /* ---------- Tool ---------- */
+      .filters{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        padding:16px; display:grid; gap:12px; margin-bottom:16px;
+      }
+      @media (min-width:720px){ .filters{ grid-template-columns:1fr 1fr 1.4fr auto; align-items:end; } }
+      .field label{ display:block; font-size:13.5px; font-weight:700; margin-bottom:5px; }
+      .field select,.field input{
+        width:100%; border:1.5px solid var(--line); border-radius:10px; background:var(--surface);
+        color:var(--ink); font:inherit; font-size:16px; padding:10px 12px; outline:none;
+      }
+      .field select:focus,.field input:focus{ border-color:var(--accent); }
+      .btn-ghost{
+        border:1.5px solid var(--accent); background:transparent; color:var(--accent);
+        border-radius:10px; font:inherit; font-weight:700; font-size:15px; padding:10px 16px; cursor:pointer; min-height:48px;
+      }
+      .btn-ghost[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); }
+      .result-count{ font-size:14.5px; color:var(--ink-2); margin:0 0 12px; }
+      .cards{ display:grid; gap:14px; }
+      @media (min-width:720px){ .cards{ grid-template-columns:1fr 1fr; } }
+      .card{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        padding:16px; display:flex; flex-direction:column; gap:8px;
+      }
+      .card-head{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+      .card h3{ font-size:17px; margin:0; font-weight:800; line-height:1.35; }
+      .save-btn{
+        flex:none; border:1.5px solid var(--line); background:var(--surface-2); color:var(--ink);
+        border-radius:9px; font:inherit; font-size:13.5px; font-weight:700; padding:8px 12px; cursor:pointer; min-height:40px;
+      }
+      .save-btn[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+      .tags{ display:flex; flex-wrap:wrap; gap:6px; }
+      .tag{ background:var(--surface-2); border-radius:999px; padding:3px 10px; font-size:13px; font-weight:600; }
+      .tag.type{ background:var(--accent-soft); color:var(--accent); }
+      .card dl{ margin:0; display:grid; gap:4px; font-size:14.5px; }
+      .card dl div{ display:flex; gap:8px; }
+      .card dt{ color:var(--ink-2); flex:none; min-width:118px; }
+      .card dd{ margin:0; font-weight:600; }
+      .card .desc{ font-size:14.5px; color:var(--ink-2); margin:0; }
+      .card .rfq-open{
+        margin-top:auto; border:0; border-radius:10px; cursor:pointer; min-height:48px;
+        background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:15.5px; padding:12px;
+      }
+      .empty{
+        background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius);
+        padding:24px; text-align:center; color:var(--ink-2); font-size:15px;
+      }
+
+      /* ---------- RFQ panel ---------- */
+      .rfq{
+        background:var(--surface); border:1.5px solid var(--accent); border-radius:var(--radius);
+        padding:18px; margin-top:18px; box-shadow:var(--shadow);
+      }
+      .rfq h3{ margin:0 0 4px; font-size:18px; font-weight:800; }
+      .rfq .sub{ color:var(--ink-2); font-size:14px; margin:0 0 14px; }
+      .rfq-grid{ display:grid; gap:12px; }
+      @media (min-width:720px){ .rfq-grid{ grid-template-columns:1fr 1fr; } }
+      .rfq textarea{
+        width:100%; border:1.5px solid var(--line); border-radius:10px; background:var(--surface);
+        color:var(--ink); font:inherit; font-size:15px; padding:12px; min-height:220px; resize:vertical; outline:none;
+      }
+      .rfq textarea:focus{ border-color:var(--accent); }
+      .rfq-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+      .rfq-actions .copy-btn{
+        flex:1; min-width:200px; border:0; border-radius:10px; cursor:pointer; min-height:50px;
+        background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:16px; padding:12px;
+      }
+      .rfq-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+      .rfq-msg.ok{ color:var(--good); font-weight:700; }
+
+      /* ---------- Paywall ---------- */
+      .paywall{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        padding:26px 20px; text-align:center; box-shadow:var(--shadow);
+      }
+      .paywall h2{ font-size:20px; margin:0 0 8px; font-weight:800; }
+      .paywall p{ color:var(--ink-2); margin:0 auto 16px; max-width:480px; font-size:15px; }
+      .paywall .btn-pay{
+        border:0; border-radius:10px; cursor:pointer; min-height:50px; padding:12px 22px;
+        background:var(--accent); color:var(--accent-ink); font:inherit; font-weight:800; font-size:16px;
+      }
+      .paywall .btn-scroll{
+        display:inline-block; margin-top:10px; background:none; border:0; color:var(--accent);
+        font:inherit; font-weight:700; font-size:15px; cursor:pointer; padding:10px; min-height:44px;
+      }
+
+      /* ---------- Compare / pricing / FAQ ---------- */
+      .compare{ display:grid; gap:14px; }
+      @media (min-width:720px){ .compare{ grid-template-columns:1fr 1fr; } }
+      .compare .col{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; }
+      .compare .col.us{ border-color:var(--accent); }
+      .compare h3{ margin:0 0 10px; font-size:16.5px; font-weight:800; }
+      .compare ul{ margin:0; padding-left:20px; font-size:15px; display:grid; gap:6px; }
+      .price-grid{ display:grid; gap:14px; }
+      @media (min-width:720px){ .price-grid{ grid-template-columns:1fr 1fr; } }
+      .price-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px; }
+      .price-card.featured{ border:1.5px solid var(--accent); }
+      .price-card h3{ margin:0 0 4px; font-size:17px; font-weight:800; }
+      .price-card .amount{ font-size:28px; font-weight:800; color:var(--accent); margin:6px 0 2px; }
+      .price-card .per{ color:var(--ink-2); font-size:14px; margin:0 0 12px; }
+      .price-card ul{ margin:0; padding-left:20px; font-size:15px; display:grid; gap:6px; }
+      .faq details{
+        background:var(--surface); border:1px solid var(--line); border-radius:12px;
+        padding:4px 16px; margin-bottom:10px;
+      }
+      .faq summary{ font-weight:700; cursor:pointer; padding:12px 0; font-size:15.5px; }
+      .faq details p{ margin:0 0 14px; color:var(--ink-2); font-size:15px; }
+      footer{ margin-top:44px; border-top:1px solid var(--line); padding-top:18px; color:var(--ink-2); font-size:13.5px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <h1>Tìm nhà cung cấp &amp; nhà sản xuất tại Việt Nam</h1>
+        <p class="lead">
+          Tra cứu nhà máy, xưởng sản xuất, đại lý và nhà phân phối theo <b>ngành hàng</b>,
+          <b>tỉnh/thành</b> và <b>mặt hàng</b> — kèm số lượng đặt tối thiểu (MOQ) và giá tham khảo.
+          Chọn một nhà cung cấp, công cụ soạn sẵn tin nhắn hỏi giá (RFQ) tiếng Việt để bạn copy và gửi.
+        </p>
+        <div class="hero-card">
+          <div class="price-row">
+            <span class="price">49.000đ/tháng</span>
+            <span class="price-note">Dùng thử 3 ngày miễn phí — không cần thẻ, hủy bất cứ lúc nào.</span>
+          </div>
+          <span class="trial-left" data-trial-days-left></span>
+          <button type="button" class="cta" id="hero-cta">Dùng thử 3 ngày</button>
+          <ul class="hero-points">
+            <li>Lọc nhanh theo ngành, tỉnh và mặt hàng</li>
+            <li>Thấy rõ MOQ và giá tham khảo trước khi hỏi</li>
+            <li>RFQ tiếng Việt soạn sẵn theo từng nhà cung cấp</li>
+            <li>Lưu nhà cung cấp để so sánh và liên hệ sau</li>
+          </ul>
+          <p class="sample-note">
+            <b>Minh bạch:</b> danh bạ trên trang hiện là <b>dữ liệu mẫu</b> để bạn trải nghiệm cách tra cứu và soạn RFQ.
+            Dữ liệu nhà cung cấp thật đang được bổ sung và mở rộng dần — chúng tôi không quảng cáo số lượng nhà cung cấp chưa có.
+          </p>
+        </div>
+      </header>
+
+      <!-- Scripts bắt buộc TRƯỚC khối đăng nhập: supabase-js UMD rồi tới checkAccess.js -->
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+      <script src="assets/checkAccess.js"></script>
+
+<!-- ============================================================================
+  CongCuShop — khối đăng nhập / đăng ký + trạng thái dùng thử (sản phẩm p7).
+  Dán nguyên khối từ workspace/backend/auth-ui-snippet.html, chỉ thay
+  SUPABASE_URL / SUPABASE_ANON_KEY (publishable key, được phép lộ) và
+  data-product="p7".
+============================================================================= -->
+<section class="ccs-auth" id="ccs-auth" data-product="p7">
+  <style>
+    /* Khớp tông trang mẫu: dùng biến CSS sẵn có của trang (--bg, --surface,
+       --ink, --ink-2, --line, --accent, --accent-soft, --danger, --shadow).
+       Có fallback nếu trang chưa định nghĩa biến. Hỗ trợ dark mode theo
+       prefers-color-scheme của trang. Mobile-first, nút cao tối thiểu 44px. */
+    .ccs-auth{
+      --ccs-accent:var(--accent,#0b7a55);
+      --ccs-accent-ink:var(--accent-ink,#fff);
+      --ccs-soft:var(--accent-soft,#d9efe4);
+      background:var(--surface,#fff);
+      border:1px solid var(--line,#cfdcd4);
+      border-radius:14px;
+      box-shadow:var(--shadow,0 10px 30px rgba(18,33,27,.10));
+      padding:20px;
+      margin:22px 0;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .ccs-auth h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+    .ccs-auth .ccs-sub{ color:var(--ink-2,#43564d); font-size:14px; margin:0 0 16px; }
+    .ccs-auth .ccs-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+    .ccs-auth .ccs-tab{
+      border:1.5px solid var(--line,#cfdcd4); background:var(--surface-2,#e3ebe7);
+      color:var(--ink,#12211b); border-radius:10px; padding:10px 6px;
+      font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-height:48px;
+    }
+    .ccs-auth .ccs-tab[aria-pressed="true"]{ border-color:var(--ccs-accent); background:var(--ccs-soft); }
+    .ccs-auth .ccs-field{ margin-bottom:12px; }
+    .ccs-auth .ccs-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+    .ccs-auth .ccs-field input{
+      width:100%; border:1.5px solid var(--line,#cfdcd4); border-radius:10px;
+      background:var(--surface,#fff); color:var(--ink,#12211b);
+      font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+    }
+    .ccs-auth .ccs-field input:focus{ border-color:var(--ccs-accent); }
+    .ccs-auth .ccs-btn{
+      width:100%; border:0; border-radius:10px; cursor:pointer; min-height:48px;
+      background:var(--ccs-accent); color:var(--ccs-accent-ink);
+      font:inherit; font-weight:800; font-size:16px; padding:12px 16px;
+    }
+    .ccs-auth .ccs-btn:disabled{ opacity:.55; cursor:wait; }
+    .ccs-auth .ccs-btn-ghost{
+      background:transparent; color:var(--ccs-accent);
+      border:1.5px solid var(--ccs-accent); margin-top:10px;
+    }
+    .ccs-auth .ccs-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+    .ccs-auth .ccs-msg.err{ color:var(--danger,#c22f2f); }
+    .ccs-auth .ccs-msg.ok{ color:var(--good,#0b7a55); }
+    .ccs-auth .ccs-status{
+      background:var(--ccs-soft); border-radius:10px; padding:12px 14px;
+      font-size:14.5px; margin:0 0 12px;
+    }
+    .ccs-auth .ccs-status b{ font-weight:800; }
+    .ccs-auth .ccs-email{ font-weight:700; word-break:break-all; }
+    .ccs-auth .ccs-fine{ color:var(--ink-2,#43564d); font-size:13.5px; margin:12px 0 0; }
+    .ccs-auth .ccs-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .ccs-auth .ccs-row .ccs-btn{ flex:1; min-width:180px; }
+    @media (min-width:640px){ .ccs-auth .ccs-btn{ width:auto; min-width:220px; } }
+  </style>
+
+  <!-- Trạng thái CHƯA đăng nhập -->
+  <div data-ccs-view="guest">
+    <h2>Đăng nhập để dùng thử 3 ngày miễn phí</h2>
+    <p class="ccs-sub">
+      <span data-ccs-product-name>Tính Lợi Nhuận Sàn</span> —
+      <b data-ccs-price>29.000đ/tháng</b> sau 3 ngày dùng thử.
+      Tài khoản lưu trên hệ thống, không lưu mật khẩu trên máy bạn.
+    </p>
+    <div class="ccs-tabs" role="group" aria-label="Đăng nhập hoặc đăng ký">
+      <button type="button" class="ccs-tab" data-ccs-mode="signin" aria-pressed="true">Đăng nhập</button>
+      <button type="button" class="ccs-tab" data-ccs-mode="signup" aria-pressed="false">Đăng ký mới</button>
+    </div>
+    <form data-ccs-form novalidate>
+      <div class="ccs-field">
+        <label for="ccs-email">Email</label>
+        <input id="ccs-email" name="email" type="email" required autocomplete="email"
+               placeholder="vidu@email.com" />
+      </div>
+      <div class="ccs-field">
+        <label for="ccs-password">Mật khẩu <span data-ccs-pw-hint>(ít nhất 8 ký tự)</span></label>
+        <input id="ccs-password" name="password" type="password" required autocomplete="current-password"
+               minlength="8" placeholder="••••••••" />
+      </div>
+      <button type="submit" class="ccs-btn" data-ccs-submit>Đăng nhập</button>
+      <p class="ccs-msg" data-ccs-msg role="status"></p>
+    </form>
+    <p class="ccs-fine">
+      Đăng ký xong, bấm “Bắt đầu dùng thử 3 ngày” để kích hoạt trial.
+      Hết 3 ngày chưa trả tiền thì công cụ sẽ khóa lại cho tới khi bạn gia hạn.
+    </p>
+  </div>
+
+  <!-- Trạng thái ĐÃ đăng nhập -->
+  <div data-ccs-view="user" hidden>
+    <h2>Tài khoản của bạn</h2>
+    <p class="ccs-sub">Đã đăng nhập: <span class="ccs-email" data-ccs-user-email></span></p>
+    <p class="ccs-status" data-ccs-status>Đang kiểm tra quyền dùng…</p>
+    <div class="ccs-row">
+      <button type="button" class="ccs-btn" data-ccs-trial hidden>Bắt đầu dùng thử 3 ngày</button>
+      <button type="button" class="ccs-btn" data-ccs-pay hidden>Gia hạn bằng VietQR — <span data-ccs-price>29.000đ/tháng</span></button>
+      <button type="button" class="ccs-btn ccs-btn-ghost" data-ccs-logout>Đăng xuất</button>
+    </div>
+    <p class="ccs-msg" data-ccs-msg role="status"></p>
+    <p class="ccs-fine">
+      Thanh toán bằng VietQR qua payOS, tiền về tài khoản của chủ shop.
+      Hết tháng, bấm “Gia hạn bằng VietQR” để tạo mã mới và quét lại.
+    </p>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==== 1. CẤU HÌNH ==== */
+  var SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq"; // publishable key (được phép lộ)
+  /* ======================================================================= */
+
+  // Bảng giá + tên hiển thị — KHỚP products.json. Chỉ để hiển thị;
+  // giá thu thật do Edge Function create-payment quyết trên server.
+  var PRODUCTS = {
+    p1:     { name: "Tính Lợi Nhuận Sàn",        price: 29000 },
+    p2:     { name: "Quản Lý Đơn Cọc Công Nợ",   price: 39000 },
+    p3:     { name: "Nội Dung Đa Nền Tảng",      price: 39000 },
+    p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
+    p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
+    p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
+    p7:     { name: "Tìm Nhà Cung Cấp Sản Xuất", price: 49000 },
+    p8:     { name: "Nghiên Cứu Đối Thủ Cạnh Tranh", price: 49000 },
+    p9:     { name: "Dịch Thuyết Minh Video Đa Ngôn Ngữ", price: 49000 },
+    p10:    { name: "Podcast AI",                price: 39000 },
+    bundle: { name: "Gói Bundle 10 công cụ",     price: 149000 }
+  };
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+
+  var root = document.getElementById("ccs-auth");
+  if (!root) return;
+  var product = (root.getAttribute("data-product") || "p1").trim();
+  if (!PRODUCTS[product]) product = "p1";
+  var meta = PRODUCTS[product];
+
+  var $ = function (sel) { return root.querySelector(sel); };
+  var $$ = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+  var viewGuest = $('[data-ccs-view="guest"]');
+  var viewUser = $('[data-ccs-view="user"]');
+  var msgEls = $$('[data-ccs-msg]');
+  var statusEl = $('[data-ccs-status]');
+  var trialBtn = $('[data-ccs-trial]');
+  var payBtn = $('[data-ccs-pay]');
+  var logoutBtn = $('[data-ccs-logout]');
+  var submitBtn = $('[data-ccs-submit]');
+  var form = $('[data-ccs-form]');
+  var mode = "signin";
+  var client = null;   // supabase client (tạo ở init)
+  var accessCache = null;
+
+  function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+    catch (e) { return iso; }
+  }
+  function say(text, kind) {
+    msgEls.forEach(function (el) {
+      el.textContent = text || "";
+      el.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+    });
+  }
+  function show(view) {
+    viewGuest.hidden = view !== "guest";
+    viewUser.hidden = view !== "user";
+  }
+  function configMissing() {
+    return !SUPABASE_URL || SUPABASE_URL.indexOf("__SUPABASE_") === 0 ||
+           !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("__SUPABASE_") === 0;
+  }
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ==== 2. HỎI QUYỀN TỪ SERVER (qua checkAccess.js nếu có, tự gọi RPC nếu không) ==== */
+  function askAccess() {
+    if (window.CongCuShop && window.CongCuShop.checkAccess) {
+      return window.CongCuShop.checkAccess(product);
+    }
+    // Dự phòng khi checkAccess.js chưa nạp: gọi trực tiếp RPC get_access.
+    return client.auth.getSession().then(function (r) {
+      if (!r.data.session) return { access: false, reason: "login_required" };
+      return client.rpc("get_access", { p_product: product }).then(function (res) {
+        if (res.error) return { access: false, reason: "rpc_error", detail: res.error.message };
+        return res.data;
+      });
+    });
+  }
+  function applyAccess(access) {
+    accessCache = access;
+    if (window.CongCuShop && window.CongCuShop.applyAccessToPage) {
+      window.CongCuShop.applyAccessToPage(access);
+    } else {
+      // Dự phòng: tự khóa/mở theo cùng quy ước data-* của checkAccess.js.
+      var locked = !access.access;
+      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
+      document.querySelectorAll("[data-paywall]").forEach(function (el) { el.style.display = locked ? "" : "none"; });
+      document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
+        el.textContent = (access.reason === "trial" && access.days_left != null)
+          ? ("Còn " + access.days_left + " ngày dùng thử") : "";
+      });
+      document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+        el.textContent = window.CongCuShop && window.CongCuShop.paywallMessage
+          ? window.CongCuShop.paywallMessage(access.reason) : "Gia hạn để dùng tiếp.";
+      });
+    }
+    renderStatus(access);
+  }
+  function renderStatus(a) {
+    if (!statusEl) return;
+    var days = (a.days_left != null) ? a.days_left : null;
+    trialBtn.hidden = true;
+    payBtn.hidden = true;
+    switch (a.reason) {
+      case "trial":
+        statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "paid":
+        statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "bundle_active":
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 10 công cụ tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "no_trial":
+      case "no_subscription":
+        statusEl.innerHTML = "Bạn chưa bắt đầu dùng thử <b>" + meta.name + "</b>.";
+        trialBtn.hidden = false;
+        break;
+      case "trial_expired":
+        statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "subscription_expired":
+        statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "verification_required":
+        statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
+          "Vui lòng liên hệ hỗ trợ để được duyệt.";
+        break;
+      case "rpc_error":
+        statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
+        break;
+      default:
+        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        if (!a.access) payBtn.hidden = false;
+    }
+  }
+
+  /* ==== 3. ĐĂNG NHẬP / ĐĂNG KÝ (Supabase Auth, email + mật khẩu) ==== */
+  function setMode(next) {
+    mode = next;
+    $$('[data-ccs-mode]').forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-ccs-mode") === next ? "true" : "false");
+    });
+    submitBtn.textContent = next === "signup" ? "Đăng ký" : "Đăng nhập";
+    $('[data-ccs-pw-hint]').textContent = next === "signup" ? "(ít nhất 8 ký tự)" : "";
+    say("");
+  }
+  $$('[data-ccs-mode]').forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-ccs-mode")); });
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var email = $("#ccs-email").value.trim();
+    var password = $("#ccs-password").value;
+    if (!email || password.length < 8) {
+      say("Email chưa đúng hoặc mật khẩu dưới 8 ký tự.", "err");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang xử lý…";
+    var call = mode === "signup"
+      ? client.auth.signUp({ email: email, password: password })
+      : client.auth.signInWithPassword({ email: email, password: password });
+    call.then(function (res) {
+      if (res.error) {
+        say("Không đăng nhập được: " + friendlyAuthError(res.error.message), "err");
+        return;
+      }
+      if (mode === "signup" && res.data && !res.data.session) {
+        // Email xác nhận đang BẬT: Supabase gửi link, chưa có session.
+        say("Đã gửi email xác nhận tới " + email + ". Bấm link trong email rồi đăng nhập lại.", "ok");
+        return;
+      }
+      say("Đăng nhập thành công.", "ok");
+      refresh();
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = mode === "signup" ? "Đăng ký" : "Đăng nhập";
+    });
+  });
+  function friendlyAuthError(msg) {
+    msg = String(msg || "");
+    if (/invalid login credentials/i.test(msg)) return "Sai email hoặc mật khẩu.";
+    if (/user already registered/i.test(msg)) return "Email này đã đăng ký — hãy bấm tab “Đăng nhập”.";
+    if (/email not confirmed/i.test(msg)) return "Email chưa xác nhận — hãy bấm link trong email rồi thử lại.";
+    if (/password/i.test(msg)) return "Mật khẩu chưa đạt yêu cầu (ít nhất 8 ký tự).";
+    return msg;
+  }
+
+  logoutBtn.addEventListener("click", function () {
+    client.auth.signOut().then(refresh);
+  });
+
+  /* ==== 4. DÙNG THỬ 3 NGÀY / GIA HẠN VIETQR (qua checkAccess.js) ==== */
+  trialBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.startTrial) {
+      say("Chưa nạp được checkAccess.js — không bắt đầu trial được. Kiểm tra lại thứ tự script.", "err");
+      return;
+    }
+    trialBtn.disabled = true;
+    say("Đang kích hoạt dùng thử…");
+    window.CongCuShop.startTrial(product).then(function (res) {
+      if (res && res.access) {
+        say("Đã kích hoạt dùng thử 3 ngày.", "ok");
+        refresh();
+      } else if (res && res.needs_verification) {
+        say("Tài khoản cần xác minh thêm trước khi dùng thử. Vui lòng liên hệ hỗ trợ.", "err");
+        refresh();
+      } else {
+        say("Không kích hoạt được dùng thử: " + (res && (res.reason || res.error) || "lỗi không rõ") + ".", "err");
+      }
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () { trialBtn.disabled = false; });
+  });
+  payBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.createPayment) {
+      say("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
+      return;
+    }
+    payBtn.disabled = true;
+    say("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
+    window.CongCuShop.createPayment(product).then(function (res) {
+      if (res && !res.checkoutUrl) {
+        say("Không tạo được link thanh toán: " + (res.error || "lỗi không rõ") + ".", "err");
+        payBtn.disabled = false;
+      }
+      // Có checkoutUrl thì createPayment tự redirect sang payOS.
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      payBtn.disabled = false;
+    });
+  });
+
+  /* ==== 5. LÀM MỚI TRẠNG THÁI + XỬ LÝ QUAY VỀ TỪ PAYOS ==== */
+  function refresh() {
+    return client.auth.getSession().then(function (r) {
+      var session = r.data.session;
+      if (!session) {
+        show("guest");
+        // Chưa đăng nhập = chưa có quyền: khóa công cụ NGAY, không được
+        // return sớm mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
+        applyAccess({ access: false, reason: "login_required" });
+        return;
+      }
+      show("user");
+      $('[data-ccs-user-email]').textContent = session.user.email || "";
+      return askAccess().then(applyAccess).catch(function (err) {
+        statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+        say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      });
+    });
+  }
+  function handlePayReturn() {
+    var q = new URLSearchParams(window.location.search);
+    var pay = q.get("pay");
+    if (!pay) return;
+    if (pay === "success") {
+      say("Đã nhận thanh toán, đang chờ payOS xác nhận (webhook)…", "ok");
+      // Webhook có thể về chậm vài giây — hỏi lại quyền vài lần.
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        refresh().then(function () {
+          if ((accessCache && accessCache.access) || tries >= 6) {
+            clearInterval(timer);
+            if (accessCache && accessCache.access) say("Thanh toán đã xác nhận — gói đã kích hoạt.", "ok");
+          }
+        });
+      }, 5000);
+    } else if (pay === "cancelled") {
+      say("Bạn đã hủy thanh toán — gói chưa được kích hoạt.", "err");
+    }
+  }
+
+  /* ==== 6. KHỞI ĐỘNG ==== */
+  function init() {
+    // Điền tên + giá theo sản phẩm của trang.
+    $$('[data-ccs-product-name]').forEach(function (el) { el.textContent = meta.name; });
+    $$('[data-ccs-price]').forEach(function (el) { el.textContent = fmtVnd(meta.price) + "/tháng"; });
+    if (configMissing()) {
+      say("Chưa cấu hình Supabase (thiếu SUPABASE_URL / SUPABASE_ANON_KEY). " +
+          "Thay 2 giá trị ở đầu khối này rồi mới đăng nhập được.", "err");
+      show("guest");
+      // Chưa cấu hình thì cũng chưa có quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+      return;
+    }
+    loadSupabaseUmd().then(function () {
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // Nối checkAccess.js vào cùng client (để nó dùng chung session).
+      if (window.CongCuShop && window.CongCuShop.init) {
+        return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
+      }
+    }).then(function () {
+      client.auth.onAuthStateChange(function () { refresh(); });
+      handlePayReturn();
+      return refresh();
+    }).catch(function (err) {
+      say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
+          ". Kiểm tra mạng rồi tải lại trang.", "err");
+      show("guest");
+      // Không tải được Supabase thì chưa xác minh được quyền: khóa công cụ lại.
+      applyAccess({ access: false, reason: "login_required" });
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else { init(); }
+})();
+</script>
+
+      <!-- ================= PAYWALL (hiện khi chưa có quyền) ================= -->
+      <div class="paywall" data-paywall>
+        <h2>Khu vực dành cho tài khoản dùng thử / đã trả phí</h2>
+        <p data-paywall-reason>Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.</p>
+        <button type="button" class="btn-pay" data-pay-button hidden>Gia hạn bằng VietQR — 49.000đ/tháng</button>
+        <br />
+        <button type="button" class="btn-scroll" id="paywall-login-link">Đi tới phần đăng nhập ↑</button>
+      </div>
+
+      <!-- ================= CÔNG CỤ CHÍNH ================= -->
+      <section class="block" data-requires-access style="display:none">
+        <h2>Danh bạ nhà cung cấp <span style="font-size:14px;color:var(--ink-2);font-weight:600">(dữ liệu mẫu)</span></h2>
+        <p class="sub">
+          Tên, MOQ và giá dưới đây là <b>dữ liệu mẫu minh họa</b> để bạn thử bộ lọc và tính năng soạn RFQ.
+          Danh bạ nhà cung cấp thật đang được bổ sung dần. Bộ lọc và danh sách đã lưu được lưu trên trình duyệt này.
+        </p>
+
+        <div class="filters" role="search">
+          <div class="field">
+            <label for="f-industry">Ngành hàng</label>
+            <select id="f-industry"><option value="">Tất cả ngành</option></select>
+          </div>
+          <div class="field">
+            <label for="f-province">Tỉnh / thành</label>
+            <select id="f-province"><option value="">Tất cả tỉnh/thành</option></select>
+          </div>
+          <div class="field">
+            <label for="f-query">Mặt hàng (gõ để tìm)</label>
+            <input id="f-query" type="search" placeholder="Ví dụ: áo thun, hộp carton, cà phê…" autocomplete="off" />
+          </div>
+          <button type="button" class="btn-ghost" id="f-saved-only" aria-pressed="false">Chỉ đã lưu</button>
+        </div>
+
+        <p class="result-count" id="result-count" role="status"></p>
+        <div class="cards" id="cards"></div>
+        <div class="empty" id="empty" hidden>Không có nhà cung cấp mẫu nào khớp bộ lọc. Thử nới lỏng điều kiện lọc.</div>
+
+        <!-- RFQ panel -->
+        <div class="rfq" id="rfq" hidden>
+          <h3>Soạn tin nhắn hỏi giá (RFQ)</h3>
+          <p class="sub">Gửi tới: <b id="rfq-to"></b>. Chỉnh lại số lượng và nhu cầu, nội dung sẽ tự cập nhật — xong bấm “Copy tin nhắn” rồi dán vào Zalo/email của nhà cung cấp.</p>
+          <div class="rfq-grid">
+            <div class="field">
+              <label for="rfq-product">Mặt hàng cần hỏi</label>
+              <input id="rfq-product" type="text" />
+            </div>
+            <div class="field">
+              <label for="rfq-qty">Số lượng dự kiến</label>
+              <input id="rfq-qty" type="text" inputmode="numeric" placeholder="Ví dụ: 500" />
+            </div>
+            <div class="field">
+              <label for="rfq-name">Tên / shop của bạn</label>
+              <input id="rfq-name" type="text" placeholder="Ví dụ: Shop Minh Anh" />
+            </div>
+            <div class="field">
+              <label for="rfq-extra">Yêu cầu thêm (không bắt buộc)</label>
+              <input id="rfq-extra" type="text" placeholder="Ví dụ: in logo, giao tại TP.HCM…" />
+            </div>
+          </div>
+          <div class="field" style="margin-top:12px">
+            <label for="rfq-text">Nội dung tin nhắn</label>
+            <textarea id="rfq-text" readonly></textarea>
+          </div>
+          <div class="rfq-actions">
+            <button type="button" class="copy-btn" id="rfq-copy">Copy tin nhắn</button>
+            <button type="button" class="btn-ghost" id="rfq-close">Đóng</button>
+          </div>
+          <p class="rfq-msg" id="rfq-msg" role="status"></p>
+        </div>
+      </section>
+
+      <!-- ================= SO SÁNH TRUNG THỰC ================= -->
+      <section class="block">
+        <h2>Khác gì so với Alibaba / Global Sources?</h2>
+        <p class="sub">Nói thẳng để bạn chọn đúng công cụ cho nhu cầu của mình.</p>
+        <div class="compare">
+          <div class="col">
+            <h3>Alibaba / Global Sources</h3>
+            <ul>
+              <li><b>Miễn phí cho người mua</b>, kho nhà cung cấp quốc tế rất lớn, mạnh về hàng Trung Quốc và xuất khẩu.</li>
+              <li>Chủ yếu là nhà cung cấp nước ngoài — giao tiếp, đàm phán thường bằng tiếng Anh/tiếng Trung.</li>
+              <li><b>Không có danh bạ nhà cung cấp Việt Nam lọc theo tỉnh/thành</b>, khó tìm xưởng nhỏ gần bạn để tới xem hàng.</li>
+              <li>Không có sẵn mẫu tin nhắn hỏi giá tiếng Việt theo từng nhà cung cấp.</li>
+            </ul>
+          </div>
+          <div class="col us">
+            <h3>Trang này — Tìm Nhà Cung Cấp Sản Xuất</h3>
+            <ul>
+              <li>Tập trung <b>nhà cung cấp trong nước</b>: lọc theo ngành, tỉnh/thành và mặt hàng, thấy MOQ và giá tham khảo ngay trên thẻ.</li>
+              <li>Soạn sẵn <b>RFQ tiếng Việt</b> theo từng nhà cung cấp, copy là gửi được.</li>
+              <li>Giá <b>49.000đ/tháng</b> sau 3 ngày dùng thử miễn phí — rẻ hơn một buổi cà phê để đổi lấy thời gian đi tìm xưởng.</li>
+              <li>Trung thực: danh bạ hiện là <b>dữ liệu mẫu</b>, dữ liệu thật đang mở rộng dần — nếu bạn cần kho quốc tế ngay, Alibaba vẫn là lựa chọn tốt hơn.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= GIÁ ================= -->
+      <section class="block">
+        <h2>Giá</h2>
+        <p class="sub">Dùng thử trước, hợp mới trả tiền. Thanh toán bằng VietQR qua payOS.</p>
+        <div class="price-grid">
+          <div class="price-card">
+            <h3>Tìm Nhà Cung Cấp Sản Xuất</h3>
+            <p class="amount">49.000đ<span style="font-size:16px">/tháng</span></p>
+            <p class="per">3 ngày đầu dùng thử miễn phí, không cần thẻ.</p>
+            <ul>
+              <li>Tra cứu danh bạ theo ngành / tỉnh / mặt hàng</li>
+              <li>MOQ và giá tham khảo trên từng nhà cung cấp</li>
+              <li>Soạn RFQ tiếng Việt, copy trong 1 chạm</li>
+              <li>Lưu nhà cung cấp và bộ lọc trên trình duyệt</li>
+            </ul>
+          </div>
+          <div class="price-card featured">
+            <h3>Gói Bundle — cả 10 công cụ</h3>
+            <p class="amount">149.000đ<span style="font-size:16px">/tháng</span></p>
+            <p class="per">Hoặc 1.490.000đ/năm — dùng trọn bộ 10 công cụ Micro-SaaS của CongCuShop.</p>
+            <ul>
+              <li>Gồm Tìm Nhà Cung Cấp Sản Xuất và 9 công cụ còn lại</li>
+              <li>Tính lợi nhuận sàn, quản lý đơn cọc công nợ, sổ thu chi…</li>
+              <li>Nội dung đa nền tảng, tạo ảnh sản phẩm, báo giá hợp đồng mẫu…</li>
+              <li>Một tài khoản, một lần thanh toán cho cả bộ</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="block faq">
+        <h2>Câu hỏi thường gặp</h2>
+        <details>
+          <summary>Danh bạ này có phải nhà cung cấp thật không?</summary>
+          <p>Chưa. Danh bạ trên trang hiện là <b>dữ liệu mẫu</b> (tên, MOQ, giá đều là minh họa) để bạn trải nghiệm bộ lọc và tính năng soạn RFQ. Dữ liệu nhà cung cấp thật đang được thu thập, kiểm chứng và mở rộng dần. Khi có nhà cung cấp thật, thông tin liên hệ sẽ hiển thị rõ trên thẻ của họ.</p>
+        </details>
+        <details>
+          <summary>Dùng thử 3 ngày hoạt động thế nào?</summary>
+          <p>Đăng ký tài khoản bằng email, bấm “Bắt đầu dùng thử 3 ngày” — hệ thống tính 3 ngày ở phía server (xóa bộ nhớ trình duyệt cũng không reset được). Trong thời gian dùng thử bạn dùng được toàn bộ công cụ. Hết 3 ngày, công cụ khóa lại cho tới khi bạn gia hạn 49.000đ/tháng.</p>
+        </details>
+        <details>
+          <summary>RFQ là gì và tôi gửi bằng cách nào?</summary>
+          <p>RFQ (Request for Quotation) là tin nhắn yêu cầu báo giá. Bấm “Soạn RFQ” trên thẻ nhà cung cấp, điền mặt hàng và số lượng — công cụ viết sẵn một tin nhắn tiếng Việt lịch sự, đúng trọng tâm (giá theo số lượng, thời gian sản xuất, điều kiện thanh toán). Bạn copy rồi dán vào Zalo, email hay fanpage của nhà cung cấp để gửi.</p>
+        </details>
+        <details>
+          <summary>MOQ nghĩa là gì?</summary>
+          <p>MOQ (Minimum Order Quantity) là số lượng đặt tối thiểu mà nhà cung cấp chấp nhận sản xuất/bán cho một đơn. Biết MOQ trước giúp bạn tránh hỏi những xưởng không nhận đơn nhỏ, và ước lượng được vốn cần bỏ ra cho lô hàng đầu tiên.</p>
+        </details>
+        <details>
+          <summary>Giá tham khảo có chính xác không?</summary>
+          <p>Giá trong danh bạ mẫu chỉ là minh họa. Với nhà cung cấp thật, giá luôn thay đổi theo số lượng, chất liệu và thời điểm — hãy dùng RFQ để nhận báo giá chính thức trước khi đặt cọc, và nên tới xưởng xem hàng với đơn lớn.</p>
+        </details>
+        <details>
+          <summary>Hết dùng thử, dữ liệu đã lưu của tôi có mất không?</summary>
+          <p>Danh sách nhà cung cấp đã lưu và bộ lọc được lưu trên trình duyệt của bạn (localStorage) nên vẫn còn khi bạn quay lại trên cùng thiết bị. Khi gia hạn xong, công cụ mở lại và bạn dùng tiếp như cũ.</p>
+        </details>
+        <details>
+          <summary>Tôi nên dùng trang này hay Alibaba?</summary>
+          <p>Nếu bạn nhập hàng quốc tế số lượng lớn, Alibaba/Global Sources miễn phí và kho rất lớn. Nếu bạn muốn tìm <b>xưởng và nhà phân phối trong nước</b>, lọc theo tỉnh để tới xem hàng, và hỏi giá bằng tiếng Việt nhanh gọn — trang này làm đúng việc đó với 49.000đ/tháng.</p>
+        </details>
+      </section>
+
+      <footer>
+        <p>Tìm Nhà Cung Cấp Sản Xuất — một công cụ trong bộ Micro-SaaS CongCuShop. Danh bạ hiện là dữ liệu mẫu; giá và điều kiện của từng nhà cung cấp cần được xác nhận trực tiếp khi dữ liệu thật được cập nhật.</p>
+      </footer>
+    </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ================= NÚT HERO "DÙNG THỬ 3 NGÀY" =================
+     Chưa đăng nhập → cuộn tới #ccs-auth. Đã đăng nhập → startTrial('p7'). */
+  var heroCta = document.getElementById("hero-cta");
+  function scrollToAuth() {
+    var el = document.getElementById("ccs-auth");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  if (heroCta) {
+    heroCta.addEventListener("click", function () {
+      if (window.CongCuShop && window.CongCuShop.getSession && window.CongCuShop.startTrial) {
+        window.CongCuShop.getSession().then(function (session) {
+          if (!session) { scrollToAuth(); return; }
+          heroCta.disabled = true;
+          heroCta.textContent = "Đang kích hoạt dùng thử…";
+          window.CongCuShop.startTrial("p7").then(function () {
+            window.location.reload();
+          }).catch(function () {
+            heroCta.disabled = false;
+            heroCta.textContent = "Dùng thử 3 ngày";
+            scrollToAuth();
+          });
+        }).catch(scrollToAuth);
+      } else {
+        scrollToAuth();
+      }
+    });
+  }
+  var loginLink = document.getElementById("paywall-login-link");
+  if (loginLink) loginLink.addEventListener("click", scrollToAuth);
+
+  /* ================= DỮ LIỆU MẪU =================
+     Tên, MOQ, giá đều là MINH HỌA — không phải nhà cung cấp thật. */
+  var SUPPLIERS = [
+    { id: "s01", name: "Xưởng May An Phát (mẫu)", type: "Nhà máy", industry: "May mặc", province: "TP. Hồ Chí Minh",
+      products: "Áo thun trơn, áo polo, đồng phục công ty", moq: "200 chiếc", price: "38.000–55.000đ/chiếc",
+      desc: "Nhận may theo mẫu, in/thêu logo, có chuyền may riêng cho đơn đồng phục." },
+    { id: "s02", name: "Xưởng Nhựa Gia Dụng Minh Khang (mẫu)", type: "Xưởng sản xuất", industry: "Nhựa & gia dụng", province: "Bình Dương",
+      products: "Hộp nhựa đựng thực phẩm, rổ nhựa, thùng nhựa công nghiệp", moq: "1.000 cái", price: "4.500–12.000đ/cái",
+      desc: "Ép nhựa theo khuôn sẵn, nhận làm khuôn riêng khi đơn đạt sản lượng thỏa thuận." },
+    { id: "s03", name: "Nhà Máy Gỗ Nội Thất Tân Phú (mẫu)", type: "Nhà máy", industry: "Gỗ & nội thất", province: "Bình Dương",
+      products: "Bàn ghế gỗ cao su, giường tủ, nội thất quán cà phê", moq: "50 bộ", price: "850.000–2.400.000đ/bộ",
+      desc: "Sản xuất theo bản vẽ, sơn PU theo bảng màu, đóng gói xuất khẩu." },
+    { id: "s04", name: "Xưởng Cơ Khí Chính Xác Đại Phát (mẫu)", type: "Xưởng sản xuất", industry: "Cơ khí & inox", province: "Hà Nội",
+      products: "Linh kiện CNC, đồ gá (jig), chi tiết máy theo bản vẽ", moq: "100 sản phẩm", price: "Báo giá theo bản vẽ",
+      desc: "Gia công CNC 3 trục, tiện/phay, nhận đơn linh kiện cho nhà máy lắp ráp." },
+    { id: "s05", name: "Công Ty Bao Bì Giấy Thành Đạt (mẫu)", type: "Nhà máy", industry: "Bao bì & in ấn", province: "Bắc Ninh",
+      products: "Hộp carton 3/5 lớp, hộp giấy cứng, túi giấy kraft", moq: "500 hộp", price: "2.800–9.000đ/hộp",
+      desc: "In offset/flexo theo thiết kế, bế dán hoàn thiện, giao hàng khu vực miền Bắc." },
+    { id: "s06", name: "Xưởng Giày Da Sài Gòn (mẫu)", type: "Xưởng sản xuất", industry: "Giày dép", province: "TP. Hồ Chí Minh",
+      products: "Giày da nam, dép da, giày công sở theo thương hiệu riêng", moq: "100 đôi", price: "180.000–420.000đ/đôi",
+      desc: "Nhận đóng giày gắn nhãn riêng (private label), có sẵn nhiều phom bán chạy." },
+    { id: "s07", name: "Nhà Máy Thực Phẩm Sấy Mekong (mẫu)", type: "Nhà máy", industry: "Thực phẩm & nông sản", province: "Đồng Tháp",
+      products: "Trái cây sấy dẻo, hạt điều rang, snack nông sản đóng gói", moq: "100 kg", price: "120.000–260.000đ/kg",
+      desc: "Sấy theo công nghệ nhiệt thấp, đóng gói hút chân không, nhận gia công thương hiệu riêng." },
+    { id: "s08", name: "Nhà Phân Phối Điện Tử Hoàng Gia (mẫu)", type: "Nhà phân phối", industry: "Điện tử", province: "Hà Nội",
+      products: "Linh kiện điện tử, đèn LED, module IoT, cảm biến", moq: "50 sản phẩm", price: "Báo giá theo mã hàng",
+      desc: "Phân phối sỉ linh kiện cho cửa hàng và đơn vị lắp ráp, có bảng giá theo bậc số lượng." },
+    { id: "s09", name: "Xưởng In Tem Nhãn Phú Thịnh (mẫu)", type: "Xưởng sản xuất", industry: "Bao bì & in ấn", province: "TP. Hồ Chí Minh",
+      products: "Tem nhãn decal, nhãn mác quần áo, hộp giấy mỹ phẩm", moq: "1.000 tem", price: "350–1.200đ/tem",
+      desc: "In nhanh 2–3 ngày cho đơn nhỏ, hỗ trợ lên file in cho khách mới." },
+    { id: "s10", name: "Nhà Máy Dệt Phong Phú (mẫu)", type: "Nhà máy", industry: "May mặc", province: "Nam Định",
+      products: "Vải thun cotton, vải cá sấu, vải kaki theo cây", moq: "300 m", price: "28.000–65.000đ/m",
+      desc: "Dệt và nhuộm theo mã màu, bán theo cây cho xưởng may và shop vải." },
+    { id: "s11", name: "Xưởng Inox Tiến Đạt (mẫu)", type: "Xưởng sản xuất", industry: "Cơ khí & inox", province: "Hải Phòng",
+      products: "Bồn inox, bàn bếp inox, xe đẩy inox theo kích thước", moq: "10 sản phẩm", price: "1.200.000–8.500.000đ/sản phẩm",
+      desc: "Gia công inox 304 theo bản vẽ cho bếp công nghiệp, bệnh viện, nhà hàng." },
+    { id: "s12", name: "Nhà Phân Phối Nông Sản Đà Lạt (mẫu)", type: "Nhà phân phối", industry: "Thực phẩm & nông sản", province: "Lâm Đồng",
+      products: "Cà phê hạt rang, rau củ sấy, atiso và đặc sản Đà Lạt sỉ", moq: "200 kg", price: "85.000–320.000đ/kg",
+      desc: "Thu mua trực tiếp từ nông trại, đóng bao 10–30kg cho đại lý và sàn thương mại điện tử." },
+    { id: "s13", name: "Xưởng Gia Công Mỹ Phẩm Herba (mẫu)", type: "Xưởng gia công", industry: "Mỹ phẩm", province: "TP. Hồ Chí Minh",
+      products: "Xà phòng thảo dược, dầu gội, serum — gia công OEM/ODM", moq: "500 chai", price: "25.000–60.000đ/chai",
+      desc: "Gia công trọn gói từ công thức tới bao bì cho thương hiệu mỹ phẩm mới." },
+    { id: "s14", name: "Xưởng Gốm Sứ Sông Hồng (mẫu)", type: "Xưởng sản xuất", industry: "Gốm sứ & thủ công", province: "Hà Nội",
+      products: "Bộ ấm chén, bát đĩa gốm, quà tặng doanh nghiệp in logo", moq: "100 bộ", price: "95.000–450.000đ/bộ",
+      desc: "Gốm nung thủ công tại làng nghề Bát Tràng, nhận in logo làm quà tặng số lượng lớn." },
+    { id: "s15", name: "Xưởng Đồ Chơi Gỗ Bé Vui (mẫu)", type: "Xưởng sản xuất", industry: "Đồ chơi & thủ công", province: "Thừa Thiên Huế",
+      products: "Đồ chơi gỗ giáo dục, xếp hình, đồ chơi Montessori", moq: "200 bộ", price: "45.000–95.000đ/bộ",
+      desc: "Gỗ tự nhiên sơn an toàn cho trẻ em, nhận đóng gói theo thương hiệu của khách." }
+  ];
+
+  /* ================= LƯU TRỮ LOCAL ================= */
+  var LS_SAVED = "p7_saved_suppliers";
+  var LS_FILTERS = "p7_filters";
+  function lsGet(key, fallback) {
+    try { var v = window.localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch (e) { return fallback; }
+  }
+  function lsSet(key, value) {
+    try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+  }
+  var saved = {};
+  lsGet(LS_SAVED, []).forEach(function (id) { saved[id] = true; });
+  var filters = lsGet(LS_FILTERS, { industry: "", province: "", query: "", savedOnly: false });
+
+  /* ================= DOM ================= */
+  var selIndustry = document.getElementById("f-industry");
+  var selProvince = document.getElementById("f-province");
+  var inpQuery = document.getElementById("f-query");
+  var btnSavedOnly = document.getElementById("f-saved-only");
+  var cardsEl = document.getElementById("cards");
+  var emptyEl = document.getElementById("empty");
+  var countEl = document.getElementById("result-count");
+
+  function uniq(list) {
+    var seen = {}, out = [];
+    list.forEach(function (x) { if (!seen[x]) { seen[x] = true; out.push(x); } });
+    return out.sort(function (a, b) { return a.localeCompare(b, "vi"); });
+  }
+  uniq(SUPPLIERS.map(function (s) { return s.industry; })).forEach(function (v) {
+    var o = document.createElement("option"); o.value = v; o.textContent = v; selIndustry.appendChild(o);
+  });
+  uniq(SUPPLIERS.map(function (s) { return s.province; })).forEach(function (v) {
+    var o = document.createElement("option"); o.value = v; o.textContent = v; selProvince.appendChild(o);
+  });
+
+  // Khôi phục bộ lọc đã lưu
+  selIndustry.value = filters.industry || "";
+  selProvince.value = filters.province || "";
+  inpQuery.value = filters.query || "";
+  btnSavedOnly.setAttribute("aria-pressed", filters.savedOnly ? "true" : "false");
+
+  function persistFilters() {
+    filters = {
+      industry: selIndustry.value,
+      province: selProvince.value,
+      query: inpQuery.value,
+      savedOnly: btnSavedOnly.getAttribute("aria-pressed") === "true"
+    };
+    lsSet(LS_FILTERS, filters);
+  }
+  function persistSaved() {
+    lsSet(LS_SAVED, Object.keys(saved).filter(function (id) { return saved[id]; }));
+  }
+
+  function norm(s) { return String(s || "").toLowerCase(); }
+  function matches(s) {
+    if (filters.industry && s.industry !== filters.industry) return false;
+    if (filters.province && s.province !== filters.province) return false;
+    if (filters.savedOnly && !saved[s.id]) return false;
+    if (filters.query) {
+      var q = norm(filters.query);
+      var hay = norm(s.name + " " + s.products + " " + s.industry + " " + s.province);
+      if (hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function render() {
+    persistFilters();
+    var list = SUPPLIERS.filter(matches);
+    cardsEl.innerHTML = "";
+    list.forEach(function (s) {
+      var card = el("article", "card");
+      var head = el("div", "card-head");
+      head.appendChild(el("h3", null, s.name));
+      var saveBtn = el("button", "save-btn", saved[s.id] ? "★ Đã lưu" : "☆ Lưu lại");
+      saveBtn.type = "button";
+      saveBtn.setAttribute("aria-pressed", saved[s.id] ? "true" : "false");
+      saveBtn.setAttribute("aria-label", "Lưu " + s.name);
+      saveBtn.addEventListener("click", function () {
+        saved[s.id] = !saved[s.id];
+        persistSaved();
+        render();
+      });
+      head.appendChild(saveBtn);
+      card.appendChild(head);
+
+      var tags = el("div", "tags");
+      tags.appendChild(el("span", "tag type", s.type));
+      tags.appendChild(el("span", "tag", s.industry));
+      tags.appendChild(el("span", "tag", s.province));
+      card.appendChild(tags);
+
+      var dl = el("dl");
+      [["Mặt hàng", s.products], ["MOQ (đặt tối thiểu)", s.moq], ["Giá tham khảo", s.price]].forEach(function (row) {
+        var div = el("div");
+        div.appendChild(el("dt", null, row[0]));
+        div.appendChild(el("dd", null, row[1]));
+        dl.appendChild(div);
+      });
+      card.appendChild(dl);
+      card.appendChild(el("p", "desc", s.desc));
+
+      var rfqBtn = el("button", "rfq-open", "Soạn RFQ hỏi giá");
+      rfqBtn.type = "button";
+      rfqBtn.addEventListener("click", function () { openRfq(s); });
+      card.appendChild(rfqBtn);
+      cardsEl.appendChild(card);
+    });
+    countEl.textContent = "Hiển thị " + list.length + " / " + SUPPLIERS.length + " nhà cung cấp mẫu" +
+      (Object.keys(saved).filter(function (id) { return saved[id]; }).length
+        ? " · Đã lưu: " + Object.keys(saved).filter(function (id) { return saved[id]; }).length : "");
+    emptyEl.hidden = list.length > 0;
+  }
+
+  [selIndustry, selProvince].forEach(function (elm) { elm.addEventListener("change", render); });
+  inpQuery.addEventListener("input", render);
+  btnSavedOnly.addEventListener("click", function () {
+    var on = btnSavedOnly.getAttribute("aria-pressed") === "true";
+    btnSavedOnly.setAttribute("aria-pressed", on ? "false" : "true");
+    render();
+  });
+
+  /* ================= RFQ ================= */
+  var rfqPanel = document.getElementById("rfq");
+  var rfqTo = document.getElementById("rfq-to");
+  var rfqProduct = document.getElementById("rfq-product");
+  var rfqQty = document.getElementById("rfq-qty");
+  var rfqName = document.getElementById("rfq-name");
+  var rfqExtra = document.getElementById("rfq-extra");
+  var rfqText = document.getElementById("rfq-text");
+  var rfqMsg = document.getElementById("rfq-msg");
+  var current = null;
+
+  function buildRfq() {
+    if (!current) return;
+    var lines = [];
+    lines.push("Kính chào " + current.name.replace(" (mẫu)", "") + ",");
+    lines.push("");
+    lines.push("Tôi đang tìm nguồn hàng để kinh doanh và quan tâm tới mặt hàng: " + (rfqProduct.value.trim() || current.products) + ".");
+    lines.push("Quý công ty cho tôi xin báo giá chi tiết cho số lượng dự kiến: " + (rfqQty.value.trim() || current.moq) + " (MOQ tham khảo của quý công ty: " + current.moq + ").");
+    lines.push("Ngoài giá, tôi muốn hỏi thêm:");
+    lines.push("- Thời gian sản xuất và giao hàng dự kiến;");
+    lines.push("- Điều kiện thanh toán (cọc bao nhiêu %, thanh toán khi nào);");
+    lines.push("- Chi phí và hình thức vận chuyển tới địa chỉ của tôi;");
+    lines.push("- Chính sách đổi trả nếu hàng lỗi.");
+    if (rfqExtra.value.trim()) lines.push("Yêu cầu thêm của tôi: " + rfqExtra.value.trim() + ".");
+    lines.push("");
+    lines.push("Mong nhận được phản hồi sớm từ quý công ty. Xin cảm ơn!");
+    if (rfqName.value.trim()) { lines.push(""); lines.push("— " + rfqName.value.trim()); }
+    rfqText.value = lines.join("\n");
+  }
+  function openRfq(s) {
+    current = s;
+    rfqTo.textContent = s.name;
+    rfqProduct.value = s.products.split(",")[0].trim();
+    rfqQty.value = "";
+    rfqExtra.value = "";
+    rfqMsg.textContent = "";
+    rfqMsg.className = "rfq-msg";
+    buildRfq();
+    rfqPanel.hidden = false;
+    rfqPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  [rfqProduct, rfqQty, rfqName, rfqExtra].forEach(function (elm) { elm.addEventListener("input", buildRfq); });
+  document.getElementById("rfq-close").addEventListener("click", function () { rfqPanel.hidden = true; });
+  document.getElementById("rfq-copy").addEventListener("click", function () {
+    function done() {
+      rfqMsg.textContent = "Đã copy tin nhắn — dán vào Zalo/email của nhà cung cấp để gửi.";
+      rfqMsg.className = "rfq-msg ok";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(rfqText.value).then(done).catch(function () {
+        rfqText.select(); document.execCommand("copy"); done();
+      });
+    } else {
+      rfqText.select(); document.execCommand("copy"); done();
+    }
+  });
+
+  render();
+})();
+</script>
+  </body>
+</html>
