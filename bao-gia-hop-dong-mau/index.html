@@ -422,6 +422,11 @@
   var mode = "signin";
   var client = null;   // supabase client (tạo ở init)
   var accessCache = null;
+  // Cờ: Supabase đã xác nhận trạng thái phiên (có/không) hay chưa. Khi trang
+  // vừa tải, getSession() có thể trả null chỉ vì phiên lưu sẵn chưa kịp khôi
+  // phục — lúc đó KHÔNG được khóa trang theo login_required (gây nhấp nháy
+  // paywall). Chỉ khóa khi authReady=true mà vẫn không có session.
+  var authReady = false;
 
   function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
   function fmtDate(iso) {
@@ -538,8 +543,12 @@
       case "rpc_error":
         statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
         break;
+      case "login_required":
+        statusEl.innerHTML = "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.";
+        break;
       default:
-        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        // Không bao giờ hiện mã lỗi thô (login_required, ...) cho người dùng.
+        statusEl.innerHTML = "Đang kiểm tra tài khoản…";
     }
   }
 
@@ -647,7 +656,16 @@
   function refresh() {
     return client.auth.getSession().then(function (r) {
       var session = r.data.session;
-      if (!session) { applyAccess({ access: false, reason: "login_required" }); show("guest"); return; }
+      if (!session) {
+        // Phiên chưa khôi phục xong (authReady=false): giữ trạng thái chờ
+        // trung tính "Đang kiểm tra quyền dùng…", không khóa, không hiện
+        // paywall — chờ onAuthStateChange chạy lại refresh().
+        if (!authReady) return;
+        // Đã chắc chắn không có phiên đăng nhập: khóa như cũ (fail-closed).
+        applyAccess({ access: false, reason: "login_required" });
+        show("guest");
+        return;
+      }
       show("user");
       $('[data-ccs-user-email]').textContent = session.user.email || "";
       return askAccess().then(applyAccess).catch(function (err) {
@@ -656,6 +674,8 @@
         say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
       });
     }).catch(function (err) {
+      // Cùng cách chặn: lỗi tạm thời trước khi auth sẵn sàng thì không khóa.
+      if (!authReady) return;
       applyAccess({ access: false, reason: "login_required" });
       show("guest");
     });
@@ -701,8 +721,14 @@
         return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
       }
     }).then(function () {
-      client.auth.onAuthStateChange(function () { refresh(); });
+      client.auth.onAuthStateChange(function () { authReady = true; refresh(); });
       handlePayReturn();
+      // Dự phòng: nếu sau 5 giây sự kiện auth vẫn chưa chạy (phiên không khôi
+      // phục được), coi như đã sẵn sàng và kiểm tra lại để trang không kẹt
+      // mãi ở trạng thái chờ — lúc đó không có session thì khóa như thường.
+      setTimeout(function () {
+        if (!authReady) { authReady = true; refresh(); }
+      }, 5000);
       return refresh();
     }).catch(function (err) {
       applyAccess({ access: false, reason: "login_required" });
