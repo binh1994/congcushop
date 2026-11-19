@@ -386,6 +386,10 @@ def process_video_file(src_video, source_lang, target_lang, workdir, model_size)
     t0 = time.time()
     duration = ffprobe_duration(src_video)
     log.info("Video nguồn: %s, thời lượng %.1fs", src_video, duration)
+    if not ffprobe_has_audio(src_video):
+        raise RuntimeError(
+            "no_audio_stream: Video không có rãnh âm thanh (không có tiếng nói) "
+            "nên không lồng tiếng được.")
 
     wav = workdir / "original.wav"
     run_cmd(["ffmpeg", "-y", "-i", str(src_video), "-vn",
@@ -493,7 +497,12 @@ def download_source_video(sb, job, workdir):
     payload = job.get("payload") or {}
     chunks = payload.get("chunks") if isinstance(payload, dict) else None
     if chunks:
-        base = f"{job['user_id']}/{job['id']}"
+        # Job gửi lại (retry) trỏ về file nguồn của job gốc: payload có thể
+        # mang source_base "<uid>/<job_id cũ>" — dùng nó thay cho thư mục
+        # của job mới (chunk vẫn nằm ở thư mục cũ, không cần upload lại).
+        base = (payload.get("source_base")
+                if isinstance(payload, dict) else None) or \
+            f"{job['user_id']}/{job['id']}"
         log.info("Job chia chunk: %d phần, nối byte theo thứ tự", len(chunks))
         with open(src_local, "wb") as out_f:
             for name in chunks:
@@ -547,7 +556,11 @@ def process_job(sb, job, work_root, model_size):
         log.info("=== Job %s DONE: %s ===", job_id, remote)
     except Exception as e:
         log.error("=== Job %s FAILED: %s ===", job_id, e)
-        update_job(sb, job_id, status="failed", error_message=str(e)[:500])
+        err_msg = str(e)
+        if "does not contain any stream" in err_msg or "no_audio_stream" in err_msg:
+            err_msg = ("no_audio_stream: Video không có rãnh âm thanh "
+                       "(không có tiếng nói) nên không lồng tiếng được.")
+        update_job(sb, job_id, status="failed", error_message=err_msg[:500])
     finally:
         shutil.rmtree(workdir, ignore_errors=True)
 
