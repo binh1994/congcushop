@@ -622,6 +622,11 @@
   var mode = "signin";
   var client = null;   // supabase client (tạo ở init)
   var accessCache = null;
+  // Cờ chống nhấp nháy khóa khi mới tải trang: chỉ true sau khi sự kiện
+  // onAuthStateChange đã chạy ít nhất một lần (hoặc sau 5 giây dự phòng),
+  // tức là Supabase đã khôi phục xong phiên đăng nhập đã lưu. Trước lúc đó,
+  // getSession() có thể trả null tạm thời — KHÔNG được khóa công cụ vì null này.
+  var authReady = false;
 
   function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
   function fmtDate(iso) {
@@ -669,13 +674,25 @@
   }
   function applyAccess(access) {
     accessCache = access;
-    if (window.CongCuShop && window.CongCuShop.applyAccessToPage) {
+    var hasDelegate = !!(window.CongCuShop && window.CongCuShop.applyAccessToPage);
+    if (hasDelegate) {
       window.CongCuShop.applyAccessToPage(access);
-    } else {
-      // Dự phòng: tự khóa/mở theo cùng quy ước data-* của checkAccess.js.
-      var locked = !access.access;
-      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
-      document.querySelectorAll("[data-paywall]").forEach(function (el) { el.style.display = locked ? "" : "none"; });
+    }
+    // Khóa/mở dứt khoát ở đây (kể cả khi đã delegate sang checkAccess.js):
+    // xử lý CẢ thuộc tính hidden lẫn style.display, để paywall chắc chắn
+    // HIỆN khi khóa và khối công cụ chắc chắn ẨN; khi có quyền thì gỡ
+    // hidden + xóa display inline để công cụ mở lại bình thường.
+    var locked = !access.access;
+    document.querySelectorAll("[data-requires-access]").forEach(function (el) {
+      if (locked) { el.hidden = true; el.style.display = "none"; }
+      else { el.hidden = false; el.removeAttribute("hidden"); el.style.display = ""; }
+    });
+    document.querySelectorAll("[data-paywall]").forEach(function (el) {
+      if (locked) { el.hidden = false; el.removeAttribute("hidden"); el.style.display = ""; }
+      else { el.hidden = true; el.style.display = "none"; }
+    });
+    if (!hasDelegate) {
+      // Dự phòng: tự cập nhật các phần còn lại theo cùng quy ước data-*.
       document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
         el.textContent = ((access.reason === "trial" || access.reason === "bundle_trial") && access.days_left != null)
           ? ("Còn " + access.days_left + " ngày dùng thử") : "";
@@ -730,8 +747,12 @@
       case "rpc_error":
         statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
         break;
+      case "login_required":
+        statusEl.innerHTML = "Hãy đăng nhập để dùng thử 3 ngày miễn phí.";
+        break;
       default:
-        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        // Không bao giờ hiện mã lỗi thô (vd login_required) cho người dùng.
+        statusEl.innerHTML = "Đang kiểm tra tài khoản…";
     }
   }
 
@@ -840,10 +861,16 @@
     return client.auth.getSession().then(function (r) {
       var session = r.data.session;
       if (!session) {
-        show("guest");
-        // Chưa đăng nhập = chưa có quyền: khóa công cụ NGAY, không được
-        // return sớm mà chưa gọi applyAccess (lỗi cũ: khách vẫn dùng được tool).
+        if (!authReady) {
+          // Supabase chưa khôi phục xong phiên đã lưu — getSession() trả null
+          // tạm thời. Giữ nguyên trạng thái chờ trung tính ("Đang kiểm tra
+          // quyền dùng…") và chờ onAuthStateChange chạy lại refresh().
+          return;
+        }
+        // Đã chắc chắn không có phiên đăng nhập: khóa công cụ + hiện paywall
+        // ngay, không return sớm (fail-closed như cũ).
         applyAccess({ access: false, reason: "login_required" });
+        show("guest");
         return;
       }
       show("user");
@@ -852,6 +879,16 @@
         statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
         say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
       });
+    }).catch(function (err) {
+      if (!authReady) {
+        // Lỗi tạm thời trước khi auth sẵn sàng: không khóa, chờ sự kiện auth
+        // hoặc mốc dự phòng 5 giây chạy lại refresh().
+        return;
+      }
+      // Không lấy được session: khóa lại cho chắc (fail-closed).
+      applyAccess({ access: false, reason: "login_required" });
+      show("guest");
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
     });
   }
   function handlePayReturn() {
@@ -884,9 +921,9 @@
     if (configMissing()) {
       say("Chưa cấu hình Supabase (thiếu SUPABASE_URL / SUPABASE_ANON_KEY). " +
           "Thay 2 giá trị ở đầu khối này rồi mới đăng nhập được.", "err");
-      show("guest");
-      // Chưa cấu hình thì cũng chưa có quyền: khóa công cụ lại.
+      // Chưa cấu hình = chưa đăng nhập được: khóa công cụ + hiện paywall.
       applyAccess({ access: false, reason: "login_required" });
+      show("guest");
       return;
     }
     loadSupabaseUmd().then(function () {
@@ -896,15 +933,21 @@
         return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
       }
     }).then(function () {
-      client.auth.onAuthStateChange(function () { refresh(); });
+      client.auth.onAuthStateChange(function () { authReady = true; refresh(); });
       handlePayReturn();
+      // Dự phòng: nếu sau 5 giây sự kiện auth vẫn chưa chạy (mạng chậm,
+      // Supabase kẹt), coi như đã sẵn sàng và kiểm tra lại để trang không
+      // kẹt mãi ở trạng thái chờ.
+      setTimeout(function () {
+        if (!authReady && client) { authReady = true; refresh(); }
+      }, 5000);
       return refresh();
     }).catch(function (err) {
       say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
           ". Kiểm tra mạng rồi tải lại trang.", "err");
-      show("guest");
-      // Không tải được Supabase thì chưa xác minh được quyền: khóa công cụ lại.
+      // Không tải được Supabase = chưa xác thực được: khóa công cụ + hiện paywall.
       applyAccess({ access: false, reason: "login_required" });
+      show("guest");
     });
   }
   if (document.readyState === "loading") {
@@ -984,12 +1027,26 @@
         .job .j-meta{ margin:0; color:var(--ink-2); font-size:14px; }
         .job .j-status{ margin:6px 0 0; font-size:14px; font-weight:700; color:var(--accent-deep); }
         .job .btn-sm{ flex:0 0 auto; }
+        .job .j-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+        .job .j-bundle{ margin:8px 0 0; font-size:14px; color:var(--ink-2); }
+        /* Ví dụ trước/sau (B4) + nút video mẫu (B1) + dòng nhắc dùng thử (B2) */
+        .sample-compare{ margin:0 0 20px; }
+        .sample-compare h4{ margin:0 0 10px; font-size:16px; font-weight:800; }
+        .sample-grid{ display:grid; gap:14px; }
+        @media (min-width:720px){ .sample-grid{ grid-template-columns:1fr 1fr; } }
+        .sample-grid figure{ margin:0; }
+        .sample-grid video{ width:100%; border-radius:12px; background:#000; display:block; }
+        .sample-grid figcaption{ margin-top:6px; font-size:14.5px; font-weight:700; color:var(--ink-2); }
+        .sample-try{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px; }
+        .sample-try .hint{ margin:0; }
+        .trial-note-submit{ margin:12px 0 0; font-size:14.5px; color:var(--ink-2); }
+        .trial-note-submit b{ color:var(--ink); }
       </style>
       <section class="sec" id="cong-cu">
         <h2>Công cụ — đưa video vào, nhận video lồng tiếng</h2>
         <p class="sec-sub">Tải video lên, chọn ngôn ngữ gốc và ngôn ngữ đích, rồi bấm lồng tiếng. Video tới 3 phút dùng Gói Chuẩn; video dài hơn cần Gói Pro.</p>
 
-        <div class="paywall" data-paywall>
+        <div class="paywall" data-paywall hidden style="display:none">
           <div class="lock" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
           </div>
@@ -1000,6 +1057,19 @@
 
         <div data-requires-access style="display:none">
           <div class="tool-card">
+            <div class="sample-compare">
+              <h4>Nghe thử trước khi gửi</h4>
+              <div class="sample-grid">
+                <figure>
+                  <video controls preload="metadata" playsinline src="assets/mau-10s.mp4"></video>
+                  <figcaption>Video gốc (tiếng Anh)</figcaption>
+                </figure>
+                <figure>
+                  <video controls preload="metadata" playsinline src="assets/mau-10s-long-tieng.mp4"></video>
+                  <figcaption>Sau khi lồng tiếng (tiếng Việt)</figcaption>
+                </figure>
+              </div>
+            </div>
             <label class="lbl" for="videoInput">1. Tải video lên</label>
             <p class="hint">Kéo-thả file video vào khung bên dưới hoặc bấm để chọn. Hỗ trợ MP4, MOV, WebM. Video chỉ được xử lý trên máy của bạn trong bản demo — không tải lên máy chủ.</p>
             <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Chọn video để lồng tiếng">
@@ -1010,6 +1080,11 @@
               <p><b>Kéo video vào đây</b> hoặc <u>bấm để chọn file</u></p>
               <p class="hint">MP4, MOV, WebM · Gói Chuẩn tới 3 phút · Gói Pro tới 15 phút</p>
             </div>
+            <div class="sample-try">
+              <button type="button" class="btn btn-soft btn-sm" id="sampleVideoBtn">Thử ngay với video mẫu 10 giây</button>
+              <span class="hint" id="sampleVideoHint">Chưa có sẵn video? Bấm nút này để chạy thử luôn bằng video mẫu có tiếng nói.</span>
+            </div>
+            <p class="err-msg" id="fileMsg" role="alert" hidden></p>
             <div class="video-meta" id="videoMeta" hidden>
               <video id="videoPreview" controls preload="metadata" playsinline></video>
               <div class="vm-info">
@@ -1095,6 +1170,7 @@
             <div class="run-row" id="submitRow" hidden>
               <button type="button" class="btn" id="submitJobBtn">Gửi video để lồng tiếng thật</button>
             </div>
+            <p class="trial-note-submit" id="trialNoteSubmit"><b>Dùng thử 3 ngày miễn phí</b> — không cần trả tiền trước. <span id="trialStateLine"></span></p>
 
             <hr class="tool-hr">
 
@@ -1540,7 +1616,7 @@
 
       var LS_KEY = "ccs_p9_script";
       var LS_JOBS = "ccs_p9_jobs";
-      var state = { lang: "vi", cues: [], running: false, dubRunning: false, video: null, videoFile: null, proAccess: false, proAccessInfo: null };
+      var state = { lang: "vi", cues: [], running: false, dubRunning: false, video: null, videoFile: null, videoHasAudio: null, proAccess: false, proAccessInfo: null };
 
       var $ = function (id) { return document.getElementById(id); };
       var scriptInput = $("scriptInput");
@@ -1823,6 +1899,105 @@
         videoError.hidden = false;
       }
       function clearVideoError() { videoError.textContent = ""; videoError.hidden = true; }
+      /* Thông báo ngay dưới ô chọn file (A1/A2): video không có tiếng nói,
+         chưa chọn file… — hiện ở fileMsg, sát ô chọn file. */
+      var fileMsg = $("fileMsg");
+      var NO_AUDIO_MSG = "Video này không có tiếng nói nên không lồng tiếng được — hãy chọn video có tiếng nói.";
+      function showFileMsg(msg) {
+        if (!fileMsg) return;
+        fileMsg.textContent = msg;
+        fileMsg.hidden = false;
+      }
+      function clearFileMsg() {
+        if (!fileMsg) return;
+        fileMsg.textContent = "";
+        fileMsg.hidden = true;
+      }
+      /* Kiểm tra rãnh âm thanh của video vừa nạp (A1): audioTracks (Safari/
+         Chrome), mozHasAudio (Firefox) cho kết quả chắc chắn; riêng
+         webkitAudioDecodedByteCount ở Chrome chỉ > 0 SAU khi đã giải mã
+         nên = 0 lúc loadedmetadata nghĩa là "chưa rõ", không kết luận
+         thiếu tiếng (tránh chặn nhầm mọi video trên Chrome). */
+      function detectHasAudio(v) {
+        try {
+          if (v.audioTracks && typeof v.audioTracks.length === "number") return v.audioTracks.length > 0;
+        } catch (e) {}
+        if (typeof v.mozHasAudio === "boolean") return v.mozHasAudio;
+        if (typeof v.webkitAudioDecodedByteCount === "number" && v.webkitAudioDecodedByteCount > 0) return true;
+        return null;
+      }
+
+      /* A1 (tiếp) — probe chắc chắn khi detectHasAudio trả "chưa rõ" (null).
+         Đây là trường hợp thường gặp trên Chrome: không có audioTracks /
+         mozHasAudio, và webkitAudioDecodedByteCount vẫn = 0 lúc
+         loadedmetadata dù video CÓ tiếng. Thứ tự probe:
+         1) video.captureStream(): có rãnh tiếng → true; có rãnh hình mà
+            0 rãnh tiếng → false (chắc chắn không có tiếng). Stream chưa có
+            rãnh nào (trình duyệt chưa dựng track vì video chưa phát) hoặc
+            captureStream không có/lỗi → chưa rõ, sang bước 2.
+         2) ffmpeg.wasm đã có sẵn trong trang (loadFfmpeg): chạy "-i" chỉ để
+            đọc thông tin stream — log có dòng "Stream …: Audio:" → true;
+            đọc được rãnh hình mà không thấy rãnh tiếng nào → false.
+         Chỉ khi CẢ hai probe đều không kết luận được mới giữ "chưa rõ"
+         (null) và không chặn — job thật phía sau vẫn báo lỗi thật nếu
+         video quả thật không có tiếng. */
+      function detectCaptureStreamAudio(v) {
+        try {
+          var getStream = v.captureStream || v.mozCaptureStream;
+          if (typeof getStream !== "function") return null;
+          var stream = getStream.call(v);
+          if (!stream || typeof stream.getAudioTracks !== "function") return null;
+          if (stream.getAudioTracks().length > 0) return true;
+          var videoCount = typeof stream.getVideoTracks === "function" ? stream.getVideoTracks().length : 0;
+          if (videoCount > 0) return false;
+          return null;
+        } catch (e) { return null; }
+      }
+      function probeHasAudioWithFfmpeg(file) {
+        if (!file) return Promise.resolve(null);
+        /* File quá lớn thì không nạp vào bộ nhớ wasm chỉ để probe — giữ
+           "chưa rõ" thay vì treo trình duyệt. */
+        if (file.size > 200 * 1024 * 1024) return Promise.resolve(null);
+        var logs = "";
+        return loadFfmpeg().then(function (WASM) {
+          var ffmpeg = new WASM.FFmpeg();
+          ffmpeg.on("log", function (e) { if (e && e.message) logs += e.message + "\n"; });
+          var m = /\.([a-z0-9]+)$/i.exec(file.name || "");
+          var inName = "probe." + (m ? m[1].toLowerCase() : "mp4");
+          return ffmpeg.load({ coreURL: FFMPEG_CORE_JS, wasmURL: FFMPEG_CORE_WASM }).then(function () {
+            return WASM.fetchFile(file);
+          }).then(function (data) {
+            return ffmpeg.writeFile(inName, data);
+          }).then(function () {
+            /* "-i" không kèm file ra: ffmpeg chỉ in thông tin stream vào
+               log rồi thoát — đúng thứ cần để tìm rãnh Audio. */
+            return ffmpeg.exec(["-i", inName]).catch(function () { return -1; });
+          }).then(function () {
+            try { ffmpeg.terminate(); } catch (e) {}
+            if (/Stream #\d+:\d+(\([^)]*\))?:\s*Audio:/.test(logs)) return true;
+            if (/Stream #\d+:\d+(\([^)]*\))?:\s*Video:/.test(logs)) return false;
+            return null;
+          });
+        }).catch(function () { return null; });
+      }
+      /* Áp kết quả probe cho ĐÚNG file đang chọn: khách đã chọn file khác
+         trong lúc probe chạy thì bỏ qua kết quả của file cũ. */
+      function applyAudioResult(file, hasAudio) {
+        if (!file || state.videoFile !== file) return;
+        state.videoHasAudio = hasAudio;
+        if (hasAudio === false) showFileMsg(NO_AUDIO_MSG);
+        else clearFileMsg();
+        evaluateGate();
+      }
+      function resolveAudioProbe() {
+        var file = state.videoFile;
+        if (!file) return;
+        var quick = detectCaptureStreamAudio(videoPreview);
+        if (quick !== null) { applyAudioResult(file, quick); return; }
+        probeHasAudioWithFfmpeg(file).then(function (res) {
+          if (res !== null) applyAudioResult(file, res);
+        });
+      }
 
       /* Huy hiệu thời lượng video: đồng bộ với quyền Pro hiện tại (state.proAccess).
          Khi đã có quyền Pro, video 3:00–15:00 hiện "Gói Pro" (không còn "Cần Gói Pro"
@@ -1869,6 +2044,7 @@
         if (!state.video) { dubHint.textContent = "Hãy tải video lên trước để bắt đầu."; return; }
         var d = state.video.durationSec;
         var dur = fmtMMSS(d);
+        var noAudio = state.videoHasAudio === false;
         updateDurationBadge();
         if (d > MAX_PRO_SEC) {
           proUpsellTitle.textContent = "Video dài hơn 15 phút — hiện chưa hỗ trợ";
@@ -1883,8 +2059,8 @@
           if (state.proAccess) {
             gateOk.innerHTML = "✓ Video dài <b>" + dur + "</b> — Gói Pro của bạn xử lý được video tới 15 phút, ưu tiên làm trước.";
             gateOk.hidden = false;
-            dubBtn.disabled = langBad;
-            dubHint.textContent = langBad ? "" : "Sẵn sàng — bấm “Bắt đầu lồng tiếng”.";
+            dubBtn.disabled = langBad || noAudio;
+            dubHint.textContent = langBad ? "" : (noAudio ? NO_AUDIO_MSG : "Sẵn sàng — bấm “Bắt đầu lồng tiếng”.");
           } else {
             proUpsellTitle.textContent = "Video dài " + dur + " — vượt 3 phút, cần Gói Pro";
             proUpsellText.textContent = "Video của bạn dài " + dur + ", vượt giới hạn 3 phút của Gói Chuẩn 49.000đ/tháng. Nâng cấp lên Gói Pro để lồng tiếng video này (tới 15 phút, ưu tiên xử lý).";
@@ -1895,8 +2071,8 @@
         }
         gateOk.innerHTML = "✓ Video dài <b>" + dur + "</b> — trong giới hạn 3 phút của Gói Chuẩn 49.000đ/tháng.";
         gateOk.hidden = false;
-        dubBtn.disabled = langBad;
-        dubHint.textContent = langBad ? "" : "Sẵn sàng — bấm “Bắt đầu lồng tiếng”.";
+        dubBtn.disabled = langBad || noAudio;
+        dubHint.textContent = langBad ? "" : (noAudio ? NO_AUDIO_MSG : "Sẵn sàng — bấm “Bắt đầu lồng tiếng”.");
       }
 
       function resetDubUI() {
@@ -1915,6 +2091,8 @@
       function handleVideoFile(file) {
         if (!file) return;
         clearVideoError();
+        clearFileMsg();
+        state.videoHasAudio = null;
         resetDubUI();
         if (!file.type || file.type.indexOf("video/") !== 0) {
           showVideoError("File này không phải video — hãy chọn file MP4, MOV hoặc WebM.");
@@ -1947,8 +2125,19 @@
         }
         state.video = { name: videoName.textContent, size: videoSize.textContent, durationSec: d };
         videoDuration.textContent = fmtMMSS(d);
+        /* A1: kiểm tra rãnh âm thanh NGAY khi chọn file — video không có
+           tiếng nói thì báo rõ ngay dưới ô chọn file và chặn gửi. */
+        state.videoHasAudio = detectHasAudio(videoPreview);
+        if (state.videoHasAudio === false) showFileMsg(NO_AUDIO_MSG);
+        else if (state.videoHasAudio === true) clearFileMsg();
         updateDurationBadge();
         evaluateGate();
+        /* A1: trên Chrome bước trên thường trả "chưa rõ" (null) — probe
+           chắc chắn ngay tại lúc chọn file (captureStream trước, rồi
+           ffmpeg.wasm) để video không tiếng hiện câu báo + bị chặn ngay,
+           không phải chờ tới lúc bấm gửi. Probe không kết luận được thì
+           giữ nguyên "chưa rõ" và không chặn. */
+        if (state.videoHasAudio === null) resolveAudioProbe();
         /* Video mới nạp xong: nếu chưa có quyền Pro thì kiểm tra lại — phiên
            đăng nhập có thể chỉ sẵn sàng sau khi trang tải, và cửa ải video dài
            phải phản ánh đúng quyền Pro hiện tại. */
@@ -1956,10 +2145,25 @@
       });
       videoPreview.addEventListener("error", function () {
         if (!videoPreview.src) return;
+        /* C1: trình phát lỗi (file hỏng / định dạng không mở được) thì ẨN
+           hẳn trình phát thay vì để khung đen 0:00 vô hiệu, và báo rõ. */
         state.video = null;
-        showVideoError("Không mở được file video này — hãy thử file khác (khuyến nghị MP4 chuẩn H.264).");
+        state.videoFile = null;
+        state.videoHasAudio = null;
+        videoMeta.hidden = true;
+        showVideoError("Không xem trước được video này — hãy chọn lại file.");
         evaluateGate();
       });
+      /* C1: khi mở trang KHÔNG khôi phục trạng thái xem trước cũ/hỏng từ
+         phiên trước — xóa sạch src, chỉ hiện trình phát khi có file hợp lệ
+         vừa được chọn trong phiên này. */
+      (function clearStalePreview() {
+        try { videoPreview.removeAttribute("src"); videoPreview.load(); } catch (e) {}
+        videoMeta.hidden = true;
+        state.video = null;
+        state.videoFile = null;
+        state.videoHasAudio = null;
+      })();
 
       dropZone.addEventListener("click", function () { videoInput.click(); });
       dropZone.addEventListener("keydown", function (ev) {
@@ -1982,7 +2186,9 @@
         videoMeta.hidden = true;
         state.video = null;
         state.videoFile = null;
+        state.videoHasAudio = null;
         clearVideoError();
+        clearFileMsg();
         resetDubUI();
         evaluateGate();
       });
@@ -1997,6 +2203,7 @@
       ];
       dubBtn.addEventListener("click", function () {
         if (state.dubRunning || !state.video) return;
+        if (state.videoHasAudio === false) { showFileMsg(NO_AUDIO_MSG); evaluateGate(); return; }
         if (srcLang.value !== "auto" && srcLang.value === dstLang.value) { evaluateGate(); return; }
         if (state.video.durationSec > MAX_STD_SEC && !state.proAccess) { evaluateGate(); return; }
         if (state.video.durationSec > MAX_PRO_SEC) { evaluateGate(); return; }
@@ -2086,7 +2293,38 @@
         catch (e) { return []; }
       }
       function saveFailedDrafts(list) {
-        try { localStorage.setItem(LS_FAILED_DRAFTS, JSON.stringify(list)); } catch (e) {}
+        try { localStorage.setItem(LS_FAILED_DRAFTS, JSON.stringify(dedupeDrafts(list))); } catch (e) {}
+      }
+      /* Chống trùng bản nháp (C2): khóa trùng = tên file + ngôn ngữ nguồn/
+         đích + gói + thời lượng. Danh sách nháp luôn mới nhất ở đầu nên
+         giữ bản đầu tiên gặp (mới nhất), bỏ các bản trùng cũ hơn. */
+      function draftKey(d) {
+        return [d.fileName || "", d.srcLang || "", d.dstLang || "", d.product || d.plan || "",
+          d.durationSec != null ? d.durationSec : ""].join("|");
+      }
+      function dedupeDrafts(list) {
+        var seen = {}, out = [];
+        (list || []).forEach(function (d) {
+          var k = draftKey(d);
+          if (seen[k]) return;
+          seen[k] = 1;
+          out.push(d);
+        });
+        return out;
+      }
+      /* Bản nháp cũ (LS_JOBS) cũng gộp trùng khi hiển thị: giữ bản có
+         createdAt mới nhất cho mỗi khóa trùng. */
+      function dedupeLegacy(list) {
+        var byKey = {};
+        (list || []).forEach(function (j) {
+          var k = [j.fileName || "", j.srcLang || "", j.dstLang || "", j.plan || "", j.durationSec || ""].join("|");
+          var cur = byKey[k];
+          if (!cur || String(j.createdAt || "") > String(cur.createdAt || "")) byKey[k] = j;
+        });
+        return (list || []).filter(function (j) {
+          var k = [j.fileName || "", j.srcLang || "", j.dstLang || "", j.plan || "", j.durationSec || ""].join("|");
+          return byKey[k] === j;
+        });
       }
 
       /* Gộp thông tin lỗi THẬT từ Supabase (message + code + details + hint)
@@ -2258,17 +2496,37 @@
       }
 
       /* ---------- Danh sách "Video của tôi" ---------- */
+      /* Dịch error_message THẬT của job failed sang tiếng Việt dễ hiểu (A3).
+         Mã lạ thì hiện nguyên văn để khách/shop tra được đúng lỗi. */
+      function friendlyJobError(job) {
+        var raw = job && job.error_message != null ? String(job.error_message) : "";
+        var s = raw.trim();
+        if (!s) return "Xử lý không thành công — hãy bấm “Gửi lại” để thử lại, hoặc liên hệ hỗ trợ qua Zalo.";
+        if (/no_audio_stream/i.test(s) || /does not contain any stream/i.test(s)) {
+          return "Video không có rãnh âm thanh (không có tiếng nói) nên không lồng tiếng được.";
+        }
+        if (/duration_exceeded/i.test(s)) {
+          return "Video vượt giới hạn thời lượng của gói — hãy cắt ngắn video hoặc nâng cấp gói rồi gửi lại.";
+        }
+        if (/no_speech_detected/i.test(s)) {
+          return "Không nghe được lời thoại nào trong video nên không lồng tiếng được — hãy chọn video có tiếng nói rõ ràng.";
+        }
+        if (/empty_script/i.test(s)) {
+          return "Thiếu kịch bản/lời thoại nên chưa lồng tiếng được — hãy gửi lại video có tiếng nói.";
+        }
+        return s;
+      }
       function jobStatusText(job) {
         if (job.status === "queued") return "Đang chờ xử lý — video sẽ được lồng tiếng trong vài phút.";
         if (job.status === "processing") return "Đang lồng tiếng… — vui lòng chờ, trang tự cập nhật trạng thái.";
         if (job.status === "done") return "Đã xong ✓ — bấm nút tải bên dưới để nhận video đã lồng tiếng.";
-        if (job.status === "failed") return "Video của bạn đang được xử lý thủ công, shop sẽ gửi lại qua Zalo/SĐT bạn để lại.";
+        if (job.status === "failed") return "Chưa lồng tiếng được: " + friendlyJobError(job);
         return "Trạng thái: " + job.status;
       }
       function renderJobs() {
-        var legacy = loadJobs();
+        var legacy = dedupeLegacy(loadJobs());
         var meta = loadJobMeta();
-        var drafts = loadFailedDrafts();
+        var drafts = dedupeDrafts(loadFailedDrafts());
         /* CHỈ job có THẬT trong bảng dubbing_jobs (serverJobs — đọc từ
            server hoặc vừa insert + đọc-xác-nhận xong) mới hiện như job đã
            gửi. localStorage meta CHỈ dùng để gắn tên file cho job server,
@@ -2306,7 +2564,10 @@
           var info = document.createElement("div");
           var nm = document.createElement("p");
           nm.className = "j-name";
-          nm.textContent = (meta[job.id] && meta[job.id].fileName) || "Video đã gửi";
+          /* C3: ưu tiên tên file gốc lưu trong payload.file_name, rồi tới
+             tên đã lưu trong localStorage, cuối cùng mới "Video đã gửi". */
+          nm.textContent = (job.payload && job.payload.file_name) ||
+            (meta[job.id] && meta[job.id].fileName) || "Video đã gửi";
           var mt = document.createElement("p");
           mt.className = "j-meta";
           mt.textContent = fmtMMSS(job.duration_seconds || 0) + " · " +
@@ -2327,6 +2588,54 @@
             dl.rel = "noopener";
             dl.textContent = "Tải video đã lồng tiếng";
             div.appendChild(dl);
+            /* B3: job xong thì gợi ý bước tiếp theo ngay tại mục job —
+               dùng thử Pro (luồng startProTrial có sẵn) + nút Mua gói
+               cuộn tới mục giá, kèm gợi ý Gói Bundle. */
+            var acts = document.createElement("div");
+            acts.className = "j-actions";
+            var proBtn = document.createElement("button");
+            proBtn.type = "button";
+            proBtn.className = "btn btn-sm";
+            proBtn.textContent = "Dùng thử Gói Pro 3 ngày";
+            proBtn.addEventListener("click", function () { startProTrial(proBtn); });
+            var buyBtn = document.createElement("button");
+            buyBtn.type = "button";
+            buyBtn.className = "btn btn-ghost btn-sm";
+            buyBtn.textContent = "Mua gói";
+            buyBtn.addEventListener("click", function () {
+              var gia = document.getElementById("gia");
+              if (gia) gia.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+            });
+            acts.appendChild(proBtn);
+            acts.appendChild(buyBtn);
+            info.appendChild(acts);
+            var bundleLine = document.createElement("p");
+            bundleLine.className = "j-bundle";
+            bundleLine.appendChild(document.createTextNode("Dùng nhiều công cụ? Gói Bundle 149.000đ/tháng mở cả 10 công cụ. "));
+            var bundleLink = document.createElement("a");
+            bundleLink.href = "#gia";
+            bundleLink.textContent = "Xem gói Bundle ở mục giá";
+            bundleLine.appendChild(bundleLink);
+            info.appendChild(bundleLine);
+          }
+          if (job.status === "failed") {
+            /* A3 + C2: job lỗi có nút Gửi lại (tạo job MỚI — RLS không cho
+               update ngược về queued) và nút Xóa job của chính mình. */
+            var fActs = document.createElement("div");
+            fActs.className = "j-actions";
+            var retryBtn = document.createElement("button");
+            retryBtn.type = "button";
+            retryBtn.className = "btn btn-sm";
+            retryBtn.textContent = "Gửi lại";
+            retryBtn.addEventListener("click", function () { retryJob(job, retryBtn, st); });
+            var delBtn = document.createElement("button");
+            delBtn.type = "button";
+            delBtn.className = "btn btn-soft btn-sm";
+            delBtn.textContent = "Xóa";
+            delBtn.addEventListener("click", function () { deleteServerJob(job, delBtn); });
+            fActs.appendChild(retryBtn);
+            fActs.appendChild(delBtn);
+            info.appendChild(fActs);
           }
           jobList.appendChild(div);
         });
@@ -2358,6 +2667,83 @@
           div.appendChild(info);
           div.appendChild(del);
           jobList.appendChild(div);
+        });
+      }
+
+      /* ---------- Gửi lại job failed (A3): TẠO JOB MỚI ----------
+         RLS (policy dub_jobs_cancel_own) chỉ cho user update job của mình
+         thành status='failed', KHÔNG cho update ngược về 'queued' — nên
+         Gửi lại = insert dòng MỚI với id mới, copy nguyên thông số job cũ.
+         Nếu job cũ chia chunk, payload của job mới thêm source_base trỏ
+         tới thư mục chứa các chunk cũ ("<user_id>/<job_id cũ>") để worker
+         ghép lại từ file đã tải lên. Job cũ giữ nguyên, không xóa. */
+      function retryJob(job, btn, stEl) {
+        if (btn.disabled) return;
+        var origText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Đang gửi lại…";
+        safeGetSession().then(function (session) {
+          if (!session || !session.user) throw new Error("login_required");
+          var uid = session.user.id;
+          return getJobClient().then(function (client) {
+            var newId = (window.crypto && crypto.randomUUID)
+              ? crypto.randomUUID()
+              : ("job-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+            var payload = null;
+            if (job.payload) {
+              try { payload = JSON.parse(JSON.stringify(job.payload)); }
+              catch (e) { payload = job.payload; }
+            }
+            if (payload && payload.chunks && payload.chunks.length) {
+              payload.source_base = (job.user_id || uid) + "/" + job.id;
+            }
+            return client.from("dubbing_jobs").insert({
+              id: newId, user_id: job.user_id || uid, job_type: "video", product: job.product,
+              source_lang: job.source_lang, target_lang: job.target_lang,
+              duration_seconds: job.duration_seconds, source_path: job.source_path,
+              payload: payload, status: "queued"
+            }).select("id").single().then(function (res) {
+              if (res.error) throw res.error;
+              if (!res.data || res.data.id !== newId) throw new Error("insert không trả về đúng job vừa tạo");
+              return { newId: newId, payload: payload };
+            });
+          });
+        }).then(function (out) {
+          serverJobs.unshift({
+            id: out.newId, user_id: job.user_id, job_type: "video", product: job.product,
+            source_lang: job.source_lang, target_lang: job.target_lang,
+            duration_seconds: job.duration_seconds, source_path: job.source_path,
+            payload: out.payload, result_path: null, status: "queued",
+            error_message: null, created_at: new Date().toISOString()
+          });
+          btn.textContent = "Đã gửi lại ✓";
+          renderJobs();
+          startPolling();
+        }).catch(function (err) {
+          btn.disabled = false;
+          btn.textContent = origText;
+          if (stEl) {
+            stEl.textContent = (err && err.message === "login_required")
+              ? "Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang."
+              : "Gửi lại chưa thành công: " + errText(err);
+          }
+        });
+      }
+
+      /* ---------- Xóa job failed của chính mình (C2) ---------- */
+      function deleteServerJob(job, btn) {
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btn.textContent = "Đang xóa…";
+        getJobClient().then(function (client) {
+          return client.from("dubbing_jobs").delete().eq("id", job.id);
+        }).then(function (res) {
+          if (res.error) throw res.error;
+          serverJobs = serverJobs.filter(function (j) { return j.id !== job.id; });
+          renderJobs();
+        }).catch(function () {
+          btn.disabled = false;
+          btn.textContent = "Xóa";
         });
       }
 
@@ -2430,9 +2816,25 @@
          (đăng nhập / tải lên / insert / xác nhận) thì hiện nguyên văn lỗi
          ở bước đó + lưu bản nháp "chưa gửi được" — tuyệt đối không báo
          đã gửi khi bảng chưa có job. */
-      $("submitJobBtn").addEventListener("click", function () {
+      function submitCurrentVideo() {
         if (submittingJob) return;
-        if (!state.video || !state.videoFile) return;
+        if (!state.video || !state.videoFile) {
+          /* A2: bấm gửi khi CHƯA chọn file — báo rõ thay vì im lặng return
+             (trông như trang lỗi). */
+          dubDone.textContent = "Chưa chọn video — hãy chọn file video trước.";
+          dubDone.hidden = false;
+          showFileMsg("Chưa chọn video — hãy chọn file video trước.");
+          var dz = $("dropZone");
+          if (dz) dz.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+          return;
+        }
+        if (state.videoHasAudio === false) {
+          /* A1: video không có rãnh âm thanh thì chặn gửi hẳn. */
+          showFileMsg(NO_AUDIO_MSG);
+          dubDone.textContent = NO_AUDIO_MSG;
+          dubDone.hidden = false;
+          return;
+        }
         if (srcLang.value !== "auto" && srcLang.value === dstLang.value) { evaluateGate(); return; }
         var dur = state.video.durationSec;
         if (dur > MAX_PRO_SEC) { evaluateGate(); return; }
@@ -2453,8 +2855,9 @@
           var dst = dstLang.value;
           var durationSec = Math.round(dur);
           var fileName = state.video.name;
-          attempt = { jobId: jobId, fileName: fileName };
+          attempt = { jobId: jobId, fileName: fileName, srcLang: src, dstLang: dst, product: product, durationSec: durationSec };
           var uploaded = null;
+          var jobPayload = null;
           return getJobClient().then(function (client) {
             /* Bước 1: nén (Chuẩn) / chia chunk (Pro) + upload Storage. */
             return Promise.resolve().then(function () {
@@ -2471,10 +2874,14 @@
             dubDone.textContent = "Đang tạo yêu cầu xử lý…";
             return getJobClient();
           }).then(function (client) {
+            /* C3: ghi tên file gốc vào payload.file_name (worker bỏ qua
+               trường này) để mục "Video của tôi" hiện đúng tên file. */
+            jobPayload = uploaded.payload ? Object.assign({}, uploaded.payload) : {};
+            jobPayload.file_name = fileName;
             return Promise.resolve(client.from("dubbing_jobs").insert({
               id: jobId, user_id: uid, job_type: "video", product: product,
               source_lang: src, target_lang: dst, duration_seconds: durationSec,
-              source_path: uploaded.sourcePath, payload: uploaded.payload, status: "queued"
+              source_path: uploaded.sourcePath, payload: jobPayload, status: "queued"
             }).select("id").single()).then(function (res) {
               if (res.error) throw res.error;
               if (!res.data || res.data.id !== jobId) throw new Error("insert không trả về đúng job vừa tạo");
@@ -2500,7 +2907,7 @@
             serverJobs.unshift({
               id: jobId, product: product, source_lang: src, target_lang: dst,
               duration_seconds: durationSec, source_path: uploaded.sourcePath,
-              result_path: null, status: "queued", created_at: new Date().toISOString()
+              payload: jobPayload, result_path: null, status: "queued", created_at: new Date().toISOString()
             });
             serverJobsLoaded = true;
             renderJobs();
@@ -2520,7 +2927,7 @@
             dubDone.textContent = "Gửi chưa thành công — " + reason + ". Video CHƯA được ghi nhận trên hệ thống nên không mất lượt; hãy thử gửi lại.";
             if (attempt) {
               var drafts = loadFailedDrafts();
-              drafts.unshift({ id: attempt.jobId, fileName: attempt.fileName, reason: reason.slice(0, 200), at: new Date().toISOString() });
+              drafts.unshift({ id: attempt.jobId, fileName: attempt.fileName, srcLang: attempt.srcLang, dstLang: attempt.dstLang, product: attempt.product, durationSec: attempt.durationSec, reason: reason.slice(0, 200), at: new Date().toISOString() });
               saveFailedDrafts(drafts.slice(0, 10));
               renderJobs();
             }
@@ -2530,7 +2937,8 @@
           submittingJob = false;
           btn.disabled = false;
         });
-      });
+      }
+      $("submitJobBtn").addEventListener("click", submitCurrentVideo);
       loadServerJobs();
 
       /* ================= GÓI PRO (p9pro) — DÙNG THỬ / GIA HẠN ================= */
@@ -2614,6 +3022,7 @@
           if (res.access) {
             showProMsg("Đã kích hoạt dùng thử Gói Pro 3 ngày.", "ok");
             refreshProAccess();
+            refreshTrialInfo();
             if (opts.onSuccess) opts.onSuccess();
           } else if (res.needs_verification) {
             showProMsg("Tài khoản cần xác minh thêm trước khi dùng thử Pro. Vui lòng liên hệ hỗ trợ.", "err");
@@ -2684,6 +3093,70 @@
         });
       });
 
+      /* ---------- B1: Thử ngay với video mẫu 10 giây ----------
+         Bấm là chạy luôn luồng gửi THẬT hiện có (submitCurrentVideo: kiểm
+         tra đăng nhập + quyền p9, nén ffmpeg.wasm, upload, insert job,
+         poll) với file mẫu có sẵn trên trang — khách không cần tự quay
+         hay chọn file. */
+      var sampleVideoBtn = $("sampleVideoBtn");
+      var sampleVideoHint = $("sampleVideoHint");
+      if (sampleVideoBtn) sampleVideoBtn.addEventListener("click", function () {
+        if (submittingJob || state.dubRunning) return;
+        sampleVideoBtn.disabled = true;
+        if (sampleVideoHint) sampleVideoHint.textContent = "Đang dùng video mẫu 10 giây…";
+        dubDone.textContent = "Đang dùng video mẫu 10 giây…";
+        dubDone.hidden = false;
+        fetch("assets/mau-10s.mp4").then(function (r) {
+          if (!r.ok) throw new Error("sample_fetch_failed");
+          return r.blob();
+        }).then(function (blob) {
+          var file = new File([blob], "video-mau-10-giay.mp4", { type: "video/mp4" });
+          handleVideoFile(file);
+          /* Chờ loadedmetadata điền state.video rồi mới gửi thật. */
+          var tries = 0;
+          var timer = setInterval(function () {
+            tries++;
+            if (state.video) {
+              clearInterval(timer);
+              sampleVideoBtn.disabled = false;
+              if (sampleVideoHint) sampleVideoHint.textContent = "Đang dùng video mẫu 10 giây…";
+              submitCurrentVideo();
+            } else if (tries > 66) {
+              clearInterval(timer);
+              sampleVideoBtn.disabled = false;
+              dubDone.textContent = "Không đọc được video mẫu — hãy thử chọn file video của bạn.";
+              dubDone.hidden = false;
+            }
+          }, 150);
+        }).catch(function () {
+          sampleVideoBtn.disabled = false;
+          dubDone.textContent = "Không tải được video mẫu — hãy thử chọn file video của bạn.";
+          dubDone.hidden = false;
+        });
+      });
+
+      /* ---------- B2: trạng thái dùng thử/còn hạn THẬT cạnh nút gửi ----------
+         Chỉ hiện những gì get_access trả về qua checkAccess("p9"): đang
+         trial thì "còn X ngày", đã trả tiền thì "còn đến ngày …". Không
+         lấy được thì để trống — phía trước đã có câu dùng thử 3 ngày. */
+      var trialStateLine = $("trialStateLine");
+      function refreshTrialInfo() {
+        if (!trialStateLine) return;
+        if (!window.CongCuShop || !window.CongCuShop.checkAccess) return;
+        Promise.resolve().then(function () {
+          return window.CongCuShop.checkAccess("p9");
+        }).then(function (a) {
+          if (!a) return;
+          if ((a.reason === "trial" || a.reason === "bundle_trial") && a.days_left != null) {
+            trialStateLine.textContent = "Bạn đang dùng thử — còn " + a.days_left + " ngày.";
+          } else if ((a.reason === "paid" || a.reason === "bundle_active") && a.paid_until) {
+            trialStateLine.textContent = "Gói của bạn còn đến ngày " + fmtDateShort(a.paid_until) + ".";
+          } else {
+            trialStateLine.textContent = "";
+          }
+        }).catch(function () { /* không lấy được trạng thái thì giữ nguyên câu dùng thử 3 ngày */ });
+      }
+
       /* Khởi tạo: đồng bộ ngôn ngữ đích, cửa ải, quyền Pro (nếu đã có).
          refreshProAccess() được gọi lại sau 2 giây và 5 giây vì ở lần chạy đầu,
          checkAccess.js có thể chưa khởi tạo xong và phiên đăng nhập chưa sẵn
@@ -2692,8 +3165,11 @@
       syncTarget();
       evaluateGate();
       refreshProAccess();
+      refreshTrialInfo();
       setTimeout(refreshProAccess, 2000);
       setTimeout(refreshProAccess, 5000);
+      setTimeout(refreshTrialInfo, 2500);
+      setTimeout(refreshTrialInfo, 5500);
 
       /* ---------- Nút hero "Dùng thử 3 ngày" ---------- */
       var heroBtn = $("heroTrialBtn");
