@@ -826,7 +826,6 @@ footer{padding:34px 0 50px;color:var(--muted);font-size:.85rem}
         <div><label for="t6-item">Hạng mục</label><input id="t6-item" placeholder="VD: Sơn lại phòng khách" autocomplete="off"></div>
         <div><label for="t6-qty">Số lượng</label><input id="t6-qty" type="number" value="1" min="0" step="0.5" inputmode="numeric"></div>
         <div><label for="t6-unit">Đơn giá (đ)</label><input id="t6-unit" type="number" min="0" placeholder="2500000" inputmode="numeric"></div>
-        <div><label for="t6-disc">Chiết khấu (%)</label><input id="t6-disc" type="number" value="0" min="0" max="100" step="0.5"></div>
         <div><label for="t6-vat">Thuế VAT (%)</label><input id="t6-vat" type="number" value="8" min="0" step="0.5"></div>
         <div><label for="t6-status">Trạng thái báo giá</label><select id="t6-status"><option>Nháp</option><option>Đã gửi</option><option>Đã chấp nhận</option><option>Từ chối</option></select></div>
       </div>
@@ -878,6 +877,7 @@ footer{padding:34px 0 50px;color:var(--muted);font-size:.85rem}
       </div>
       <div class="btnrow"><button class="btn primary" id="t8-run" type="button">Phân tích khoảng trống</button><a class="btn" href="nghien-cuu-doi-thu-canh-tranh/">Mở trang riêng →</a></div>
       <div class="result" id="t8-gap" style="margin-top:12px" aria-live="polite"></div>
+      <div id="t8-history" style="margin-top:12px"></div>
     </div>
     <div>
       <div class="tbl-wrap"><table id="t8-table"></table></div>
@@ -928,7 +928,7 @@ Cảm ơn các bạn đã xem video, hẹn gặp lại ở video sau</textarea>
         <div><label for="t10-title">Tên tập podcast</label><input id="t10-title" value="Vì sao shop tính sai lãi?" autocomplete="off"></div>
         <div><label for="t10-rate">Tốc độ đọc thử</label><select id="t10-rate"><option value="0.95">Chậm rãi</option><option value="1.05" selected>Tự nhiên</option><option value="1.2">Nhanh</option></select></div>
       </div>
-      <div class="btnrow"><button class="btn primary" id="t10-gen" type="button">Chuyển thành kịch bản 2 giọng</button><button class="btn warm" id="t10-play" type="button">▶ Đọc thử</button><button class="btn" id="t10-stop" type="button">■ Dừng đọc</button><button class="btn" id="t10-copy" type="button">Copy kịch bản</button><a class="btn" href="podcast-ai/">Mở trang riêng →</a></div>
+      <div class="btnrow"><button class="btn primary" id="t10-gen" type="button">Chuyển thành kịch bản 2 giọng</button><button class="btn warm" id="t10-play" type="button">▶ Đọc thử</button><button class="btn" id="t10-stop" type="button">■ Dừng đọc</button><button class="btn" id="t10-copy" type="button">Copy kịch bản</button><button class="btn" id="t10-download" type="button">Tải .txt</button><a class="btn" href="podcast-ai/">Mở trang riêng →</a></div>
       <p class="status-msg" id="t10-status" aria-live="polite"></p>
     </div>
     <div><div class="output-box" id="t10-out">Kịch bản hội thoại sẽ hiện ở đây sau khi bấm “Chuyển thành kịch bản 2 giọng”.</div></div>
@@ -1018,6 +1018,137 @@ Cảm ơn các bạn đã xem video, hẹn gặp lại ở video sau</textarea>
   </div>
   <p class="warn">Cam kết trung thực: trang này là <strong>bản dùng thử chạy ngay trên trình duyệt</strong> của cả 10 công cụ. Để thu tiền thật cần hoàn thiện phần máy chủ (tài khoản, thanh toán qua cổng được cấp phép, bảo mật dữ liệu theo người dùng) — đó là việc của giai đoạn nền tảng ở tuần 1–2, không thể bỏ qua bằng cách chỉ khóa giao diện. Mục tiêu $1.000/tháng là bài toán đã tính ở trên, không phải cam kết doanh thu.</p>
 </section>
+
+<!-- ============ HỖ TRỢ KHÁCH HÀNG (ngoài khu vực khóa đăng nhập) ============ -->
+<section id="support">
+  <style>
+    #support{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin:6px 0 22px;scroll-margin-top:76px}
+    #support h2{margin:0 0 6px}
+    #support h2::after{content:"";display:block;width:48px;height:4px;border-radius:99px;background:var(--accent);margin-top:10px}
+    #support .sp-lead{color:var(--muted);margin:0 0 16px;max-width:640px}
+    #support .sp-zalo-num{margin:8px 0 0;font-size:.92rem;color:var(--muted)}
+    #support .sp-zalo-num b{color:var(--ink);font-size:1rem}
+    #support h3{margin:22px 0 12px;font-size:1.05rem}
+    #support .sp-field{margin-bottom:12px}
+    #support textarea{min-height:96px}
+    #support .sp-submit{margin-top:4px}
+    @media(max-width:560px){#support .btn{width:100%}}
+  </style>
+  <h2>Cần hỗ trợ?</h2>
+  <p class="sp-lead">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+  <a class="btn primary" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+  <p class="sp-zalo-num">Số Zalo của shop: <b>0327047928</b> — nếu nút không mở được, hãy tìm số này trên Zalo để nhắn.</p>
+
+  <h3>Gửi yêu cầu hỗ trợ</h3>
+  <form id="sp-form">
+    <div class="fgrid">
+      <div class="sp-field">
+        <label for="sp-name">Họ tên (không bắt buộc)</label>
+        <input id="sp-name" type="text" autocomplete="name" placeholder="VD: Chị Lan">
+      </div>
+      <div class="sp-field">
+        <label for="sp-contact">Số điện thoại hoặc email *</label>
+        <input id="sp-contact" type="text" required autocomplete="tel" placeholder="09xx xxx xxx hoặc email">
+      </div>
+    </div>
+    <div class="sp-field">
+      <label for="sp-issue">Vấn đề</label>
+      <select id="sp-issue">
+        <option value="Lỗi trang">Lỗi trang</option>
+        <option value="Hết dùng thử">Hết dùng thử</option>
+        <option value="Thanh toán">Thanh toán</option>
+        <option value="Gói Pro">Gói Pro</option>
+        <option value="Khác">Khác</option>
+      </select>
+    </div>
+    <div class="sp-field">
+      <label for="sp-message">Mô tả ngắn *</label>
+      <textarea id="sp-message" required placeholder="Bạn đang gặp vấn đề gì? Ghi ngắn gọn giúp shop nhé."></textarea>
+    </div>
+    <button class="btn primary sp-submit" id="sp-submit" type="submit">Gửi yêu cầu</button>
+    <p class="status-msg" id="sp-msg" role="status" aria-live="polite"></p>
+  </form>
+</section>
+<script id="sp-script">
+(function () {
+  "use strict";
+  var form = document.getElementById("sp-form");
+  if (!form) return;
+  var msgEl = document.getElementById("sp-msg");
+  var submitBtn = document.getElementById("sp-submit");
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+  var spClient = null;
+
+  function say(text, ok) {
+    msgEl.textContent = text;
+    msgEl.className = "status-msg " + (ok ? "ok" : "err");
+  }
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+  // Đọc đúng 2 biến SUPABASE_URL / SUPABASE_ANON_KEY đã có sẵn trong khối
+  // đăng nhập của trang (client `client` của khối đó nằm trong closure nên
+  // không dùng chung trực tiếp được) — không hardcode URL/key mới nào ở đây.
+  function readPageConfig() {
+    var scripts = document.querySelectorAll("script");
+    for (var i = 0; i < scripts.length; i++) {
+      if (scripts[i].id === "sp-script") continue;
+      var t = scripts[i].textContent || "";
+      if (t.indexOf("SUPABASE_URL") === -1 || t.indexOf("SUPABASE_ANON_KEY") === -1) continue;
+      var mUrl = t.match(/SUPABASE_URL\s*=\s*"([^"]+)"/);
+      var mKey = t.match(/SUPABASE_ANON_KEY\s*=\s*"([^"]+)"/);
+      if (mUrl && mKey) return { url: mUrl[1], key: mKey[1] };
+    }
+    return null;
+  }
+  function getClient() {
+    if (spClient) return Promise.resolve(spClient);
+    return loadSupabaseUmd().then(function () {
+      var cfg = readPageConfig();
+      if (!cfg) throw new Error("missing_supabase_config");
+      spClient = window.supabase.createClient(cfg.url, cfg.key);
+      return spClient;
+    });
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var name = document.getElementById("sp-name").value.trim();
+    var contact = document.getElementById("sp-contact").value.trim();
+    var issue = document.getElementById("sp-issue").value;
+    var message = document.getElementById("sp-message").value.trim();
+    if (!contact || !message) return; // 2 ô bắt buộc — trình duyệt đã báo khi trống
+    submitBtn.disabled = true;
+    msgEl.textContent = "Đang gửi…";
+    msgEl.className = "status-msg";
+    getClient().then(function (c) {
+      return c.from("support_tickets").insert([{
+        name: name,
+        contact: contact,
+        issue_type: issue,
+        message: message,
+        page: "6-micro-saas-viet-nam",
+        status: "new"
+      }]);
+    }).then(function (res) {
+      if (res && res.error) throw res.error;
+      say("Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.", true);
+      form.reset();
+    }).catch(function () {
+      say("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", false);
+    }).finally(function () {
+      submitBtn.disabled = false;
+    });
+  });
+})();
+</script>
 
 <footer>
   <p><strong>10 Micro-SaaS Việt Nam</strong> · Dùng thử đầy đủ 3 ngày · Không tự trừ tiền · Hủy gia hạn bất cứ lúc nào, quyền Pro giữ đến hết chu kỳ đã trả.</p>
@@ -1345,41 +1476,65 @@ gen5();
 /* ---------- TOOL 6: Quote (persisted, local HTML export, no CDN) ---------- */
 var qitems=storeGet('hub_t6_items', null);
 var qIsSample=false;
-if(!qitems){ qitems=[{name:'Khảo sát & tư vấn tại nhà', qty:1, unit:0}]; qIsSample=true; }
+if(!qitems){ qitems=[{name:'Khảo sát & tư vấn tại nhà', qty:1, unit:0, disc:0}]; qIsSample=true; }
+if(!Array.isArray(qitems)) qitems=[];
+qitems.forEach(function(i){ var d=parseFloat(i.disc); i.disc=isNaN(d)?0:Math.min(100,Math.max(0,d)); });
 (function(){
   var m=storeGet('hub_t6_meta', null);
-  if(m){ if(m.seller) $('t6-seller').value=m.seller; if(m.client) $('t6-client').value=m.client; if(m.disc!=null) $('t6-disc').value=m.disc; if(m.vat!=null) $('t6-vat').value=m.vat; if(m.status) $('t6-status').value=m.status; }
+  if(m){ if(m.seller) $('t6-seller').value=m.seller; if(m.client) $('t6-client').value=m.client; if(m.vat!=null) $('t6-vat').value=m.vat; if(m.status) $('t6-status').value=m.status; }
 })();
-function save6(){ storeSet('hub_t6_items', qitems); storeSet('hub_t6_meta', {seller:$('t6-seller').value, client:$('t6-client').value, disc:$('t6-disc').value, vat:$('t6-vat').value, status:$('t6-status').value}); }
+function save6(){ storeSet('hub_t6_items', qitems); storeSet('hub_t6_meta', {seller:$('t6-seller').value, client:$('t6-client').value, vat:$('t6-vat').value, status:$('t6-status').value}); }
+function calc6(){
+  var sub=0, disc=0;
+  qitems.forEach(function(i){ var line=i.qty*i.unit; sub+=line; disc+=line*(parseFloat(i.disc)||0)/100; });
+  var vat=(sub-disc)*num('t6-vat')/100;
+  return {sub:sub, disc:disc, after:sub-disc, vat:vat, total:sub-disc+vat};
+}
+function update6Totals(){
+  var t=calc6();
+  var s=$('t6-sub-val'), d=$('t6-disc-val'), a=$('t6-after-val'), v=$('t6-vat-val'), tt=$('t6-total-val');
+  if(s) s.textContent=fmt(t.sub)+'đ';
+  if(d) d.textContent='−'+fmt(t.disc)+'đ';
+  if(a) a.textContent=fmt(t.after)+'đ';
+  if(v) v.textContent='+'+fmt(t.vat)+'đ';
+  if(tt) tt.textContent=fmt(t.total)+'đ';
+}
 function render6(){
-  var sub=0; qitems.forEach(function(i){ sub+=i.qty*i.unit; });
-  var disc=sub*num('t6-disc')/100, vat=(sub-disc)*num('t6-vat')/100, total=sub-disc+vat;
+  var t=calc6();
   var code='BG-'+new Date().getFullYear()+'-'+String(qitems.length+100);
-  var rows = qitems.length ? qitems.map(function(i,idx){ return '<tr><td>'+(idx+1)+'. '+esc(i.name)+' <button class="btn mini-btn danger no-print" type="button" data-t6del="'+idx+'" style="min-height:28px;padding:2px 7px">Xóa</button></td><td class="num">'+i.qty+'</td><td class="num">'+fmt(i.unit)+'đ</td><td class="num">'+fmt(i.qty*i.unit)+'đ</td></tr>'; }).join('') : '<tr><td colspan="4" style="color:var(--muted)">Chưa có hạng mục nào — thêm ở form bên trái.</td></tr>';
+  var rows = qitems.length ? qitems.map(function(i,idx){ var d=parseFloat(i.disc)||0; return '<tr><td>'+(idx+1)+'. '+esc(i.name)+' <button class="btn mini-btn danger no-print" type="button" data-t6del="'+idx+'" style="min-height:28px;padding:2px 7px">Xóa</button></td><td class="num">'+i.qty+'</td><td class="num">'+fmt(i.unit)+'đ</td><td class="num"><input type="number" min="0" max="100" step="0.5" value="'+d+'" data-t6disc="'+idx+'" aria-label="Chiết khấu % dòng '+(idx+1)+'" style="width:72px;min-height:30px;padding:2px 6px;text-align:right"></td><td class="num">'+fmt(i.qty*i.unit)+'đ</td></tr>'; }).join('') : '<tr><td colspan="5" style="color:var(--muted)">Chưa có hạng mục nào — thêm ở form bên trái.</td></tr>';
   $('t6-out').innerHTML = '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><b>BÁO GIÁ '+code+'</b><span class="mono" style="font-size:.82rem">'+new Date().toLocaleDateString('vi-VN')+'</span></div>'+
   '<p style="margin:8px 0;font-size:.9rem">Bên cung cấp: <b>'+esc($('t6-seller').value||'—')+'</b><br>Khách hàng: <b>'+esc($('t6-client').value||'—')+'</b></p>'+
-  '<table><tr><th>Hạng mục</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr>'+rows+'</table>'+
-  '<div class="kv" style="margin-top:8px"><span>Tạm tính</span><b>'+fmt(sub)+'đ</b></div>'+
-  '<div class="kv"><span>Chiết khấu '+num('t6-disc')+'%</span><b>−'+fmt(disc)+'đ</b></div>'+
-  '<div class="kv"><span>VAT '+num('t6-vat')+'%</span><b>+'+fmt(vat)+'đ</b></div>'+
-  '<div class="kv"><span><b>TỔNG CỘNG</b></span><b style="font-size:1.1rem">'+fmt(total)+'đ</b></div>'+
+  '<table><tr><th>Hạng mục</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">CK %</th><th class="num">Thành tiền</th></tr>'+rows+'</table>'+
+  '<div class="kv" style="margin-top:8px"><span>Tạm tính</span><b id="t6-sub-val">'+fmt(t.sub)+'đ</b></div>'+
+  '<div class="kv"><span>Chiết khấu (theo từng dòng)</span><b id="t6-disc-val">−'+fmt(t.disc)+'đ</b></div>'+
+  '<div class="kv"><span>Sau chiết khấu</span><b id="t6-after-val">'+fmt(t.after)+'đ</b></div>'+
+  '<div class="kv"><span>VAT '+num('t6-vat')+'%</span><b id="t6-vat-val">+'+fmt(t.vat)+'đ</b></div>'+
+  '<div class="kv"><span><b>TỔNG CỘNG</b></span><b id="t6-total-val" style="font-size:1.1rem">'+fmt(t.total)+'đ</b></div>'+
   '<p style="font-size:.8rem;color:var(--muted);margin:10px 0 0">Báo giá có hiệu lực 7 ngày. Trạng thái hiện tại: <b>'+esc($('t6-status').value)+'</b>'+(qIsSample?' · Đang hiển thị 1 hạng mục mẫu — thêm hạng mục thật hoặc bấm “Xem mẫu có sẵn”.':'')+'</p>';
   Array.prototype.forEach.call($('t6-out').querySelectorAll('[data-t6del]'), function(b){ b.addEventListener('click', function(){ qitems.splice(+this.getAttribute('data-t6del'),1); qIsSample=false; save6(); render6(); }); });
+  Array.prototype.forEach.call($('t6-out').querySelectorAll('[data-t6disc]'), function(inp){
+    inp.addEventListener('input', function(){
+      var idx=+this.getAttribute('data-t6disc'); if(!qitems[idx]) return;
+      var v=parseFloat(this.value); if(isNaN(v)) v=0; v=Math.min(100,Math.max(0,v));
+      qitems[idx].disc=v; qIsSample=false; save6(); update6Totals();
+    });
+    inp.addEventListener('change', function(){ render6(); });
+  });
 }
 function quoteText(){
-  var sub=0; qitems.forEach(function(i){ sub+=i.qty*i.unit; });
-  var disc=sub*num('t6-disc')/100, vat=(sub-disc)*num('t6-vat')/100, total=sub-disc+vat;
-  var lines = qitems.map(function(i,idx){ return (idx+1)+'. '+i.name+' — SL '+i.qty+' x '+fmt(i.unit)+'đ = '+fmt(i.qty*i.unit)+'đ'; }).join('\n');
-  return 'BÁO GIÁ — Trạng thái: '+$('t6-status').value+'\nBên cung cấp: '+$('t6-seller').value+'\nKhách hàng: '+($('t6-client').value||'—')+'\n\n'+lines+'\n\nTạm tính: '+fmt(sub)+'đ\nChiết khấu: −'+fmt(disc)+'đ\nVAT: +'+fmt(vat)+'đ\nTỔNG CỘNG: '+fmt(total)+'đ\nBáo giá có hiệu lực 7 ngày.';
+  var t=calc6();
+  var lines = qitems.map(function(i,idx){ var d=parseFloat(i.disc)||0; var line=i.qty*i.unit; return (idx+1)+'. '+i.name+' — SL '+i.qty+' x '+fmt(i.unit)+'đ = '+fmt(line)+'đ'+(d>0?' (CK '+d+'%: −'+fmt(line*d/100)+'đ)':''); }).join('\n');
+  return 'BÁO GIÁ — Trạng thái: '+$('t6-status').value+'\nBên cung cấp: '+$('t6-seller').value+'\nKhách hàng: '+($('t6-client').value||'—')+'\n\n'+lines+'\n\nTạm tính: '+fmt(t.sub)+'đ\nChiết khấu: −'+fmt(t.disc)+'đ\nSau chiết khấu: '+fmt(t.after)+'đ\nVAT: +'+fmt(t.vat)+'đ\nTỔNG CỘNG: '+fmt(t.total)+'đ\nBáo giá có hiệu lực 7 ngày.';
 }
 $('t6-add').addEventListener('click', function(){
   var name=$('t6-item').value.trim(), unit=num('t6-unit');
-  if(!name||!unit){ setStatus('t6-statusmsg','Hãy nhập hạng mục và đơn giá trước khi thêm.', false); return; }
+  if(!name||!(unit>0)){ setStatus('t6-statusmsg','Hãy nhập hạng mục và đơn giá trước khi thêm.', false); return; }
   if(qIsSample && qitems.length===1 && qitems[0].unit===0){ qitems=[]; qIsSample=false; }
-  qitems.push({name:name, qty:num('t6-qty')||1, unit:unit}); $('t6-item').value=''; $('t6-unit').value=''; save6(); render6(); setStatus('t6-statusmsg','Đã thêm hạng mục và lưu báo giá trên máy này.', true);
+  qitems.push({name:name, qty:num('t6-qty')||1, unit:unit, disc:0}); $('t6-item').value=''; $('t6-unit').value=''; save6(); render6(); setStatus('t6-statusmsg','Đã thêm hạng mục và lưu báo giá trên máy này.', true);
 });
 $('t6-sample').addEventListener('click', function(){
-  qitems=[{name:'Khảo sát & tư vấn tại nhà', qty:1, unit:0},{name:'Sơn lại phòng khách (gồm vật tư)', qty:1, unit:4500000},{name:'Lắp đặt điện nước bổ sung', qty:2, unit:850000}];
+  qitems=[{name:'Khảo sát & tư vấn tại nhà', qty:1, unit:0, disc:0},{name:'Sơn lại phòng khách (gồm vật tư)', qty:1, unit:4500000, disc:0},{name:'Lắp đặt điện nước bổ sung', qty:2, unit:850000, disc:0}];
   qIsSample=false; if(!$('t6-client').value) $('t6-client').value='Anh Tuấn, Q.7 (khách mẫu)';
   save6(); render6(); $('t6-text').textContent=quoteText(); setStatus('t6-statusmsg','Đã nạp mẫu báo giá thi công để xem thử — sửa lại theo khách thật của bạn.', true);
 });
@@ -1392,7 +1547,10 @@ $('t6-copy').addEventListener('click', function(){
   });
 });
 $('t6-html').addEventListener('click', function(){
-  var body=$('t6-out').innerHTML;
+  render6();
+  var tmp=document.createElement('div'); tmp.innerHTML=$('t6-out').innerHTML;
+  Array.prototype.forEach.call(tmp.querySelectorAll('[data-t6disc]'), function(inp){ var sp=document.createElement('span'); sp.textContent=(parseFloat(inp.value)||0)+'%'; if(inp.parentNode) inp.parentNode.replaceChild(sp, inp); });
+  var body=tmp.innerHTML;
   var html='<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo giá</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#13201B}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ccc;padding:8px;text-align:left}td.num,th.num{text-align:right}.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #ccc}</style></head><body>'+body+'<p style="color:#666;font-size:12px">Mở file này trong trình duyệt rồi dùng lệnh In (Ctrl+P) → Lưu dưới dạng PDF. File được tạo ngay trên máy bạn, không cần thư viện bên ngoài.</p></body></html>';
   var ok=download('bao-gia.html', html, 'text/html;charset=utf-8');
   setStatus('t6-statusmsg', ok?'Đã tạo file HTML — mở file rồi in ra PDF.':'Không tạo được file — trình duyệt đã chặn tải xuống.', ok);
@@ -1403,7 +1561,7 @@ $('t6-clear').addEventListener('click', function(){
   $('t6-clear-yes').addEventListener('click', function(){ qitems=[]; qIsSample=false; save6(); $('t6-confirm').innerHTML=''; render6(); setStatus('t6-statusmsg','Đã xóa hết hạng mục.', true); });
   $('t6-clear-no').addEventListener('click', function(){ $('t6-confirm').innerHTML=''; });
 });
-['t6-seller','t6-client','t6-disc','t6-vat','t6-status'].forEach(function(id){ $(id).addEventListener('input', function(){ save6(); render6(); }); $(id).addEventListener('change', function(){ save6(); render6(); }); });
+['t6-seller','t6-client','t6-vat','t6-status'].forEach(function(id){ $(id).addEventListener('input', function(){ save6(); render6(); }); $(id).addEventListener('change', function(){ save6(); render6(); }); });
 render6();
 
 /* ---------- Revenue simulator ---------- */
@@ -1492,7 +1650,25 @@ function render8(){
   $('t8-table').innerHTML='<tr><th>Đối thủ (mẫu)</th><th>Kênh chính</th><th>Khoảng giá</th><th>Điểm mạnh</th></tr>'+
     d.rows.map(function(r){ return '<tr><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.ch)+'</td><td>'+esc(r.price)+'</td><td>'+esc(r.strong)+'</td></tr>'; }).join('');
 }
-function analyze8(){
+function getT8History(){ var h=storeGet('hub_t8_history', []); return Array.isArray(h)?h:[]; }
+function pushT8History(key, label){
+  var h=getT8History();
+  if(h.length && h[0].key===key){ h[0].ts=Date.now(); h[0].label=label; }
+  else { h.unshift({key:key, label:label, ts:Date.now()}); }
+  h=h.slice(0,10); storeSet('hub_t8_history', h); renderT8History();
+}
+function renderT8History(){
+  var box=$('t8-history'); if(!box) return;
+  var h=getT8History();
+  if(!h.length){ box.innerHTML='<div style="font-size:.82rem;font-weight:700;color:var(--muted)">LỊCH SỬ TRA CỨU</div><p class="note" style="margin-top:6px">Chưa có tra cứu nào được lưu trên máy này — bấm “Phân tích khoảng trống” để bắt đầu.</p>'; return; }
+  box.innerHTML='<div style="font-size:.82rem;font-weight:700;color:var(--muted)">LỊCH SỬ TRA CỨU</div>'+
+    h.map(function(it){ var when=''; try{ when=new Date(it.ts).toLocaleString('vi-VN'); }catch(e){} return '<div class="listitem" style="margin-top:8px"><div class="t"><b>'+esc(it.label||it.key)+'</b><span class="pill">'+esc(when)+'</span></div><div class="btnrow"><button class="btn mini-btn" type="button" data-t8hist="'+esc(it.key)+'">Xem lại</button></div></div>'; }).join('');
+  Array.prototype.forEach.call(box.querySelectorAll('[data-t8hist]'), function(b){ b.addEventListener('click', function(){
+    var k=this.getAttribute('data-t8hist'); if(!COMP[k]) return;
+    $('t8-nganh').value=k; render8(); analyze8(false);
+  }); });
+}
+function analyze8(record){
   var key=$('t8-nganh').value, d=COMP[key], my=num('t8-myprice');
   var lo=Math.min.apply(null, d.rows.map(function(r){ return r.lo; }));
   var hi=Math.max.apply(null, d.rows.map(function(r){ return r.hi; }));
@@ -1504,10 +1680,11 @@ function analyze8(){
   $('t8-gap').innerHTML='<div style="font-size:.82rem;font-weight:700;color:var(--muted)">ĐỊNH VỊ GIÁ · NGÀNH '+esc(d.label.toUpperCase())+'</div><p style="margin:8px 0">'+pos+'</p>'+
     '<div style="font-size:.82rem;font-weight:700;color:var(--muted)">KHOẢNG TRỐNG THỊ TRƯỜNG GỢI Ý</div><ul style="margin:8px 0 0;padding-left:18px">'+
     d.gaps.map(function(g){ return '<li style="margin-bottom:6px">'+esc(g)+'</li>'; }).join('')+'</ul>';
+  if(record===true){ pushT8History(key, d.label); }
 }
-$('t8-nganh').addEventListener('change', function(){ render8(); analyze8(); });
-$('t8-run').addEventListener('click', analyze8);
-render8(); analyze8();
+$('t8-nganh').addEventListener('change', function(){ render8(); analyze8(true); });
+$('t8-run').addEventListener('click', function(){ analyze8(true); });
+render8(); analyze8(false); renderT8History();
 
 /* ---------- TOOL 9: Video script translation + SRT export ---------- */
 var T9DICT=[
@@ -1554,6 +1731,9 @@ $('t9-srt').addEventListener('click', function(){
 
 /* ---------- TOOL 10: Podcast AI (2-voice script + browser TTS) ---------- */
 var t10Lines=[];
+function save10(){
+  storeSet('hub_t10_draft', { title:$('t10-title').value, src:$('t10-src').value, out:$('t10-out').textContent, lines:t10Lines });
+}
 function gen10(){
   var title=$('t10-title').value.trim()||'Tập podcast mới';
   var text=$('t10-src').value.replace(/\s+/g,' ').trim();
@@ -1562,13 +1742,26 @@ function gen10(){
   sents.forEach(function(s, i){ t10Lines.push({who: i%2===0 ? 'Khách mời' : 'Người dẫn', text:s}); });
   t10Lines.push({who:'Người dẫn', text:'Cảm ơn bạn đã lắng nghe tập hôm nay. Hẹn gặp lại ở tập tiếp theo.'});
   $('t10-out').textContent='KỊCH BẢN PODCAST — “'+title.toUpperCase()+'”\n\n'+t10Lines.map(function(l){ return l.who.toUpperCase()+': '+l.text; }).join('\n\n');
+  save10();
   setStatus('t10-status','Đã tạo kịch bản '+t10Lines.length+' lượt thoại từ '+sents.length+' câu trong bài viết. Bấm “Đọc thử” để nghe bằng giọng trình duyệt.', true);
   return t10Lines;
 }
+function slug10(s){
+  var v=String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return v||'kich-ban-podcast';
+}
 $('t10-gen').addEventListener('click', gen10);
+['t10-title','t10-src'].forEach(function(id){ $(id).addEventListener('input', save10); });
 $('t10-copy').addEventListener('click', function(){
   if(!t10Lines.length) gen10();
   copyText($('t10-out').textContent).then(function(ok){ setStatus('t10-status', ok?'Đã sao chép toàn bộ kịch bản.':'Sao chép thất bại — hãy bôi đen kịch bản và copy thủ công.', ok); });
+});
+$('t10-download').addEventListener('click', function(){
+  var script=$('t10-out').textContent.trim();
+  if(!t10Lines.length || !script || script.indexOf('Kịch bản hội thoại sẽ hiện ở đây')===0){ setStatus('t10-status','Chưa có kịch bản để tải — hãy tạo kịch bản trước.', false); return; }
+  var name=slug10($('t10-title').value.trim())+'.txt';
+  var ok=download(name, script, 'text/plain;charset=utf-8');
+  setStatus('t10-status', ok?'Đã tải kịch bản thành file '+name+'.':'Không tạo được file — trình duyệt đã chặn tải xuống.', ok);
 });
 $('t10-play').addEventListener('click', function(){
   if(!('speechSynthesis' in window)){ setStatus('t10-status','Trình duyệt này không hỗ trợ đọc thành tiếng. Hãy thử Chrome hoặc Edge.', false); return; }
@@ -1590,7 +1783,19 @@ $('t10-play').addEventListener('click', function(){
 $('t10-stop').addEventListener('click', function(){
   if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setStatus('t10-status','Đã dừng đọc.', true); }
 });
-gen10();
+(function(){
+  var draft=storeGet('hub_t10_draft', null);
+  if(draft){
+    if(draft.title) $('t10-title').value=draft.title;
+    if(draft.src) $('t10-src').value=draft.src;
+    if(draft.lines && draft.lines.length && draft.out){
+      t10Lines=draft.lines;
+      $('t10-out').textContent=draft.out;
+      return;
+    }
+  }
+  gen10();
+})();
 </script>
 </body>
 </html>
