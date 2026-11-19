@@ -76,6 +76,13 @@
       .tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
       .panel{display:none}
       .panel.active{display:block}
+      /* Paywall gia hạn (Supabase + payOS): ghi đè .panel của tab để hiện khi hết quyền dùng */
+      div[data-paywall]{display:block;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow);margin-bottom:8px}
+      div[data-paywall] h2{font-size:1.3rem;font-weight:800;margin:0 0 6px}
+      div[data-paywall] .fineprint{font-size:.85rem;color:var(--ink2);margin:12px 0 0}
+      /* Khóa mặc định: công cụ ẩn ngay từ đầu cho tới khi applyAccess xác nhận có quyền và gỡ class ccs-locked khỏi body */
+      body.ccs-locked [data-requires-access]{display:none !important}
+      body.ccs-locked [data-paywall]{display:block !important}
       .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
       .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
       .card h2{font-size:1.3rem;font-weight:800;letter-spacing:-.01em;margin:0 0 4px}
@@ -201,7 +208,7 @@
       @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
     </style>
   </head>
-  <body>
+  <body class="ccs-locked">
     <!-- ================= HERO ================= -->
     <header class="hero">
       <div class="wrap hero-grid">
@@ -224,6 +231,7 @@
           <p class="p-label">Báo Giá &amp; Hợp Đồng Mẫu</p>
           <p class="price-big">29.000đ <small>/tháng</small></p>
           <span class="trial">Dùng thử miễn phí 3 ngày · Sau đó 29.000đ/tháng</span>
+          <span data-trial-days-left></span>
           <ul>
             <li>Tạo báo giá không giới hạn, xuất PDF gửi Zalo/email</li>
             <li>Lưu danh sách khách hàng, dùng lại cho mọi báo giá sau</li>
@@ -232,7 +240,7 @@
             <li>Dùng tốt trên điện thoại — tạo báo giá ngay tại công trình</li>
           </ul>
           <p class="bundle"><b>Bundle 6 công cụ: 99.000đ/tháng</b> — dùng cả 6 công cụ trong bộ cho người bán &amp; làm dịch vụ, thay vì đăng ký lẻ từng công cụ 29.000đ/tháng.</p>
-          <a class="btn primary" href="#app" style="width:100%">Dùng thử 3 ngày miễn phí</a>
+          <a class="btn primary" href="#app" style="width:100%" id="btnHeroTrial">Dùng thử 3 ngày miễn phí</a>
           <p class="fine">Dùng thử 3 ngày dùng đủ tính năng, không cần thẻ. Hết 3 ngày, nếu tiếp tục dùng thì tính phí 29.000đ/tháng.</p>
           <details class="price-note">
             <summary>“0 đồng” nghĩa là gì? Bản demo này tính phí ra sao?</summary>
@@ -242,6 +250,454 @@
         </aside>
       </div>
     </header>
+
+    <!-- ===== CongCuShop: đăng nhập / dùng thử 3 ngày / gia hạn (Supabase + payOS) ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="assets/checkAccess.js"></script>
+    <div class="wrap">
+<section class="ccs-auth" id="ccs-auth" data-product="p6">
+  <style>
+    /* Khớp tông trang mẫu: dùng biến CSS sẵn có của trang (--bg, --surface,
+       --ink, --ink-2, --line, --accent, --accent-soft, --danger, --shadow).
+       Có fallback nếu trang chưa định nghĩa biến. Hỗ trợ dark mode theo
+       prefers-color-scheme của trang. Mobile-first, nút cao tối thiểu 44px. */
+    .ccs-auth{
+      --ccs-accent:var(--accent,#0b7a55);
+      --ccs-accent-ink:var(--accent-ink,#fff);
+      --ccs-soft:var(--accent-soft,#d9efe4);
+      background:var(--surface,#fff);
+      border:1px solid var(--line,#cfdcd4);
+      border-radius:14px;
+      box-shadow:var(--shadow,0 10px 30px rgba(18,33,27,.10));
+      padding:20px;
+      margin:22px 0;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .ccs-auth h2{ font-size:19px; margin:0 0 4px; font-weight:800; }
+    .ccs-auth .ccs-sub{ color:var(--ink-2,#43564d); font-size:14px; margin:0 0 16px; }
+    .ccs-auth .ccs-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+    .ccs-auth .ccs-tab{
+      border:1.5px solid var(--line,#cfdcd4); background:var(--surface-2,#e3ebe7);
+      color:var(--ink,#12211b); border-radius:10px; padding:10px 6px;
+      font:inherit; font-weight:700; font-size:15px; cursor:pointer; min-height:48px;
+    }
+    .ccs-auth .ccs-tab[aria-pressed="true"]{ border-color:var(--ccs-accent); background:var(--ccs-soft); }
+    .ccs-auth .ccs-field{ margin-bottom:12px; }
+    .ccs-auth .ccs-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+    .ccs-auth .ccs-field input{
+      width:100%; border:1.5px solid var(--line,#cfdcd4); border-radius:10px;
+      background:var(--surface,#fff); color:var(--ink,#12211b);
+      font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+    }
+    .ccs-auth .ccs-field input:focus{ border-color:var(--ccs-accent); }
+    .ccs-auth .ccs-btn{
+      width:100%; border:0; border-radius:10px; cursor:pointer; min-height:48px;
+      background:var(--ccs-accent); color:var(--ccs-accent-ink);
+      font:inherit; font-weight:800; font-size:16px; padding:12px 16px;
+    }
+    .ccs-auth .ccs-btn:disabled{ opacity:.55; cursor:wait; }
+    .ccs-auth .ccs-btn-ghost{
+      background:transparent; color:var(--ccs-accent);
+      border:1.5px solid var(--ccs-accent); margin-top:10px;
+    }
+    .ccs-auth .ccs-msg{ font-size:14px; margin:10px 0 0; min-height:1.4em; }
+    .ccs-auth .ccs-msg.err{ color:var(--danger,#c22f2f); }
+    .ccs-auth .ccs-msg.ok{ color:var(--good,#0b7a55); }
+    .ccs-auth .ccs-status{
+      background:var(--ccs-soft); border-radius:10px; padding:12px 14px;
+      font-size:14.5px; margin:0 0 12px;
+    }
+    .ccs-auth .ccs-status b{ font-weight:800; }
+    .ccs-auth .ccs-email{ font-weight:700; word-break:break-all; }
+    .ccs-auth .ccs-fine{ color:var(--ink-2,#43564d); font-size:13.5px; margin:12px 0 0; }
+    .ccs-auth .ccs-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .ccs-auth .ccs-row .ccs-btn{ flex:1; min-width:180px; }
+    @media (min-width:640px){ .ccs-auth .ccs-btn{ width:auto; min-width:220px; } }
+  </style>
+
+  <!-- Trạng thái CHƯA đăng nhập -->
+  <div data-ccs-view="guest">
+    <h2>Đăng nhập để dùng thử 3 ngày miễn phí</h2>
+    <p class="ccs-sub">
+      <span data-ccs-product-name>Tính Lợi Nhuận Sàn</span> —
+      <b data-ccs-price>29.000đ/tháng</b> sau 3 ngày dùng thử.
+      Tài khoản lưu trên hệ thống, không lưu mật khẩu trên máy bạn.
+    </p>
+    <div class="ccs-tabs" role="group" aria-label="Đăng nhập hoặc đăng ký">
+      <button type="button" class="ccs-tab" data-ccs-mode="signin" aria-pressed="true">Đăng nhập</button>
+      <button type="button" class="ccs-tab" data-ccs-mode="signup" aria-pressed="false">Đăng ký mới</button>
+    </div>
+    <form data-ccs-form novalidate>
+      <div class="ccs-field">
+        <label for="ccs-email">Email</label>
+        <input id="ccs-email" name="email" type="email" required autocomplete="email"
+               placeholder="vidu@email.com" />
+      </div>
+      <div class="ccs-field">
+        <label for="ccs-password">Mật khẩu <span data-ccs-pw-hint>(ít nhất 8 ký tự)</span></label>
+        <input id="ccs-password" name="password" type="password" required autocomplete="current-password"
+               minlength="8" placeholder="••••••••" />
+      </div>
+      <button type="submit" class="ccs-btn" data-ccs-submit>Đăng nhập</button>
+      <p class="ccs-msg" data-ccs-msg role="status"></p>
+    </form>
+    <p class="ccs-fine">
+      Đăng ký xong, bấm “Bắt đầu dùng thử 3 ngày” để kích hoạt trial.
+      Hết 3 ngày chưa trả tiền thì công cụ sẽ khóa lại cho tới khi bạn gia hạn.
+    </p>
+  </div>
+
+  <!-- Trạng thái ĐÃ đăng nhập -->
+  <div data-ccs-view="user" hidden>
+    <h2>Tài khoản của bạn</h2>
+    <p class="ccs-sub">Đã đăng nhập: <span class="ccs-email" data-ccs-user-email></span></p>
+    <p class="ccs-status" data-ccs-status>Đang kiểm tra quyền dùng…</p>
+    <div class="ccs-row">
+      <button type="button" class="ccs-btn" data-ccs-trial hidden>Bắt đầu dùng thử 3 ngày</button>
+      <button type="button" class="ccs-btn" data-ccs-pay hidden>Gia hạn bằng VietQR — <span data-ccs-price>29.000đ/tháng</span></button>
+      <button type="button" class="ccs-btn ccs-btn-ghost" data-ccs-logout>Đăng xuất</button>
+    </div>
+    <p class="ccs-msg" data-ccs-msg role="status"></p>
+    <p class="ccs-fine">
+      Thanh toán bằng VietQR qua payOS, tiền về tài khoản của chủ shop.
+      Hết tháng, bấm “Gia hạn bằng VietQR” để tạo mã mới và quét lại.
+    </p>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==== 1. CẤU HÌNH — THAY 2 GIÁ TRỊ NÀY BẰNG KEY THẬT (xem đầu file) ==== */
+  var SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";         // vd: https://abcdefghijkl.supabase.co
+  var SUPABASE_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq"; // anon public key (được phép lộ)
+  /* ======================================================================= */
+
+  // Bảng giá + tên hiển thị — KHỚP products.json. Chỉ để hiển thị;
+  // giá thu thật do Edge Function create-payment quyết trên server.
+  var PRODUCTS = {
+    p1:     { name: "Tính Lợi Nhuận Sàn",        price: 29000 },
+    p2:     { name: "Quản Lý Đơn Cọc Công Nợ",   price: 39000 },
+    p3:     { name: "Nội Dung Đa Nền Tảng",      price: 39000 },
+    p4:     { name: "Sổ Thu Chi Hộ Kinh Doanh",  price: 39000 },
+    p5:     { name: "Tạo Ảnh Sản Phẩm",          price: 29000 },
+    p6:     { name: "Báo Giá Hợp Đồng Mẫu",      price: 29000 },
+    bundle: { name: "Gói Bundle 6 công cụ",      price: 99000 }
+  };
+  var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+
+  var root = document.getElementById("ccs-auth");
+  if (!root) return;
+  var product = (root.getAttribute("data-product") || "p1").trim();
+  if (!PRODUCTS[product]) product = "p1";
+  var meta = PRODUCTS[product];
+
+  var $ = function (sel) { return root.querySelector(sel); };
+  var $$ = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+  var viewGuest = $('[data-ccs-view="guest"]');
+  var viewUser = $('[data-ccs-view="user"]');
+  var msgEls = $$('[data-ccs-msg]');
+  var statusEl = $('[data-ccs-status]');
+  var trialBtn = $('[data-ccs-trial]');
+  var payBtn = $('[data-ccs-pay]');
+  var logoutBtn = $('[data-ccs-logout]');
+  var submitBtn = $('[data-ccs-submit]');
+  var form = $('[data-ccs-form]');
+  var mode = "signin";
+  var client = null;   // supabase client (tạo ở init)
+  var accessCache = null;
+
+  function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+    catch (e) { return iso; }
+  }
+  function say(text, kind) {
+    msgEls.forEach(function (el) {
+      el.textContent = text || "";
+      el.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+    });
+  }
+  function show(view) {
+    viewGuest.hidden = view !== "guest";
+    viewUser.hidden = view !== "user";
+  }
+  function configMissing() {
+    return !SUPABASE_URL || SUPABASE_URL.indexOf("__SUPABASE_") === 0 ||
+           !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.indexOf("__SUPABASE_") === 0;
+  }
+  function loadSupabaseUmd() {
+    return new Promise(function (resolve, reject) {
+      if (window.supabase && window.supabase.createClient) return resolve();
+      var s = document.createElement("script");
+      s.src = SUPABASE_CDN;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("load_supabase_failed")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ==== 2. HỎI QUYỀN TỪ SERVER (qua checkAccess.js nếu có, tự gọi RPC nếu không) ==== */
+  function askAccess() {
+    if (window.CongCuShop && window.CongCuShop.checkAccess) {
+      return window.CongCuShop.checkAccess(product);
+    }
+    // Dự phòng khi checkAccess.js chưa nạp: gọi trực tiếp RPC get_access.
+    return client.auth.getSession().then(function (r) {
+      if (!r.data.session) return { access: false, reason: "login_required" };
+      return client.rpc("get_access", { p_product: product }).then(function (res) {
+        if (res.error) return { access: false, reason: "rpc_error", detail: res.error.message };
+        return res.data;
+      });
+    });
+  }
+  function applyAccess(access) {
+    accessCache = access;
+    var locked = !access.access;
+    if (document.body) document.body.classList.toggle("ccs-locked", locked);
+    if (window.CongCuShop && window.CongCuShop.applyAccessToPage) {
+      window.CongCuShop.applyAccessToPage(access);
+      // Đảm bảo paywall hiện / công cụ ẩn kể cả khi bị ẩn bằng hidden hoặc style (phòng khi checkAccess.js chưa xử lý).
+      document.querySelectorAll("[data-paywall]").forEach(function (el) {
+        if (locked) { el.removeAttribute("hidden"); el.style.display = "block"; } else { el.style.display = "none"; }
+      });
+      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
+    } else {
+      // Dự phòng: tự khóa/mở theo cùng quy ước data-* của checkAccess.js.
+      document.querySelectorAll("[data-requires-access]").forEach(function (el) { el.style.display = locked ? "none" : ""; });
+      document.querySelectorAll("[data-paywall]").forEach(function (el) {
+        if (locked) { el.removeAttribute("hidden"); el.style.display = "block"; } else { el.style.display = "none"; }
+      });
+      document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
+        el.textContent = (access.reason === "trial" && access.days_left != null)
+          ? ("Còn " + access.days_left + " ngày dùng thử") : "";
+      });
+      document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+        el.textContent = window.CongCuShop && window.CongCuShop.paywallMessage
+          ? window.CongCuShop.paywallMessage(access.reason) : "Gia hạn để dùng tiếp.";
+      });
+    }
+    renderStatus(access);
+  }
+  function renderStatus(a) {
+    if (!statusEl) return;
+    var days = (a.days_left != null) ? a.days_left : null;
+    trialBtn.hidden = true;
+    payBtn.hidden = true;
+    switch (a.reason) {
+      case "trial":
+        statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "paid":
+        statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "bundle_active":
+        statusEl.innerHTML = "<b>Gói Bundle đang hoạt động</b> — dùng được cả 6 công cụ tới ngày <b>" +
+          fmtDate(a.paid_until) + "</b>.";
+        break;
+      case "no_trial":
+      case "no_subscription":
+        statusEl.innerHTML = "Bạn chưa bắt đầu dùng thử <b>" + meta.name + "</b>.";
+        trialBtn.hidden = false;
+        break;
+      case "trial_expired":
+        statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "subscription_expired":
+        statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
+        payBtn.hidden = false;
+        break;
+      case "verification_required":
+        statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
+          "Vui lòng liên hệ hỗ trợ để được duyệt.";
+        break;
+      case "rpc_error":
+        statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
+        break;
+      default:
+        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        if (!a.access) payBtn.hidden = false;
+    }
+  }
+
+  /* ==== 3. ĐĂNG NHẬP / ĐĂNG KÝ (Supabase Auth, email + mật khẩu) ==== */
+  function setMode(next) {
+    mode = next;
+    $$('[data-ccs-mode]').forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-ccs-mode") === next ? "true" : "false");
+    });
+    submitBtn.textContent = next === "signup" ? "Đăng ký" : "Đăng nhập";
+    $('[data-ccs-pw-hint]').textContent = next === "signup" ? "(ít nhất 8 ký tự)" : "";
+    say("");
+  }
+  $$('[data-ccs-mode]').forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-ccs-mode")); });
+  });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var email = $("#ccs-email").value.trim();
+    var password = $("#ccs-password").value;
+    if (!email || password.length < 8) {
+      say("Email chưa đúng hoặc mật khẩu dưới 8 ký tự.", "err");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang xử lý…";
+    var call = mode === "signup"
+      ? client.auth.signUp({ email: email, password: password })
+      : client.auth.signInWithPassword({ email: email, password: password });
+    call.then(function (res) {
+      if (res.error) {
+        say("Không đăng nhập được: " + friendlyAuthError(res.error.message), "err");
+        return;
+      }
+      if (mode === "signup" && res.data && !res.data.session) {
+        // Email xác nhận đang BẬT: Supabase gửi link, chưa có session.
+        say("Đã gửi email xác nhận tới " + email + ". Bấm link trong email rồi đăng nhập lại.", "ok");
+        return;
+      }
+      say("Đăng nhập thành công.", "ok");
+      refresh();
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = mode === "signup" ? "Đăng ký" : "Đăng nhập";
+    });
+  });
+  function friendlyAuthError(msg) {
+    msg = String(msg || "");
+    if (/invalid login credentials/i.test(msg)) return "Sai email hoặc mật khẩu.";
+    if (/user already registered/i.test(msg)) return "Email này đã đăng ký — hãy bấm tab “Đăng nhập”.";
+    if (/email not confirmed/i.test(msg)) return "Email chưa xác nhận — hãy bấm link trong email rồi thử lại.";
+    if (/password/i.test(msg)) return "Mật khẩu chưa đạt yêu cầu (ít nhất 8 ký tự).";
+    return msg;
+  }
+
+  logoutBtn.addEventListener("click", function () {
+    client.auth.signOut().then(refresh);
+  });
+
+  /* ==== 4. DÙNG THỬ 3 NGÀY / GIA HẠN VIETQR (qua checkAccess.js) ==== */
+  trialBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.startTrial) {
+      say("Chưa nạp được checkAccess.js — không bắt đầu trial được. Kiểm tra lại thứ tự script.", "err");
+      return;
+    }
+    trialBtn.disabled = true;
+    say("Đang kích hoạt dùng thử…");
+    window.CongCuShop.startTrial(product).then(function (res) {
+      if (res && res.access) {
+        say("Đã kích hoạt dùng thử 3 ngày.", "ok");
+        refresh();
+      } else if (res && res.needs_verification) {
+        say("Tài khoản cần xác minh thêm trước khi dùng thử. Vui lòng liên hệ hỗ trợ.", "err");
+        refresh();
+      } else {
+        say("Không kích hoạt được dùng thử: " + (res && (res.reason || res.error) || "lỗi không rõ") + ".", "err");
+      }
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+    }).finally(function () { trialBtn.disabled = false; });
+  });
+  payBtn.addEventListener("click", function () {
+    if (!window.CongCuShop || !window.CongCuShop.createPayment) {
+      say("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
+      return;
+    }
+    payBtn.disabled = true;
+    say("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
+    window.CongCuShop.createPayment(product).then(function (res) {
+      if (res && !res.checkoutUrl) {
+        say("Không tạo được link thanh toán: " + (res.error || "lỗi không rõ") + ".", "err");
+        payBtn.disabled = false;
+      }
+      // Có checkoutUrl thì createPayment tự redirect sang payOS.
+    }).catch(function (err) {
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      payBtn.disabled = false;
+    });
+  });
+
+  /* ==== 5. LÀM MỚI TRẠNG THÁI + XỬ LÝ QUAY VỀ TỪ PAYOS ==== */
+  function refresh() {
+    return client.auth.getSession().then(function (r) {
+      var session = r.data.session;
+      if (!session) { applyAccess({ access: false, reason: "login_required" }); show("guest"); return; }
+      show("user");
+      $('[data-ccs-user-email]').textContent = session.user.email || "";
+      return askAccess().then(applyAccess).catch(function (err) {
+        applyAccess({ access: false, reason: "login_required" });
+        statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+        say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+      });
+    }).catch(function (err) {
+      applyAccess({ access: false, reason: "login_required" });
+      show("guest");
+    });
+  }
+  function handlePayReturn() {
+    var q = new URLSearchParams(window.location.search);
+    var pay = q.get("pay");
+    if (!pay) return;
+    if (pay === "success") {
+      say("Đã nhận thanh toán, đang chờ payOS xác nhận (webhook)…", "ok");
+      // Webhook có thể về chậm vài giây — hỏi lại quyền vài lần.
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        refresh().then(function () {
+          if ((accessCache && accessCache.access) || tries >= 6) {
+            clearInterval(timer);
+            if (accessCache && accessCache.access) say("Thanh toán đã xác nhận — gói đã kích hoạt.", "ok");
+          }
+        });
+      }, 5000);
+    } else if (pay === "cancelled") {
+      say("Bạn đã hủy thanh toán — gói chưa được kích hoạt.", "err");
+    }
+  }
+
+  /* ==== 6. KHỞI ĐỘNG ==== */
+  function init() {
+    // Điền tên + giá theo sản phẩm của trang.
+    $$('[data-ccs-product-name]').forEach(function (el) { el.textContent = meta.name; });
+    $$('[data-ccs-price]').forEach(function (el) { el.textContent = fmtVnd(meta.price) + "/tháng"; });
+    if (configMissing()) {
+      applyAccess({ access: false, reason: "login_required" });
+      say("Chưa cấu hình Supabase (thiếu SUPABASE_URL / SUPABASE_ANON_KEY). " +
+          "Thay 2 giá trị ở đầu khối này rồi mới đăng nhập được.", "err");
+      show("guest");
+      return;
+    }
+    loadSupabaseUmd().then(function () {
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // Nối checkAccess.js vào cùng client (để nó dùng chung session).
+      if (window.CongCuShop && window.CongCuShop.init) {
+        return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
+      }
+    }).then(function () {
+      client.auth.onAuthStateChange(function () { refresh(); });
+      handlePayReturn();
+      return refresh();
+    }).catch(function (err) {
+      applyAccess({ access: false, reason: "login_required" });
+      say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
+          ". Kiểm tra mạng rồi tải lại trang.", "err");
+      show("guest");
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else { init(); }
+})();
+</script>
+    </div>
 
     <!-- ================= APP ================= -->
     <main class="workspace" id="app">
@@ -254,7 +710,7 @@
         </div>
 
         <!-- ===== TAB: QUOTE ===== -->
-        <section class="panel active" id="panel-quote" role="tabpanel">
+        <section class="panel active" id="panel-quote" role="tabpanel" data-requires-access>
           <div class="cols">
             <div class="card">
               <h2>Thông tin báo giá</h2>
@@ -321,7 +777,7 @@
         </section>
 
         <!-- ===== TAB: CONTRACT ===== -->
-        <section class="panel" id="panel-contract" role="tabpanel">
+        <section class="panel" id="panel-contract" role="tabpanel" data-requires-access>
           <div class="cols">
             <div class="card">
               <h2>Tạo hợp đồng từ mẫu</h2>
@@ -370,7 +826,7 @@
         <!-- ===== TAB: LIBRARY ===== -->
         <section class="panel" id="panel-library" role="tabpanel">
           <div class="cols">
-            <div class="card">
+            <div class="card" data-requires-access>
               <h2>Thêm khách hàng</h2>
               <p class="hint">Lưu một lần — lần sau tạo báo giá chỉ cần chọn tên, thông tin tự điền.</p>
               <label class="f" for="ncName">Tên khách / công ty</label>
@@ -401,7 +857,7 @@
         </section>
 
         <!-- ===== TAB: TRACK ===== -->
-        <section class="panel" id="panel-track" role="tabpanel">
+        <section class="panel" id="panel-track" role="tabpanel" data-requires-access>
           <div class="stats">
             <div class="stat"><b id="stTotal">0</b><span>Tổng báo giá đã lưu</span></div>
             <div class="stat"><b id="stSent">0</b><span>Đang chờ khách (đã gửi)</span></div>
@@ -420,6 +876,15 @@
         </section>
       </div>
     </main>
+
+    <div class="wrap">
+      <div class="panel" data-paywall style="display:none">
+        <h2>Bạn cần gia hạn để dùng tiếp</h2>
+        <p data-paywall-reason>Gia hạn để dùng tiếp.</p>
+        <button type="button" class="btn" data-pay-button>Gia hạn bằng VietQR</button>
+        <p class="fineprint">Thanh toán 1 lần bằng VietQR qua payOS. Hết tháng gia hạn lại bằng mã mới.</p>
+      </div>
+    </div>
 
     <!-- ================= HOW ================= -->
     <section class="block">
@@ -1128,6 +1593,34 @@
         addItemRow("", "gói", 1, 0);
       }
       renderQuote(); renderContract(); renderClients(); renderTemplates(); renderTrack();
+    </script>
+    <script>
+      // Nút "Dùng thử 3 ngày" ở hero: chưa đăng nhập thì cuộn tới khối
+      // đăng nhập (#ccs-auth); đã đăng nhập thì bắt đầu dùng thử qua
+      // CongCuShop (checkAccess.js). Không tự tạo trial khi chưa đăng nhập.
+      (function(){
+        "use strict";
+        var btn = document.getElementById("btnHeroTrial");
+        if (!btn) return;
+        function scrollToAuth(){
+          var el = document.getElementById("ccs-auth");
+          if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+        }
+        btn.addEventListener("click", function(ev){
+          ev.preventDefault();
+          if (!window.CongCuShop || !window.CongCuShop.checkAccess || !window.CongCuShop.startTrial){
+            scrollToAuth();
+            return;
+          }
+          window.CongCuShop.checkAccess("p6").then(function(access){
+            if (!access || access.reason === "login_required"){
+              scrollToAuth();
+              return;
+            }
+            window.CongCuShop.startTrial("p6");
+          }).catch(function(){ scrollToAuth(); });
+        });
+      })();
     </script>
   </body>
 </html>
