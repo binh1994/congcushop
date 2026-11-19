@@ -1310,6 +1310,84 @@
         </div>
       </section>
 
+      <!-- ================= HỖ TRỢ KHÁCH HÀNG ================= -->
+      <section id="support" class="sec" aria-label="Hỗ trợ khách hàng">
+        <style>
+          #support .sp-card{
+            background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--accent);
+            border-radius:16px; box-shadow:var(--shadow); padding:22px 20px;
+          }
+          #support h2{ margin-bottom:8px; }
+          #support h2::after{
+            content:""; display:block; width:52px; height:4px; margin-top:10px; border-radius:999px;
+            background:linear-gradient(90deg,var(--accent),var(--accent-mid));
+          }
+          #support .sp-lead{ color:var(--ink-2); margin:0 0 18px; max-width:640px; }
+          #support .sp-zalo-btn{
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            background:linear-gradient(135deg,var(--accent-deep),var(--accent) 55%,#0ea5e9); color:#fff;
+            font-weight:800; font-size:16px; text-decoration:none; border-radius:12px;
+            padding:12px 22px; min-height:48px; box-shadow:0 8px 20px rgba(2,132,199,.28);
+          }
+          #support .sp-zalo-num{ margin:8px 0 20px; color:var(--ink-2); font-size:14.5px; }
+          #support .sp-zalo-num b{ color:var(--ink); letter-spacing:.02em; }
+          #support .sp-form-title{ font-size:17px; font-weight:800; margin:0 0 14px; }
+          #support .sp-field{ margin-bottom:12px; }
+          #support .sp-field label{ display:block; font-size:14px; font-weight:600; margin-bottom:5px; }
+          #support .sp-field input, #support .sp-field select, #support .sp-field textarea{
+            width:100%; border:1.5px solid var(--line); border-radius:10px;
+            background:var(--surface); color:var(--ink);
+            font:inherit; font-size:16px; padding:10px 12px; outline:none; min-height:48px;
+          }
+          #support .sp-field textarea{ min-height:96px; resize:vertical; }
+          #support .sp-field input:focus, #support .sp-field select:focus, #support .sp-field textarea:focus{
+            border-color:var(--accent); box-shadow:0 0 0 3px rgba(2,132,199,.18);
+          }
+          #support .sp-submit{
+            width:100%; border:0; border-radius:12px; cursor:pointer; min-height:48px;
+            background:var(--accent); color:#fff; font:inherit; font-weight:800; font-size:16px; padding:12px 16px;
+          }
+          @media (min-width:640px){ #support .sp-submit{ width:auto; min-width:220px; } }
+          #support .sp-submit:disabled{ opacity:.55; cursor:wait; }
+          #support #sp-msg{ font-size:14.5px; margin:12px 0 0; min-height:1.4em; }
+          #support #sp-msg.ok{ color:var(--good); font-weight:600; }
+          #support #sp-msg.err{ color:var(--danger); font-weight:600; }
+        </style>
+        <div class="sp-card">
+          <h2>Cần hỗ trợ?</h2>
+          <p class="sp-lead">Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+          <a class="sp-zalo-btn" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+          <p class="sp-zalo-num">Số Zalo: <b>0327047928</b> — nếu nút không mở được, hãy tìm số này trên Zalo.</p>
+          <h3 class="sp-form-title">Gửi yêu cầu hỗ trợ</h3>
+          <form id="sp-form" novalidate>
+            <div class="sp-field">
+              <label for="sp-name">Họ tên (không bắt buộc)</label>
+              <input id="sp-name" name="name" type="text" autocomplete="name" placeholder="Tên của bạn" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-contact">Số điện thoại hoặc email *</label>
+              <input id="sp-contact" name="contact" type="text" required autocomplete="tel" placeholder="Số điện thoại hoặc email để shop liên hệ lại" />
+            </div>
+            <div class="sp-field">
+              <label for="sp-issue">Vấn đề</label>
+              <select id="sp-issue" name="issue">
+                <option value="Lỗi trang">Lỗi trang</option>
+                <option value="Hết dùng thử">Hết dùng thử</option>
+                <option value="Thanh toán">Thanh toán</option>
+                <option value="Gói Pro">Gói Pro</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="sp-field">
+              <label for="sp-message">Mô tả ngắn *</label>
+              <textarea id="sp-message" name="message" required placeholder="Mô tả ngắn vấn đề bạn đang gặp"></textarea>
+            </div>
+            <button type="submit" class="sp-submit" id="sp-submit">Gửi yêu cầu</button>
+            <p id="sp-msg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
     </main>
 
     <footer>
@@ -1480,7 +1558,7 @@
       var proUpsell = $("proUpsell");
       var proUpsellTitle = $("proUpsellTitle");
       var proUpsellText = $("proUpsellText");
-      var proMsg = $("proMsg");
+      var proMsgEl = $("proMsg");
       var dubBtn = $("dubBtn");
       var dubHint = $("dubHint");
       var dubProgress = $("dubProgress");
@@ -1831,6 +1909,10 @@
           videoPlanNote.textContent = "Hiện chưa hỗ trợ video dài hơn 15 phút.";
         }
         evaluateGate();
+        /* Video mới nạp xong: nếu chưa có quyền Pro thì kiểm tra lại — phiên
+           đăng nhập có thể chỉ sẵn sàng sau khi trang tải, và cửa ải video dài
+           phải phản ánh đúng quyền Pro hiện tại. */
+        if (!state.proAccess) refreshProAccess();
       });
       videoPreview.addEventListener("error", function () {
         if (!videoPreview.src) return;
@@ -1978,9 +2060,10 @@
       renderJobs();
 
       /* ================= GÓI PRO (p9pro) — DÙNG THỬ / GIA HẠN ================= */
-      function proMsg(text, kind) {
-        proMsg.textContent = text || "";
-        proMsg.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+      function showProMsg(text, kind) {
+        if (!proMsgEl) return;
+        proMsgEl.textContent = text || "";
+        proMsgEl.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
       }
       /* Kiểm tra quyền Pro để mở cửa ải > 3 phút (chỉ nới cửa thời lượng bên trong
          khu vực công cụ đã mở khóa; KHÔNG thay cơ chế khóa đăng nhập của snippet). */
@@ -1991,87 +2074,98 @@
           evaluateGate();
         }).catch(function () { /* chưa xác minh được quyền Pro: giữ cửa ải Chuẩn */ });
       }
-      $("proTrialBtn").addEventListener("click", function () {
+      /* Luồng dùng thử Pro DÙNG CHUNG cho nút trong thẻ upsell và nút ở bảng giá:
+         vô hiệu nút -> báo "Đang kích hoạt dùng thử Pro…" -> kiểm tra phiên đăng
+         nhập (chưa đăng nhập thì báo rõ + cuộn tới khối đăng nhập) -> gọi
+         CongCuShop.startTrial("p9pro") -> có quyền thì báo thành công và gọi
+         refreshProAccess() để mở khóa demo video dài; cần xác minh thêm hoặc lỗi
+         thì báo rõ lý do. Luôn bật lại nút khi xong (không kẹt disabled). */
+      function scrollToAuth() {
+        var authEl = document.getElementById("ccs-auth");
+        if (authEl) authEl.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+      }
+      function startProTrial(btn, opts) {
+        opts = opts || {};
+        if (!btn || btn.disabled) return;
         if (!window.CongCuShop || !window.CongCuShop.getSession || !window.CongCuShop.startTrial) {
-          proMsg("Đang tải, thử lại sau giây lát.", "err");
+          showProMsg("Đang tải, thử lại sau giây lát.", "err");
           return;
         }
-        var btn = $("proTrialBtn");
+        var origText = btn.textContent;
         btn.disabled = true;
-        proMsg("Đang kích hoạt dùng thử Gói Pro…");
+        if (opts.loadingText) btn.textContent = opts.loadingText;
+        showProMsg("Đang kích hoạt dùng thử Pro…");
         window.CongCuShop.getSession().then(function (session) {
           if (!session) {
-            proMsg("Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.", "err");
-            btn.disabled = false;
+            showProMsg("Hãy đăng nhập trước — kéo lên mục đăng nhập ở đầu trang.", "err");
+            scrollToAuth();
             return null;
           }
           return window.CongCuShop.startTrial("p9pro");
         }).then(function (res) {
           if (!res) return;
-          if (res && res.access) {
-            proMsg("Đã kích hoạt dùng thử Gói Pro 3 ngày.", "ok");
+          if (res.access) {
+            showProMsg("Đã kích hoạt dùng thử Gói Pro 3 ngày.", "ok");
             refreshProAccess();
-          } else if (res && res.needs_verification) {
-            proMsg("Tài khoản cần xác minh thêm trước khi dùng thử Pro. Vui lòng liên hệ hỗ trợ.", "err");
+            if (opts.onSuccess) opts.onSuccess();
+          } else if (res.needs_verification) {
+            showProMsg("Tài khoản cần xác minh thêm trước khi dùng thử Pro. Vui lòng liên hệ hỗ trợ.", "err");
           } else {
-            proMsg("Không kích hoạt được dùng thử Pro: " + (res && (res.reason || res.error) || "lỗi không rõ") + ".", "err");
+            showProMsg("Không kích hoạt được dùng thử Pro: " + (res.reason || res.error || "lỗi không rõ") + ".", "err");
           }
         }).catch(function (err) {
-          proMsg("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
-        }).finally(function () { btn.disabled = false; });
+          showProMsg("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+        }).finally(function () {
+          btn.disabled = false;
+          if (opts.loadingText) btn.textContent = origText;
+        });
+      }
+      $("proTrialBtn").addEventListener("click", function () {
+        startProTrial($("proTrialBtn"));
       });
       $("proPayBtn").addEventListener("click", function () {
         if (!window.CongCuShop || !window.CongCuShop.createPayment) {
-          proMsg("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
+          showProMsg("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
           return;
         }
         var btn = $("proPayBtn");
         btn.disabled = true;
-        proMsg("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
+        showProMsg("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
         window.CongCuShop.createPayment("p9pro").then(function (res) {
           if (res && !res.checkoutUrl) {
-            proMsg("Không tạo được link thanh toán Pro: " + (res.error || "lỗi không rõ") + ".", "err");
+            showProMsg("Không tạo được link thanh toán Pro: " + (res.error || "lỗi không rõ") + ".", "err");
             btn.disabled = false;
           }
           // Có checkoutUrl thì createPayment tự redirect sang payOS.
         }).catch(function (err) {
-          proMsg("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
+          showProMsg("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
           btn.disabled = false;
         });
       });
 
-      /* Nút "Dùng thử Gói Pro 3 ngày" ở bảng giá — cùng luồng như nút hero, nhưng cho p9pro. */
+      /* Nút "Dùng thử Gói Pro 3 ngày" ở bảng giá — dùng chung luồng startProTrial
+         với nút trong thẻ upsell; kích hoạt xong thì cuộn tới khu vực công cụ. */
       var proPriceBtn = $("proPriceTrialBtn");
       if (proPriceBtn) proPriceBtn.addEventListener("click", function () {
-        var authEl = document.getElementById("ccs-auth");
-        function goAuth() {
-          if (authEl) authEl.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
-        }
-        if (!window.CongCuShop || !window.CongCuShop.getSession) { goAuth(); return; }
-        window.CongCuShop.getSession().then(function (session) {
-          if (!session) { goAuth(); return; }
-          proPriceBtn.disabled = true;
-          proPriceBtn.textContent = "Đang kích hoạt dùng thử Pro…";
-          return window.CongCuShop.startTrial("p9pro").then(function (res) {
-            proPriceBtn.disabled = false;
-            proPriceBtn.textContent = "Dùng thử Gói Pro 3 ngày";
-            if (res && res.access) {
-              refreshProAccess();
-              var tool = document.getElementById("cong-cu");
-              if (tool) tool.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
-            } else { goAuth(); }
-          });
-        }).catch(function () {
-          proPriceBtn.disabled = false;
-          proPriceBtn.textContent = "Dùng thử Gói Pro 3 ngày";
-          goAuth();
+        startProTrial(proPriceBtn, {
+          loadingText: "Đang kích hoạt dùng thử Pro…",
+          onSuccess: function () {
+            var tool = document.getElementById("cong-cu");
+            if (tool) tool.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+          }
         });
       });
 
-      /* Khởi tạo: đồng bộ ngôn ngữ đích, cửa ải, quyền Pro (nếu đã có). */
+      /* Khởi tạo: đồng bộ ngôn ngữ đích, cửa ải, quyền Pro (nếu đã có).
+         refreshProAccess() được gọi lại sau 2 giây và 5 giây vì ở lần chạy đầu,
+         checkAccess.js có thể chưa khởi tạo xong và phiên đăng nhập chưa sẵn
+         sàng (lúc đó luôn trả về không có quyền) — tài khoản đã có trial p9pro
+         còn hạn phải tự mở khóa demo video dài ngay khi tải trang. */
       syncTarget();
       evaluateGate();
       refreshProAccess();
+      setTimeout(refreshProAccess, 2000);
+      setTimeout(refreshProAccess, 5000);
 
       /* ---------- Nút hero "Dùng thử 3 ngày" ---------- */
       var heroBtn = $("heroTrialBtn");
@@ -2101,6 +2195,74 @@
           heroBtn.disabled = false;
           heroBtn.textContent = "Dùng thử 3 ngày";
           goAuth();
+        });
+      });
+    })();
+    </script>
+
+    <script>
+    (function () {
+      "use strict";
+      var form = document.getElementById("sp-form");
+      if (!form) return;
+      var msgEl = document.getElementById("sp-msg");
+      var submitBtn = document.getElementById("sp-submit");
+      var SUPABASE_URL = "https://azsaucfdgplkxvqseheh.supabase.co";
+      var SUPABASE_ANON_KEY = "sb_publishable_cT7Q0qJYzfJxFDW8K38HVg_3AiMnDUq";
+      var SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
+      var spClient = null;
+      function loadSupabaseUmd() {
+        return new Promise(function (resolve, reject) {
+          if (window.supabase && window.supabase.createClient) return resolve();
+          var s = document.createElement("script");
+          s.src = SUPABASE_CDN;
+          s.onload = resolve;
+          s.onerror = function () { reject(new Error("load_supabase_failed")); };
+          document.head.appendChild(s);
+        });
+      }
+      function getClient() {
+        if (spClient) return Promise.resolve(spClient);
+        // Ưu tiên client sẵn có nếu trang đã expose ra window (nếu có)
+        if (window.client && window.client.from) { spClient = window.client; return Promise.resolve(spClient); }
+        return loadSupabaseUmd().then(function () {
+          spClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          return spClient;
+        });
+      }
+      function setMsg(text, kind) {
+        msgEl.textContent = text || "";
+        msgEl.className = kind || "";
+      }
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var name = document.getElementById("sp-name").value.trim();
+        var contact = document.getElementById("sp-contact").value.trim();
+        var issue = document.getElementById("sp-issue").value;
+        var message = document.getElementById("sp-message").value.trim();
+        if (!contact || !message) {
+          setMsg("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", "err");
+          return;
+        }
+        submitBtn.disabled = true;
+        setMsg("Đang gửi yêu cầu…", "");
+        getClient().then(function (client) {
+          return client.from("support_tickets").insert({
+            name: name || "",
+            contact: contact,
+            issue_type: issue,
+            message: message,
+            page: "dich-thuyet-minh-video-da-ngon-ngu",
+            status: "new"
+          });
+        }).then(function (res) {
+          if (res && res.error) throw res.error;
+          setMsg("Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.", "ok");
+          form.reset();
+        }).catch(function () {
+          setMsg("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", "err");
+        }).finally(function () {
+          submitBtn.disabled = false;
         });
       });
     })();
