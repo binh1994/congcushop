@@ -485,7 +485,7 @@
         if (locked) { el.removeAttribute("hidden"); el.style.display = "block"; } else { el.style.display = "none"; }
       });
       document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
-        el.textContent = (access.reason === "trial" && access.days_left != null)
+        el.textContent = ((access.reason === "trial" || access.reason === "bundle_trial") && access.days_left != null)
           ? ("Còn " + access.days_left + " ngày dùng thử") : "";
       });
       document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
@@ -499,10 +499,18 @@
     if (!statusEl) return;
     var days = (a.days_left != null) ? a.days_left : null;
     trialBtn.hidden = true;
-    payBtn.hidden = true;
+    // SỬA LỖI mục 13(a) — nút "Gia hạn bằng VietQR" phải HIỆN mỗi khi đã đăng
+    // nhập (đang trial, đã trả phí, bundle...) để khách trả tiền sớm được.
+    // Trước đây nút chỉ hiện khi hết hạn, nên khách đang trial không tới
+    // được payOS. Chỉ ẩn khi chưa đăng nhập (lúc đó khối tài khoản cũng
+    // đang ẩn nên nút không nhìn thấy được).
+    payBtn.hidden = (a.reason === "login_required");
     switch (a.reason) {
       case "trial":
         statusEl.innerHTML = "<b>Đang dùng thử</b> — còn <b>" + days + " ngày</b> dùng thử " + meta.name + ".";
+        break;
+      case "bundle_trial":
+        statusEl.innerHTML = "<b>Đang dùng thử Gói Bundle</b> — còn <b>" + days + " ngày</b> dùng thử cả 10 công cụ.";
         break;
       case "paid":
         statusEl.innerHTML = "<b>Đã trả tiền</b> — dùng được tới ngày <b>" +
@@ -519,11 +527,9 @@
         break;
       case "trial_expired":
         statusEl.innerHTML = "<b>Đã hết 3 ngày dùng thử.</b> Gia hạn để dùng tiếp.";
-        payBtn.hidden = false;
         break;
       case "subscription_expired":
         statusEl.innerHTML = "<b>Gói tháng đã hết hạn.</b> Gia hạn để dùng tiếp.";
-        payBtn.hidden = false;
         break;
       case "verification_required":
         statusEl.innerHTML = "<b>Tài khoản cần xác minh thêm</b> trước khi dùng thử. " +
@@ -534,7 +540,6 @@
         break;
       default:
         statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
-        if (!a.access) payBtn.hidden = false;
     }
   }
 
