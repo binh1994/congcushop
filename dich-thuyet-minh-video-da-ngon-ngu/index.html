@@ -167,6 +167,13 @@
       }
       .btn-ghost:hover{ background:var(--accent-soft); }
       .btn-sm{ padding:9px 16px; font-size:15px; min-height:44px; }
+      /* Nút Pro dùng thử (trong thẻ upsell + ở bảng giá) được ẩn/hiện bằng
+         thuộc tính hidden trong updateProButtons(). Vì .btn ở trên đặt
+         display:inline-flex nên nó ghi đè kiểu mặc định [hidden]{display:none}
+         của trình duyệt — không có quy tắc này thì nút vẫn hiện dù đã có
+         quyền Pro (bundle_trial / trial p9pro / paid p9pro). */
+      #proTrialBtn[hidden], #proPriceTrialBtn[hidden],
+      #proPayBtn[hidden], #proPricePayBtn[hidden]{ display:none !important; }
       .trial-days{ font-weight:700; color:var(--accent); font-size:14.5px; }
       .trial-days:empty{ display:none; }
       .lang-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
@@ -1254,6 +1261,8 @@
               <li>Thanh toán VietQR qua payOS</li>
             </ul>
             <button type="button" class="btn" id="proPriceTrialBtn">Dùng thử Gói Pro 3 ngày</button>
+            <button type="button" class="btn btn-ghost" id="proPricePayBtn" style="margin-top:10px">Gia hạn Pro bằng VietQR — 99.000đ/tháng</button>
+            <p class="ccs-msg" id="proPriceMsg" role="status" style="margin:10px 0 0"></p>
           </div>
           <div class="price-card">
             <h3>Gói Bundle — cả 10 công cụ</h3>
@@ -1531,7 +1540,7 @@
 
       var LS_KEY = "ccs_p9_script";
       var LS_JOBS = "ccs_p9_jobs";
-      var state = { lang: "vi", cues: [], running: false, dubRunning: false, video: null, videoFile: null, proAccess: false };
+      var state = { lang: "vi", cues: [], running: false, dubRunning: false, video: null, videoFile: null, proAccess: false, proAccessInfo: null };
 
       var $ = function (id) { return document.getElementById(id); };
       var scriptInput = $("scriptInput");
@@ -2526,9 +2535,35 @@
 
       /* ================= GÓI PRO (p9pro) — DÙNG THỬ / GIA HẠN ================= */
       function showProMsg(text, kind) {
-        if (!proMsgEl) return;
-        proMsgEl.textContent = text || "";
-        proMsgEl.className = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+        // Hiện cùng một thông báo ở cả thẻ upsell (trong công cụ) và thẻ giá
+        // Pro (mục Bảng giá) — khách bấm nút ở đâu cũng đọc được kết quả ở đó.
+        var cls = "ccs-msg" + (kind === "err" ? " err" : kind === "ok" ? " ok" : "");
+        if (proMsgEl) { proMsgEl.textContent = text || ""; proMsgEl.className = cls; }
+        var priceMsgEl = $("proPriceMsg");
+        if (priceMsgEl) { priceMsgEl.textContent = text || ""; priceMsgEl.className = cls; }
+      }
+      /* Ẩn/hiện các nút Pro theo quyền Pro hiện tại (kết quả checkAccess("p9pro"),
+         đã gồm cả quyền qua Gói Bundle vì get_access gộp bundle vào p9pro).
+         QUY TẮC (sửa lỗi nút trả tiền Pro biến mất trong lúc dùng thử):
+         - Nút TRẢ TIỀN Pro (proPayBtn ở upsell + proPricePayBtn ở bảng giá):
+           KHÔNG BAO GIỜ ẩn — khách chưa đăng nhập, đang dùng thử p9 / Bundle /
+           Pro, đã trả phí Pro (để gia hạn tiếp) hay hết hạn đều thấy và bấm
+           được. Chưa đăng nhập thì handler dẫn về khối đăng nhập (luồng mục 13).
+         - Nút DÙNG THỬ Pro (proTrialBtn + proPriceTrialBtn): chỉ hiện khi
+           khách CHƯA có quyền Pro nào (chưa trial/paid p9pro, chưa trial/paid
+           bundle) và chưa từng dùng hết trial (trial_expired /
+           subscription_expired thì chỉ còn đường gia hạn). */
+      function updateProButtons(a) {
+        var hasPro = !!(a && a.access);
+        var trialUsedUp = !!(a && (a.reason === "trial_expired" || a.reason === "subscription_expired"));
+        var showTrial = !hasPro && !trialUsedUp;
+        // Ngoài thuộc tính hidden (đã có quy tắc CSS #proTrialBtn[hidden]…
+        // ở <head> để thắng display:inline-flex của .btn), đặt thêm
+        // style.display tường minh cho chắc chắn ẩn thật trên mọi trình duyệt.
+        var t1 = $("proTrialBtn"); if (t1) { t1.hidden = !showTrial; t1.style.display = showTrial ? "" : "none"; }
+        var t2 = $("proPriceTrialBtn"); if (t2) { t2.hidden = !showTrial; t2.style.display = showTrial ? "" : "none"; }
+        var p1 = $("proPayBtn"); if (p1) { p1.hidden = false; p1.style.display = ""; }
+        var p2 = $("proPricePayBtn"); if (p2) { p2.hidden = false; p2.style.display = ""; }
       }
       /* Kiểm tra quyền Pro để mở cửa ải > 3 phút (chỉ nới cửa thời lượng bên trong
          khu vực công cụ đã mở khóa; KHÔNG thay cơ chế khóa đăng nhập của snippet). */
@@ -2541,8 +2576,10 @@
           return window.CongCuShop.checkAccess("p9pro");
         }).then(function (a) {
           state.proAccess = !!(a && a.access);
+          state.proAccessInfo = a || null;
+          updateProButtons(a);
           evaluateGate();
-        }).catch(function () { /* chưa xác minh được quyền Pro: giữ cửa ải Chuẩn */ });
+        }).catch(function () { /* chưa xác minh được quyền Pro: giữ cửa ải Chuẩn, nút trả tiền Pro vẫn hiện theo mặc định HTML */ });
       }
       /* Luồng dùng thử Pro DÙNG CHUNG cho nút trong thẻ upsell và nút ở bảng giá:
          vô hiệu nút -> báo "Đang kích hoạt dùng thử Pro…" -> kiểm tra phiên đăng
@@ -2593,16 +2630,30 @@
       $("proTrialBtn").addEventListener("click", function () {
         startProTrial($("proTrialBtn"));
       });
-      $("proPayBtn").addEventListener("click", function () {
+      /* Luồng TRẢ TIỀN Pro DÙNG CHUNG cho nút ở thẻ upsell và nút ở bảng giá —
+         cùng mẫu đã sửa ở mục 13 cho nút "Gia hạn bằng VietQR": gọi
+         CongCuShop.createPayment("p9pro"); chưa đăng nhập thì createPayment
+         trả reason "login_required" -> hiện rõ câu yêu cầu đăng nhập và cuộn
+         tới khối đăng nhập #ccs-auth (không bấm chết lặng, không "lỗi không
+         rõ"); lỗi server hiện nguyên văn; có checkoutUrl thì createPayment
+         tự chuyển sang payOS. Luôn bật lại nút khi không redirect. */
+      function startProPayment(btn) {
+        if (!btn || btn.disabled) return;
         if (!window.CongCuShop || !window.CongCuShop.createPayment) {
           showProMsg("Chưa nạp được checkAccess.js — không tạo link thanh toán được.", "err");
           return;
         }
-        var btn = $("proPayBtn");
         btn.disabled = true;
         showProMsg("Đang tạo mã VietQR… (sẽ chuyển sang trang payOS)");
         window.CongCuShop.createPayment("p9pro").then(function (res) {
-          if (res && !res.checkoutUrl) {
+          if (!res) { btn.disabled = false; return; }
+          if (res.reason === "login_required") {
+            showProMsg(res.error || "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.", "err");
+            scrollToAuth();
+            btn.disabled = false;
+            return;
+          }
+          if (!res.checkoutUrl) {
             showProMsg("Không tạo được link thanh toán Pro: " + (res.error || "lỗi không rõ") + ".", "err");
             btn.disabled = false;
           }
@@ -2611,6 +2662,13 @@
           showProMsg("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
           btn.disabled = false;
         });
+      }
+      $("proPayBtn").addEventListener("click", function () {
+        startProPayment($("proPayBtn"));
+      });
+      var proPricePayBtn = $("proPricePayBtn");
+      if (proPricePayBtn) proPricePayBtn.addEventListener("click", function () {
+        startProPayment(proPricePayBtn);
       });
 
       /* Nút "Dùng thử Gói Pro 3 ngày" ở bảng giá — dùng chung luồng startProTrial
