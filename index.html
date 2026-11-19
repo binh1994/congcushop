@@ -34,9 +34,9 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:5px}
 @media(max-width:640px){.topnav-in{padding:8px 10px;gap:5px}.topnav a{font-size:.8rem;padding:7px 10px;min-height:34px}}
 .topnav a{white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:600;font-size:.86rem;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;min-height:38px}
 .topnav a.cta{background:var(--warm);color:#fff;border-color:var(--warm)}
-/* hero */
-.hero{padding:34px 0 8px}
-.hero h1{font-size:clamp(1.9rem,5.2vw,3.1rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 12px;font-weight:900;max-width:820px}
+/* hero — khung trung tính, rõ nhịp: nền mặt phẳng + chấm trang trí mờ, không lấn màu thẻ */
+.hero{margin:18px 0 4px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:30px 26px 24px;background-image:radial-gradient(color-mix(in srgb,var(--ink) 7%,transparent) 1px,transparent 1.4px);background-size:22px 22px;box-shadow:var(--shadow)}
+.hero h1{font-size:clamp(1.9rem,5.2vw,3.1rem);line-height:1.08;letter-spacing:-.02em;margin:12px 0 12px;font-weight:900;max-width:820px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero p.lead{font-size:1.06rem;color:var(--muted);max-width:720px;margin:0 0 20px}
 .statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 6px}
@@ -49,20 +49,63 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:5px}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.warm{background:var(--warm);border-color:var(--warm);color:#fff}
 .btn:active{transform:translateY(1px)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(19,32,27,.12)}
 .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-/* sections */
-section{padding:30px 0 6px}
+/* sections — nhịp rõ hơn: khoảng cách lớn hơn, tiêu đề mục có vạch ngắn trung tính */
+section{padding:38px 0 10px}
+.wrap>section>h2{padding-bottom:10px}
+.wrap>section>h2::after{content:"";display:block;width:48px;height:4px;border-radius:99px;background:var(--ink);opacity:.85;margin-top:10px}
 h2{font-size:clamp(1.35rem,3vw,1.8rem);letter-spacing:-.01em;margin:0 0 6px;line-height:1.2}
 .sub{color:var(--muted);max-width:760px;margin:0 0 18px}
-.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:900px){.grid6{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.grid6{grid-template-columns:1fr}}
-.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
 .pcard .num{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--accent);font-size:.85rem}
 .pcard h3{margin:0;font-size:1.05rem;line-height:1.3}
 .pcard p{margin:0;color:var(--muted);font-size:.9rem;flex:1}
+.pcard .btn,.pcard .btnrow{margin-top:auto}
 .price{font-weight:800;font-size:1.05rem}
 .price small{font-weight:500;color:var(--muted)}
+/* === Bản sắc riêng từng sản phẩm: chỉ 10 thẻ sản phẩm (class p1..p10) mang màu,
+   thẻ tiếp thị (không có class pN) giữ trung tính. Vạch màu trên cùng + nền pha
+   loãng + nút bấm theo màu chủ đạo của từng trang sản phẩm. === */
+.pcard.p1{--pc:#0b7a5e;--pc2:#b7791f}
+.pcard.p2{--pc:#1d4ed8}
+.pcard.p3{--pc:#7c3aed}
+.pcard.p4{--pc:#0f766e}
+.pcard.p5{--pc:#ea580c}
+.pcard.p6{--pc:#1e3a5f}
+.pcard.p7{--pc:#92400e}
+.pcard.p8{--pc:#b91c1c}
+.pcard.p9{--pc:#0284c7}
+.pcard.p10{--pc:#a21caf}
+.pcard[class*=" p"]{border-color:color-mix(in srgb,var(--pc) 38%,var(--line));background:color-mix(in srgb,var(--pc) 5%,var(--surface))}
+.pcard[class*=" p"]::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--pc)}
+.pcard.p1::before{background:linear-gradient(90deg,#0b7a5e 0 62%,#b7791f 62% 100%)}
+.pcard[class*=" p"] .num{color:color-mix(in srgb,var(--pc) 82%,var(--ink))}
+.pcard.p1 .num{color:color-mix(in srgb,#b7791f 82%,var(--ink))}
+.pcard[class*=" p"] .price{color:color-mix(in srgb,var(--pc) 82%,var(--ink))}
+.pcard[class*=" p"] .btn.primary{background:var(--pc);border-color:var(--pc);color:#fff}
+.pcard[class*=" p"] .btn.primary:hover{filter:brightness(.93)}
+.pcard[class*=" p"]:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(19,32,27,.08),0 12px 28px color-mix(in srgb,var(--pc) 22%,transparent);border-color:var(--pc)}
+/* === Bản sắc ở 10 khối demo: vạch màu trên + huy hiệu + nút chính theo màu sản phẩm === */
+#tool1{--pc:#0b7a5e;--pc2:#b7791f}
+#tool2{--pc:#1d4ed8}
+#tool3{--pc:#7c3aed}
+#tool4{--pc:#0f766e}
+#tool5{--pc:#ea580c}
+#tool6{--pc:#1e3a5f}
+#tool7{--pc:#92400e}
+#tool8{--pc:#b91c1c}
+#tool9{--pc:#0284c7}
+#tool10{--pc:#a21caf}
+.tool[id^="tool"]{border-top:4px solid var(--pc)}
+.tool[id^="tool"] .tool-head .badge:not(.warm){background:color-mix(in srgb,var(--pc) 12%,var(--surface));color:color-mix(in srgb,var(--pc) 78%,var(--ink))}
+.tool[id^="tool"] .tool-head .badge.warm{background:color-mix(in srgb,var(--pc) 12%,var(--surface));color:color-mix(in srgb,var(--pc) 82%,var(--ink))}
+.tool[id^="tool"] .btn.primary{background:var(--pc);border-color:var(--pc);color:#fff}
+.tool[id^="tool"] .btn.primary:hover{filter:brightness(.93)}
+#tool1 .tool-head .badge.warm{background:linear-gradient(90deg,color-mix(in srgb,#0b7a5e 14%,var(--surface)),color-mix(in srgb,#b7791f 16%,var(--surface)));color:color-mix(in srgb,#b7791f 82%,var(--ink))}
 .tool{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:22px;scroll-margin-top:76px}
 .tool-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}
 .tool-head h3{margin:2px 0 4px;font-size:1.25rem}
@@ -603,16 +646,16 @@ footer{padding:34px 0 50px;color:var(--muted);font-size:.85rem}
   <h2>10 sản phẩm — một hệ sinh thái</h2>
   <p class="sub">Mỗi thẻ nhảy thẳng xuống bản dùng thử tương ứng. Dữ liệu bạn nhập được lưu trên trình duyệt của máy này (localStorage), mở lại trang vẫn còn và không gửi đi đâu; xóa dữ liệu trình duyệt hoặc đổi máy sẽ mất — hãy sao chép/tải về những gì quan trọng.</p>
   <div class="grid6">
-    <article class="pcard"><span class="num">01 · ƯU TIÊN SỐ 1</span><h3>Tính lợi nhuận sàn</h3><p>Cho người bán Shopee, TikTok Shop: lãi thật sau giá vốn, phí sàn, quảng cáo, affiliate và hoàn hủy — kèm giá hòa vốn &amp; ROAS hòa vốn.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool1">Dùng thử</a></article>
-    <article class="pcard"><span class="num">02</span><h3>Quản lý đơn, cọc &amp; công nợ</h3><p>Cho shop bán qua Facebook/Zalo/chat: ghi đơn nhanh, theo dõi tiền cọc, tiền còn thu và khách nợ quá hạn.</p><div class="price">39.000đ <small>/tháng · Pro 69k</small></div><a class="btn primary" href="#tool2">Dùng thử</a></article>
-    <article class="pcard"><span class="num">03</span><h3>Nội dung đa nền tảng</h3><p>Caption, tiêu đề, mô tả và hashtag cho Facebook / TikTok / website từ mẫu tiếng Việt theo ngành — không hứa hẹn “viral”.</p><div class="price">39.000đ <small>/tháng · Pro 79k</small></div><a class="btn primary" href="#tool3">Dùng thử</a></article>
-    <article class="pcard"><span class="num">04</span><h3>Sổ thu chi hộ kinh doanh</h3><p>Ghi thu/chi trong vài giây, xem dòng tiền tháng và nhóm chi lớn nhất. Công cụ quản lý nội bộ — không thay thế kế toán/thuế.</p><div class="price">39.000đ <small>/tháng · Pro 69k</small></div><a class="btn primary" href="#tool4">Dùng thử</a></article>
-    <article class="pcard"><span class="num">05</span><h3>Ảnh &amp; nội dung sản phẩm</h3><p>Thẻ ảnh đăng bán vuông 1:1 với giá, điểm nổi bật và màu thương hiệu — kèm mô tả sản phẩm viết sẵn để copy.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool5">Dùng thử</a></article>
-    <article class="pcard"><span class="num">06</span><h3>Báo giá &amp; hợp đồng mẫu</h3><p>Cho freelancer, thợ dịch vụ, đội thi công nhỏ: báo giá theo dòng việc, chiết khấu, thuế và in/gửi qua Zalo.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool6">Dùng thử</a></article>
-    <article class="pcard"><span class="num">07 · MỚI</span><h3>Tìm nhà cung cấp sản xuất</h3><p>Danh bạ nhà máy, xưởng sản xuất theo ngành, tỉnh và mặt hàng — lọc nhanh rồi tạo sẵn tin nhắn hỏi giá để gửi nhà cung cấp.</p><div class="price">49.000đ <small>/tháng</small></div><div class="btnrow" style="margin-top:0"><a class="btn primary" href="#tool7">Dùng thử</a><a class="btn" href="tim-nha-cung-cap-san-xuat/">Trang riêng →</a></div></article>
-    <article class="pcard"><span class="num">08 · MỚI</span><h3>Nghiên cứu đối thủ cạnh tranh</h3><p>Bảng so sánh đối thủ cùng ngành: kênh bán, khoảng giá, điểm mạnh — kèm gợi ý khoảng trống thị trường để shop chen vào.</p><div class="price">49.000đ <small>/tháng</small></div><div class="btnrow" style="margin-top:0"><a class="btn primary" href="#tool8">Dùng thử</a><a class="btn" href="nghien-cuu-doi-thu-canh-tranh/">Trang riêng →</a></div></article>
-    <article class="pcard"><span class="num">09 · MỚI</span><h3>Dịch &amp; thuyết minh video đa ngôn ngữ</h3><p>Dịch kịch bản và phụ đề tiếng Việt sang Anh, Nhật, Hàn, Trung, Pháp, Đức, Tây Ban Nha — xuất file phụ đề SRT dùng ngay.</p><div class="price">49.000đ <small>/tháng</small></div><div class="btnrow" style="margin-top:0"><a class="btn primary" href="#tool9">Dùng thử</a><a class="btn" href="dich-thuyet-minh-video-da-ngon-ngu/">Trang riêng →</a></div></article>
-    <article class="pcard"><span class="num">10 · MỚI</span><h3>Podcast AI</h3><p>Biến bài viết thành kịch bản hội thoại 2 giọng dẫn — khách mời, nghe đọc thử ngay bằng giọng của trình duyệt.</p><div class="price">39.000đ <small>/tháng</small></div><div class="btnrow" style="margin-top:0"><a class="btn primary" href="#tool10">Dùng thử</a><a class="btn" href="podcast-ai/">Trang riêng →</a></div></article>
+    <article class="pcard p1"><span class="num">01 · ƯU TIÊN SỐ 1</span><h3>Tính lợi nhuận sàn</h3><p>Cho người bán Shopee, TikTok Shop: lãi thật sau giá vốn, phí sàn, quảng cáo, affiliate và hoàn hủy — kèm giá hòa vốn &amp; ROAS hòa vốn.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool1">Dùng thử</a></article>
+    <article class="pcard p2"><span class="num">02</span><h3>Quản lý đơn, cọc &amp; công nợ</h3><p>Cho shop bán qua Facebook/Zalo/chat: ghi đơn nhanh, theo dõi tiền cọc, tiền còn thu và khách nợ quá hạn.</p><div class="price">39.000đ <small>/tháng · Pro 69k</small></div><a class="btn primary" href="#tool2">Dùng thử</a></article>
+    <article class="pcard p3"><span class="num">03</span><h3>Nội dung đa nền tảng</h3><p>Caption, tiêu đề, mô tả và hashtag cho Facebook / TikTok / website từ mẫu tiếng Việt theo ngành — không hứa hẹn “viral”.</p><div class="price">39.000đ <small>/tháng · Pro 79k</small></div><a class="btn primary" href="#tool3">Dùng thử</a></article>
+    <article class="pcard p4"><span class="num">04</span><h3>Sổ thu chi hộ kinh doanh</h3><p>Ghi thu/chi trong vài giây, xem dòng tiền tháng và nhóm chi lớn nhất. Công cụ quản lý nội bộ — không thay thế kế toán/thuế.</p><div class="price">39.000đ <small>/tháng · Pro 69k</small></div><a class="btn primary" href="#tool4">Dùng thử</a></article>
+    <article class="pcard p5"><span class="num">05</span><h3>Ảnh &amp; nội dung sản phẩm</h3><p>Thẻ ảnh đăng bán vuông 1:1 với giá, điểm nổi bật và màu thương hiệu — kèm mô tả sản phẩm viết sẵn để copy.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool5">Dùng thử</a></article>
+    <article class="pcard p6"><span class="num">06</span><h3>Báo giá &amp; hợp đồng mẫu</h3><p>Cho freelancer, thợ dịch vụ, đội thi công nhỏ: báo giá theo dòng việc, chiết khấu, thuế và in/gửi qua Zalo.</p><div class="price">29.000đ <small>/tháng · Pro 59k</small></div><a class="btn primary" href="#tool6">Dùng thử</a></article>
+    <article class="pcard p7"><span class="num">07 · MỚI</span><h3>Tìm nhà cung cấp sản xuất</h3><p>Danh bạ nhà máy, xưởng sản xuất theo ngành, tỉnh và mặt hàng — lọc nhanh rồi tạo sẵn tin nhắn hỏi giá để gửi nhà cung cấp.</p><div class="price">49.000đ <small>/tháng</small></div><div class="btnrow"><a class="btn primary" href="#tool7">Dùng thử</a><a class="btn" href="tim-nha-cung-cap-san-xuat/">Trang riêng →</a></div></article>
+    <article class="pcard p8"><span class="num">08 · MỚI</span><h3>Nghiên cứu đối thủ cạnh tranh</h3><p>Bảng so sánh đối thủ cùng ngành: kênh bán, khoảng giá, điểm mạnh — kèm gợi ý khoảng trống thị trường để shop chen vào.</p><div class="price">49.000đ <small>/tháng</small></div><div class="btnrow"><a class="btn primary" href="#tool8">Dùng thử</a><a class="btn" href="nghien-cuu-doi-thu-canh-tranh/">Trang riêng →</a></div></article>
+    <article class="pcard p9"><span class="num">09 · MỚI</span><h3>Dịch &amp; thuyết minh video đa ngôn ngữ</h3><p>Dịch kịch bản và phụ đề tiếng Việt sang Anh, Nhật, Hàn, Trung, Pháp, Đức, Tây Ban Nha — xuất file phụ đề SRT dùng ngay.</p><div class="price">49.000đ <small>/tháng</small></div><div class="btnrow"><a class="btn primary" href="#tool9">Dùng thử</a><a class="btn" href="dich-thuyet-minh-video-da-ngon-ngu/">Trang riêng →</a></div></article>
+    <article class="pcard p10"><span class="num">10 · MỚI</span><h3>Podcast AI</h3><p>Biến bài viết thành kịch bản hội thoại 2 giọng dẫn — khách mời, nghe đọc thử ngay bằng giọng của trình duyệt.</p><div class="price">39.000đ <small>/tháng</small></div><div class="btnrow"><a class="btn primary" href="#tool10">Dùng thử</a><a class="btn" href="podcast-ai/">Trang riêng →</a></div></article>
   </div>
 </section>
 
