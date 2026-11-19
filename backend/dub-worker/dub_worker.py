@@ -480,6 +480,33 @@ def update_job(sb, job_id, **fields):
     (sb.table("dubbing_jobs").update(fields).eq("id", job_id).execute())
 
 
+def download_source_video(sb, job, workdir):
+    """Tải video gốc về workdir. Hỗ trợ 2 dạng upload từ trang (xem
+    CONTRACT.md §2-§3):
+      - 1 file: source_path = <uid>/<job_id>/source.mp4 (gói Chuẩn sau nén).
+      - chia chunk: payload.chunks = ["part-001", ...], source_path trỏ
+        chunk đầu. Các chunk là lát cắt byte liên tiếp của file gốc (mỗi
+        chunk <= 40 MB) nên chỉ cần nối byte theo đúng thứ tự trong
+        payload.chunks là khôi phục đúng file gốc (không cần ffmpeg concat).
+    Trả về đường dẫn file source.mp4 local."""
+    src_local = Path(workdir) / "source.mp4"
+    payload = job.get("payload") or {}
+    chunks = payload.get("chunks") if isinstance(payload, dict) else None
+    if chunks:
+        base = f"{job['user_id']}/{job['id']}"
+        log.info("Job chia chunk: %d phần, nối byte theo thứ tự", len(chunks))
+        with open(src_local, "wb") as out_f:
+            for name in chunks:
+                data = sb.storage.from_(SOURCE_BUCKET).download(f"{base}/{name}")
+                out_f.write(data)
+        log.info("Đã ghép %d chunk -> %s (%d bytes)",
+                 len(chunks), src_local, src_local.stat().st_size)
+    else:
+        data = sb.storage.from_(SOURCE_BUCKET).download(job["source_path"])
+        src_local.write_bytes(data)
+    return src_local
+
+
 def process_job(sb, job, work_root, model_size):
     job_id = job["id"]
     job_type = job["job_type"]
@@ -496,9 +523,7 @@ def process_job(sb, job, work_root, model_size):
                 raise RuntimeError(
                     f"duration_exceeded: video {dur}s vượt giới hạn gói "
                     f"{product} ({limit}s)")
-            src_local = workdir / "source.mp4"
-            data = sb.storage.from_(SOURCE_BUCKET).download(job["source_path"])
-            src_local.write_bytes(data)
+            src_local = download_source_video(sb, job, workdir)
             real_dur = ffprobe_duration(src_local)
             if real_dur > limit:
                 raise RuntimeError(
