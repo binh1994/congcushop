@@ -14,7 +14,7 @@
     <style>
       :root{
         --bg:#f4f6f2; --surface:#ffffff; --surface2:#edf1ec; --ink:#15211c; --ink2:#43534b;
-        --line:#d8e0d7; --accent:#0b6b57; --accent-ink:#ffffff; --accent-soft:#e2f0ea;
+        --line:#d8e0d7; --line-strong:#8fa596; --accent:#0b6b57; --accent-ink:#ffffff; --accent-soft:#e2f0ea;
         --amber:#b97a16; --amber-soft:#faf0da; --danger:#b3372c; --blue:#2563a8; --blue-soft:#e3edf8;
         --paper:#ffffff; --paper-ink:#1c2420;
         --shadow:0 10px 30px rgba(21,33,28,.10);
@@ -23,7 +23,7 @@
       @media (prefers-color-scheme: dark){
         :root{
           --bg:#0d1311; --surface:#151d1a; --surface2:#1b2622; --ink:#e9f0eb; --ink2:#a7b8ae;
-          --line:#2a3831; --accent:#2fbf9b; --accent-ink:#06231b; --accent-soft:#17362c;
+          --line:#2a3831; --line-strong:#50645a; --accent:#2fbf9b; --accent-ink:#06231b; --accent-soft:#17362c;
           --amber:#e0a83f; --amber-soft:#2e2410; --danger:#e07a6d; --blue:#7db1e8; --blue-soft:#16283d;
           --paper:#ffffff; --paper-ink:#1c2420;
           --shadow:0 10px 30px rgba(0,0,0,.45);
@@ -39,14 +39,14 @@
       a{color:var(--accent)}
       .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
       /* ---------- Hero ---------- */
-      .hero{padding:40px 0 8px}
+      .hero{padding:44px 0 24px}
       .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:start}
       .audience{font-size:.85rem;font-weight:600;color:var(--accent);margin:0 0 10px}
       h1{font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.18;margin:0 0 14px;font-weight:800;letter-spacing:-.01em}
       h1 .hl{color:var(--accent)}
       .hero p.lead{color:var(--ink2);font-size:1.05rem;margin:0 0 20px;max-width:56ch}
       .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
-      .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 18px;font-weight:600;cursor:pointer;text-decoration:none;min-height:48px}
+      .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 18px;font-weight:600;cursor:pointer;text-decoration:none;min-height:48px}
       .btn:hover{border-color:var(--accent)}
       .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
       .btn.small{min-height:40px;padding:6px 14px;font-size:.9rem}
@@ -55,39 +55,49 @@
       .feat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
       .feat b{display:block;font-size:.95rem;margin-bottom:2px}
       .feat span{font-size:.85rem;color:var(--ink2)}
-      .price-card{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
-      .price-card .p-label{font-size:.85rem;color:var(--ink2);margin:0}
-      .price-big{font-size:2.2rem;font-weight:800;margin:4px 0 0;line-height:1.1}
+      .price-card{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:12px;padding:24px;box-shadow:var(--shadow)}
+      .price-card .p-label{font-size:.88rem;font-weight:600;color:var(--ink2);margin:0}
+      .price-big{font-size:2.45rem;font-weight:800;margin:6px 0 0;line-height:1.05;letter-spacing:-.01em}
       .price-big small{font-size:1rem;font-weight:600;color:var(--ink2)}
-      .trial{display:inline-block;background:var(--amber-soft);color:var(--amber);font-weight:700;font-size:.85rem;border-radius:999px;padding:4px 12px;margin:10px 0 14px}
+      .trial{display:inline-block;background:var(--amber-soft);color:var(--amber);font-weight:700;font-size:.88rem;border-radius:999px;padding:5px 14px;margin:12px 0 16px}
       .price-card ul{margin:0 0 16px;padding-left:18px;color:var(--ink2);font-size:.93rem}
-      .price-card ul li{margin:5px 0}
-      .price-card .fine{font-size:.82rem;color:var(--ink2);margin:10px 0 0}
+      .price-card ul li{margin:6px 0}
+      .bundle{background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin:0 0 16px;font-size:.92rem;color:var(--ink)}
+      .bundle b{color:var(--accent)}
+      .price-card .fine{font-size:.85rem;color:var(--ink2);margin:12px 0 0}
+      .price-note{margin-top:8px;font-size:.82rem;color:var(--ink2)}
+      .price-note summary{cursor:pointer;font-weight:600;color:var(--accent);padding:8px 0;min-height:40px}
+      .price-note p{margin:2px 0 8px}
       /* ---------- Tabs / workspace ---------- */
-      .workspace{padding:26px 0 10px}
-      .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-      .tab{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:10px 18px;font-weight:600;cursor:pointer;min-height:44px}
-      .tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+      .workspace{padding:28px 0 26px}
+      .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+      .tab{border:1px solid var(--line-strong);background:var(--surface2);color:var(--ink);border-radius:999px;padding:10px 18px;font-weight:600;font-size:.95rem;cursor:pointer;min-height:44px}
+      .tab:hover{border-color:var(--accent);color:var(--accent)}
+      .tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
       .panel{display:none}
       .panel.active{display:block}
       .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
       .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
-      .card h2{font-size:1.1rem;margin:0 0 4px}
-      .card h3{font-size:.98rem;margin:18px 0 8px}
-      .card .hint{font-size:.85rem;color:var(--ink2);margin:0 0 14px}
-      label.f{display:block;font-size:.85rem;font-weight:600;margin:12px 0 4px}
+      .card h2{font-size:1.3rem;font-weight:800;letter-spacing:-.01em;margin:0 0 4px}
+      .card h3{font-size:1.05rem;font-weight:700;margin:22px 0 8px}
+      .card .hint{font-size:.88rem;color:var(--ink2);margin:0 0 14px}
+      label.f{display:block;font-size:.88rem;font-weight:600;margin:12px 0 4px}
       label.f:first-child{margin-top:0}
       input[type="text"],input[type="tel"],input[type="number"],input[type="date"],select,textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:9px 11px}
       textarea{resize:vertical}
       .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
       .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
       /* item rows */
-      .item-row{display:grid;grid-template-columns:1fr 64px 74px 118px 118px 40px;gap:8px;margin-bottom:8px;align-items:end}
-      .item-row .lbl{font-size:.72rem;color:var(--ink2);display:block;margin-bottom:2px}
-      .item-row .amt{display:flex;align-items:center;min-height:44px;font-weight:600;font-size:.92rem;justify-content:flex-end;padding-right:2px}
-      .icon-btn{width:40px;height:44px;border:1px solid var(--line);background:var(--surface2);border-radius:8px;cursor:pointer;color:var(--danger);font-size:1.05rem}
+      .item-row{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.6fr) minmax(0,.52fr) minmax(0,1fr) minmax(0,1.08fr) 36px;gap:8px;margin-bottom:10px;align-items:end;width:100%;min-width:0}
+      .item-row>*{min-width:0}
+      .item-row input{min-width:0;padding-left:7px;padding-right:7px}
+      .item-row .f-qty input,.item-row .f-price input{text-align:right;font-variant-numeric:tabular-nums}
+      .item-row .lbl{font-size:.78rem;font-weight:600;color:var(--ink2);display:block;margin-bottom:3px;white-space:nowrap}
+      .item-row .amt{display:flex;align-items:center;min-height:44px;font-weight:700;font-size:.9rem;font-variant-numeric:tabular-nums;justify-content:flex-end;text-align:right;padding-right:2px;white-space:nowrap;min-width:0}
+      .icon-btn{width:36px;height:44px;border:1px solid var(--line);background:var(--surface2);border-radius:8px;cursor:pointer;color:var(--danger);font-size:1.05rem;justify-self:end;padding:0}
       .totals{border-top:1px dashed var(--line);margin-top:14px;padding-top:12px;font-size:.95rem}
-      .totals .row{display:flex;justify-content:space-between;padding:3px 0;color:var(--ink2)}
+      .totals .row{display:flex;justify-content:space-between;gap:14px;padding:3px 0;color:var(--ink2)}
+      .totals .row span:last-child{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       .totals .row.grand{color:var(--ink);font-weight:800;font-size:1.12rem;border-top:1px solid var(--line);margin-top:8px;padding-top:10px}
       .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
       .toast{display:none;margin-top:12px;background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:10px 14px;font-size:.9rem;font-weight:600}
@@ -104,7 +114,7 @@
       .paper table{width:100%;border-collapse:collapse;margin:10px 0}
       .paper th{background:#eef4f0;text-align:left;padding:7px 8px;font-size:.78rem;border:1px solid #d5ddd6}
       .paper td{padding:7px 8px;border:1px solid #d5ddd6;vertical-align:top}
-      .paper td.num,.paper th.num{text-align:right;white-space:nowrap}
+      .paper td.num,.paper th.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
       .paper .sum{margin-left:auto;width:min(300px,100%)}
       .paper .sum .row{display:flex;justify-content:space-between;padding:2px 0}
       .paper .sum .grand{font-weight:800;font-size:1rem;border-top:2px solid #0b6b57;margin-top:6px;padding-top:7px;color:#0b6b57}
@@ -120,13 +130,16 @@
       /* ---------- Tracking / clients / templates ---------- */
       .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
       .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
-      .stat b{font-size:1.35rem;display:block;line-height:1.15}
+      .stat b{font-size:1.35rem;display:block;line-height:1.15;font-variant-numeric:tabular-nums}
       .stat span{font-size:.82rem;color:var(--ink2)}
       .q-list{display:grid;gap:10px}
-      .q-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center}
+      .q-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"main total" "badge actions";gap:8px 16px;align-items:center}
+      .q-item .q-main{grid-area:main;min-width:0}
       .q-item .q-main b{font-size:1rem}
       .q-item .q-main span{display:block;font-size:.85rem;color:var(--ink2)}
-      .q-item .q-total{font-weight:800;font-size:1.05rem;text-align:right}
+      .q-item .q-total{grid-area:total;font-weight:800;font-size:1.1rem;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+      .q-item .q-badge-wrap{grid-area:badge}
+      .q-item .q-actions{grid-area:actions;justify-content:flex-end}
       .q-item select{width:auto;min-width:132px}
       .badge{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 10px}
       .badge.draft{background:var(--surface2);color:var(--ink2)}
@@ -146,8 +159,9 @@
       .client-item b{display:block;font-size:.95rem}
       .client-item span{font-size:.83rem;color:var(--ink2)}
       /* ---------- Sections ---------- */
-      section.block{padding:34px 0}
-      section.block h2{font-size:1.45rem;margin:0 0 8px}
+      section.block{padding:42px 0}
+      section.block.faq-block{padding-top:14px}
+      section.block h2{font-size:1.6rem;font-weight:800;letter-spacing:-.01em;margin:0 0 8px}
       section.block .sub{color:var(--ink2);margin:0 0 20px;max-width:64ch}
       .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
       .step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
@@ -157,7 +171,7 @@
       .faq details{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:4px 16px}
       .faq summary{font-weight:600;cursor:pointer;padding:12px 0;min-height:44px}
       .faq details p{color:var(--ink2);margin:0 0 14px;font-size:.94rem}
-      footer{border-top:1px solid var(--line);padding:22px 0 34px;color:var(--ink2);font-size:.88rem}
+      footer{border-top:1px solid var(--line);padding:26px 0 38px;color:var(--ink2);font-size:.88rem}
       footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between}
       .btn.armed{background:var(--danger);color:#fff;border-color:var(--danger)}
       .copybox{width:100%;margin-top:10px;border:1px dashed var(--amber);border-radius:8px;background:var(--amber-soft);color:var(--ink);padding:10px 12px;font-size:.88rem}
@@ -173,14 +187,15 @@
       }
       @media (max-width:640px){
         .feat-row,.tpl-grid,.steps,.grid2,.grid3{grid-template-columns:1fr}
-        .item-row{grid-template-columns:1fr 1fr 44px;grid-template-areas:"name name del" "unit qty amt" "price price amt"}
+        .item-row{grid-template-columns:minmax(0,1fr) minmax(0,.65fr) minmax(92px,auto);gap:8px;grid-template-areas:"name name del" "unit qty amt" "price price amt"}
         .item-row .f-name{grid-area:name}.item-row .f-unit{grid-area:unit}.item-row .f-qty{grid-area:qty}
-        .item-row .f-price{grid-area:price}.item-row .amt{grid-area:amt}.item-row .icon-btn{grid-area:del}
+        .item-row .f-price{grid-area:price}.item-row .amt{grid-area:amt;justify-self:end}.item-row .icon-btn{grid-area:del}
         .paper{padding:20px 16px;font-size:.8rem}
         .paper .doc-head{flex-direction:column}
         .paper .doc-title{text-align:left}
-        .q-item{grid-template-columns:1fr}
+        .q-item{grid-template-columns:1fr;grid-template-areas:"main" "total" "badge" "actions"}
         .q-item .q-total{text-align:left}
+        .q-item .q-actions{justify-content:flex-start}
         .hero{padding-top:26px}
       }
       @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
@@ -196,7 +211,7 @@
           <p class="lead">Không còn gõ báo giá trong Word rồi mất file, không còn quên khách nào đã gửi giá. Chọn mẫu theo nghề, điền số, xuất PDF gửi Zalo — và theo dõi báo giá nào đã chốt, báo giá nào cần nhắc lại.</p>
           <div class="cta-row">
             <a class="btn primary" href="#app">Tạo báo giá ngay — dùng thử 3 ngày</a>
-            <a class="btn" href="#app">Xem mẫu theo nghề</a>
+            <a class="btn" href="#app" id="seeTemplates">Xem 6 mẫu báo giá theo nghề</a>
           </div>
           <div class="feat-row">
             <div class="feat"><b>Tạo báo giá PDF</b><span>Mẫu đẹp sẵn, tự tính tổng, chiết khấu, VAT, tạm ứng.</span></div>
@@ -216,8 +231,14 @@
             <li>Theo dõi trạng thái và tổng giá trị đã chốt</li>
             <li>Dùng tốt trên điện thoại — tạo báo giá ngay tại công trình</li>
           </ul>
+          <p class="bundle"><b>Bundle 6 công cụ: 99.000đ/tháng</b> — dùng cả 6 công cụ trong bộ cho người bán &amp; làm dịch vụ, thay vì đăng ký lẻ từng công cụ 29.000đ/tháng.</p>
           <a class="btn primary" href="#app" style="width:100%">Dùng thử 3 ngày miễn phí</a>
-          <p class="fine">Dùng thử 3 ngày dùng đủ tính năng, không cần thẻ. Hết 3 ngày, nếu tiếp tục dùng thì tính phí 29.000đ/tháng. Lưu ý để tránh hiểu nhầm: “0 đồng” trong kế hoạch làm sản phẩm là chi phí đầu tư ban đầu của bên làm ra sản phẩm này — dùng hạ tầng miễn phí như Cloudflare Pages nên không tốn vốn — chứ không phải giá cho khách. Khách vẫn dùng thử 3 ngày rồi trả phí như trên. Nói rõ thêm: bản demo trên trang này chưa tự khóa tính năng sau 3 ngày và chưa tự thu phí — thanh toán VietQR qua payOS sẽ mở khi ra mắt chính thức, ở đây không có nút thanh toán giả.</p>
+          <p class="fine">Dùng thử 3 ngày dùng đủ tính năng, không cần thẻ. Hết 3 ngày, nếu tiếp tục dùng thì tính phí 29.000đ/tháng.</p>
+          <details class="price-note">
+            <summary>“0 đồng” nghĩa là gì? Bản demo này tính phí ra sao?</summary>
+            <p>“0 đồng” trong kế hoạch làm sản phẩm là chi phí đầu tư ban đầu của bên làm ra sản phẩm này — dùng hạ tầng miễn phí như Cloudflare Pages nên không tốn vốn — chứ không phải giá cho khách. Khách vẫn dùng thử 3 ngày rồi trả phí như trên.</p>
+            <p>Bản demo trên trang này chưa tự khóa tính năng sau 3 ngày và chưa tự thu phí — thanh toán VietQR qua payOS sẽ mở khi ra mắt chính thức, ở đây không có nút thanh toán giả.</p>
+          </details>
         </aside>
       </div>
     </header>
@@ -414,7 +435,7 @@
     </section>
 
     <!-- ================= FAQ ================= -->
-    <section class="block" style="padding-top:6px">
+    <section class="block faq-block">
       <div class="wrap faq">
         <h2>Câu hỏi thường gặp</h2>
         <p class="sub">Những điều freelancer và đội thi công nhỏ hay hỏi trước khi dùng.</p>
@@ -444,7 +465,7 @@
     <footer>
       <div class="wrap">
         <span><b>Báo Giá &amp; Hợp Đồng Mẫu</b> — một trong 6 công cụ cho người bán và làm dịch vụ tại Việt Nam.</span>
-        <span>29.000đ/tháng · Dùng thử miễn phí 3 ngày · Sau 3 ngày thu phí</span>
+        <span>29.000đ/tháng · Bundle 6 công cụ 99.000đ/tháng · Dùng thử miễn phí 3 ngày · Sau 3 ngày thu phí</span>
       </div>
     </footer>
 
@@ -530,6 +551,8 @@
       tabs.forEach(function (t) {
         t.addEventListener("click", function () { switchTab(t.getAttribute("data-tab")); });
       });
+      var seeTpl = $("seeTemplates");
+      if (seeTpl) seeTpl.addEventListener("click", function () { switchTab("library"); });
       function switchTab(name) {
         tabs.forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-tab") === name ? "true" : "false"); });
         document.querySelectorAll(".panel").forEach(function (p) { p.classList.toggle("active", p.id === "panel-" + name); });
@@ -793,7 +816,7 @@
           div.innerHTML =
             '<div class="q-main"><b>' + esc(x.no) + " · " + esc(x.client) + '</b><span>' + esc(x.title) + " — " + fmtDate(x.date) + '</span></div>' +
             '<div class="q-total">' + fmt(x.total) + '</div>' +
-            '<div><span class="badge ' + x.status + '">' + STATUS[x.status] + "</span></div>" +
+            '<div class="q-badge-wrap"><span class="badge ' + x.status + '">' + STATUS[x.status] + "</span></div>" +
             '<div class="q-actions"><select aria-label="Đổi trạng thái báo giá ' + esc(x.no) + '">' + opts + "</select></div>";
           var actions = div.querySelector(".q-actions");
           if (x.data) {
