@@ -1267,6 +1267,164 @@ Freeship cho đơn từ 199.000đ</textarea>
         </div>
       </section>
     </main>
+
+    <!-- ============ HỖ TRỢ KHÁCH HÀNG (ngoài khu vực khóa đăng nhập) ============ -->
+    <section id="support">
+      <style>
+        #support .sp-grid { display: grid; gap: 18px; }
+        @media (min-width: 860px) { #support .sp-grid { grid-template-columns: 1fr 1.4fr; align-items: start; } }
+        #support .sp-card {
+          background: var(--surface); border: 1px solid var(--amber-line);
+          border-radius: 18px; padding: 24px; box-shadow: var(--shadow);
+        }
+        #support .sp-card h3 { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
+        #support .sp-card .sp-hint { margin: 0 0 18px; color: var(--ink-2); font-size: 14.5px; }
+        #support .sp-zalo-btn { width: 100%; box-sizing: border-box; }
+        #support .sp-zalo-num { margin: 14px 0 0; text-align: center; color: var(--ink-2); font-size: 15px; }
+        #support .sp-zalo-num strong { color: var(--accent-deep); font-size: 19px; font-weight: 900; letter-spacing: .02em; }
+        #support .sp-submit { width: 100%; }
+        #support .sp-submit:disabled { opacity: .55; cursor: wait; }
+        #support .sp-msg { font-size: 14.5px; margin: 12px 0 0; min-height: 1.4em; font-weight: 600; }
+        #support .sp-msg.is-ok { color: var(--green); }
+        #support .sp-msg.is-err { color: #c22f2f; }
+        @media (prefers-color-scheme: dark) { #support .sp-msg.is-err { color: #f28b82; } }
+        @media (max-width: 560px) { #support .sp-card { padding: 18px; } }
+      </style>
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>Cần hỗ trợ?</h2>
+          <p>Gặp lỗi, hết dùng thử hay thanh toán chưa mở khóa — nhắn ngay để được hỗ trợ.</p>
+        </div>
+        <div class="sp-grid">
+          <div class="sp-card">
+            <h3>Nhắn Zalo trực tiếp</h3>
+            <p class="sp-hint">Cách nhanh nhất: bấm nút bên dưới để nhắn thẳng cho shop, shop phản hồi trong giờ làm việc.</p>
+            <a class="btn btn-primary sp-zalo-btn" href="https://zalo.me/0327047928" target="_blank" rel="noopener">Nhắn Zalo cho shop</a>
+            <p class="sp-zalo-num">Số Zalo của shop: <strong>0327047928</strong></p>
+          </div>
+          <div class="sp-card">
+            <h3>Gửi yêu cầu hỗ trợ</h3>
+            <p class="sp-hint">Điền form này nếu chưa tiện mở Zalo — shop sẽ liên hệ lại qua số điện thoại hoặc email bạn để lại.</p>
+            <form id="sp-form" novalidate>
+              <div class="field">
+                <label for="sp-name">Họ tên <span class="opt">(không bắt buộc)</span></label>
+                <input type="text" id="sp-name" autocomplete="name" placeholder="Tên của bạn" />
+              </div>
+              <div class="field">
+                <label for="sp-contact">Số điện thoại hoặc email</label>
+                <input type="text" id="sp-contact" required autocomplete="tel" placeholder="Số điện thoại hoặc email để shop liên hệ lại" />
+              </div>
+              <div class="field">
+                <label for="sp-issue">Vấn đề</label>
+                <select id="sp-issue">
+                  <option>Lỗi trang</option>
+                  <option>Hết dùng thử</option>
+                  <option>Thanh toán</option>
+                  <option>Gói Pro</option>
+                  <option>Khác</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="sp-message">Mô tả ngắn</label>
+                <textarea id="sp-message" required placeholder="Bạn đang gặp vấn đề gì? Mô tả ngắn gọn giúp shop xử lý nhanh hơn."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary sp-submit" id="sp-submit">Gửi yêu cầu</button>
+              <p class="sp-msg" id="sp-msg" role="status"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          "use strict";
+          var form = document.getElementById("sp-form");
+          if (!form) return;
+          var msgEl = document.getElementById("sp-msg");
+          var submitBtn = document.getElementById("sp-submit");
+          var spClient = null;
+
+          function setMsg(text, kind) {
+            msgEl.textContent = text || "";
+            msgEl.classList.remove("is-ok", "is-err");
+            if (kind) msgEl.classList.add(kind === "ok" ? "is-ok" : "is-err");
+          }
+          /* Đọc đúng cấu hình Supabase mà khối đăng nhập của trang đã khai báo,
+             không dùng URL/key nào khác. */
+          function findConfig() {
+            var url = null, key = null;
+            var scripts = document.querySelectorAll("script");
+            for (var i = 0; i < scripts.length; i++) {
+              var t = scripts[i].textContent || "";
+              if (!url) { var m = t.match(/SUPABASE_URL\s*=\s*"([^"]+)"/); if (m) url = m[1]; }
+              if (!key) { var m2 = t.match(/SUPABASE_ANON_KEY\s*=\s*"([^"]+)"/); if (m2) key = m2[1]; }
+              if (url && key) break;
+            }
+            return (url && key) ? { url: url, key: key } : null;
+          }
+          function loadUmd() {
+            return new Promise(function (resolve, reject) {
+              if (window.supabase && window.supabase.createClient) return resolve();
+              var existing = document.querySelector('script[src*="supabase"]');
+              var src = existing ? existing.getAttribute("src") : null;
+              if (!src) return reject(new Error("no_supabase_cdn"));
+              var s = document.createElement("script");
+              s.src = src;
+              s.onload = resolve;
+              s.onerror = function () { reject(new Error("load_supabase_failed")); };
+              document.head.appendChild(s);
+            });
+          }
+          function getClient() {
+            if (spClient) return Promise.resolve(spClient);
+            /* Ưu tiên client Supabase sẵn có của trang nếu đã được tạo và lộ ra ngoài. */
+            if (window.client && typeof window.client.from === "function") {
+              spClient = window.client;
+              return Promise.resolve(spClient);
+            }
+            return loadUmd().then(function () {
+              var cfg = findConfig();
+              if (!cfg) throw new Error("no_supabase_config");
+              spClient = window.supabase.createClient(cfg.url, cfg.key);
+              return spClient;
+            });
+          }
+
+          form.addEventListener("submit", function (ev) {
+            ev.preventDefault();
+            var name = document.getElementById("sp-name").value.trim();
+            var contact = document.getElementById("sp-contact").value.trim();
+            var issue = document.getElementById("sp-issue").value;
+            var message = document.getElementById("sp-message").value.trim();
+            if (!contact || !message) {
+              setMsg("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", "err");
+              return;
+            }
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Đang gửi…";
+            setMsg("");
+            getClient().then(function (c) {
+              return c.from("support_tickets").insert([{
+                name: name,
+                contact: contact,
+                issue_type: issue,
+                message: message,
+                page: "tao-anh-san-pham",
+                status: "new"
+              }]);
+            }).then(function (res) {
+              if (res && res.error) throw res.error;
+              setMsg("Đã gửi yêu cầu — shop sẽ liên hệ lại qua Zalo/SĐT bạn để lại.", "ok");
+              form.reset();
+            }).catch(function () {
+              setMsg("Gửi chưa thành công — hãy nhắn Zalo 0327047928 giúp shop.", "err");
+            }).finally(function () {
+              submitBtn.disabled = false;
+              submitBtn.textContent = "Gửi yêu cầu";
+            });
+          });
+        })();
+      </script>
+    </section>
     <footer>
       <div class="wrap">
         <p>Tạo Ảnh Sản Phẩm — một trong 6 công cụ bán hàng giá rẻ cho shop nhỏ Việt Nam. Giá dự kiến: 29.000đ/tháng, dùng thử 3 ngày.</p>
