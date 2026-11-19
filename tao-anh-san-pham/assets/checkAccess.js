@@ -156,7 +156,9 @@
   function createPayment(product) {
     product = product || cfg.product;
     return getSession().then(function (session) {
-      if (!session) return { access: false, reason: "login_required" };
+      // Chưa đăng nhập: trả kèm thông báo rõ để nơi gọi (snippet, nút Pro
+      // P9...) hiển thị thay vì "lỗi không rõ". Không redirect ở đây.
+      if (!session) return { access: false, reason: "login_required", error: "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí." };
       return fetch(edgeUrl("create-payment"), {
         method: "POST",
         headers: authHeaders(session),
@@ -169,16 +171,30 @@
   }
 
   // --- UI: khóa/mở theo kết quả checkAccess ------------------------------
+  // Hiện câu yêu cầu đăng nhập + cuộn tới khối đăng nhập (#ccs-auth).
+  // Dùng khi bấm nút thanh toán lúc chưa đăng nhập (trước đây im lặng).
+  function showLoginRequired() {
+    document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+      el.textContent = paywallMessage("login_required");
+    });
+    var auth = document.getElementById("ccs-auth");
+    if (auth && auth.scrollIntoView) {
+      auth.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   function applyAccessToPage(access) {
     var locked = !access.access;
     document.querySelectorAll("[data-requires-access]").forEach(function (el) {
+      el.hidden = locked;
       el.style.display = locked ? "none" : "";
     });
     document.querySelectorAll("[data-paywall]").forEach(function (el) {
+      el.hidden = !locked;
       el.style.display = locked ? "" : "none";
     });
     document.querySelectorAll("[data-trial-days-left]").forEach(function (el) {
-      el.textContent = (access.reason === "trial" && access.days_left != null)
+      el.textContent = ((access.reason === "trial" || access.reason === "bundle_trial") && access.days_left != null)
         ? ("Còn " + access.days_left + " ngày dùng thử")
         : "";
     });
@@ -188,7 +204,30 @@
     document.querySelectorAll("[data-pay-button]").forEach(function (btn) {
       if (!btn.dataset.bound) {
         btn.dataset.bound = "1";
-        btn.addEventListener("click", function () { createPayment(cfg.product); });
+        btn.addEventListener("click", function () {
+          // SỬA LỖI mục 13(b): trước đây bấm nút lúc chưa đăng nhập thì
+          // createPayment trả login_required trong im lặng (không chuyển
+          // trang, không báo lỗi). Giờ hiện câu yêu cầu đăng nhập và cuộn
+          // tới khối đăng nhập; lỗi server cũng hiện rõ thay vì im lặng.
+          // Nút có data-product riêng thì dùng nó, không thì dùng sản phẩm
+          // của trang (cfg.product, do snippet nạp từ data-product).
+          var product = btn.getAttribute("data-product") || cfg.product;
+          createPayment(product).then(function (res) {
+            if (!res) return;
+            if (res.reason === "login_required") {
+              showLoginRequired();
+            } else if (!res.checkoutUrl && res.error) {
+              document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+                el.textContent = res.error;
+              });
+            }
+            // Có checkoutUrl thì createPayment đã tự redirect sang payOS.
+          }).catch(function () {
+            document.querySelectorAll("[data-paywall-reason]").forEach(function (el) {
+              el.textContent = "Lỗi kết nối — thử lại sau.";
+            });
+          });
+        });
       }
     });
   }
