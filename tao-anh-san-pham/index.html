@@ -629,6 +629,10 @@
   var mode = "signin";
   var client = null;   // supabase client (tạo ở init)
   var accessCache = null;
+  // Cờ chờ Supabase khôi phục phiên đã lưu: getSession() lúc trang vừa tải
+  // có thể trả null dù đã đăng nhập. Chỉ khi onAuthStateChange đã chạy
+  // (authReady=true) mới được kết luận "chưa đăng nhập" và khóa công cụ.
+  var authReady = false;
 
   function fmtVnd(n) { return n.toLocaleString("vi-VN") + "đ"; }
   function fmtDate(iso) {
@@ -743,8 +747,12 @@
       case "rpc_error":
         statusEl.innerHTML = "Không kiểm tra được quyền dùng lúc này. Thử tải lại trang.";
         break;
+      case "login_required":
+        statusEl.innerHTML = "Vui lòng đăng nhập để dùng thử 3 ngày miễn phí.";
+        break;
       default:
-        statusEl.innerHTML = "Trạng thái: " + (a.reason || "chưa rõ") + ".";
+        // Không bao giờ hiện mã lỗi thô (vd login_required) cho người dùng.
+        statusEl.innerHTML = "Đang kiểm tra tài khoản…";
     }
   }
 
@@ -852,13 +860,26 @@
   function refresh() {
     return client.auth.getSession().then(function (r) {
       var session = r.data.session;
-      if (!session) { applyAccess({ access: false, reason: "login_required" }); show("guest"); return; }
+      if (!session) {
+        // Supabase có thể chưa khôi phục xong phiên đã lưu — chưa kết luận
+        // "chưa đăng nhập": giữ trạng thái chờ trung tính ("Đang kiểm tra
+        // quyền dùng…") và chờ onAuthStateChange gọi lại refresh().
+        if (!authReady) return;
+        // Đã chắc chắn không có phiên (authReady=true mà vẫn null) — khóa như cũ.
+        applyAccess({ access: false, reason: "login_required" }); show("guest"); return;
+      }
       show("user");
       $('[data-ccs-user-email]').textContent = session.user.email || "";
       return askAccess().then(applyAccess).catch(function (err) {
+        if (!authReady) return;
         statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
         say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
       });
+    }).catch(function (err) {
+      // Cùng cách chặn: lỗi trong lúc auth chưa sẵn sàng thì không khóa oan.
+      if (!authReady) return;
+      statusEl.textContent = "Không kiểm tra được quyền dùng lúc này.";
+      say("Lỗi kết nối: " + (err && err.message ? err.message : err), "err");
     });
   }
   function handlePayReturn() {
@@ -902,8 +923,13 @@
         return window.CongCuShop.init({ supabaseUrl: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, product: product });
       }
     }).then(function () {
-      client.auth.onAuthStateChange(function () { refresh(); });
+      client.auth.onAuthStateChange(function () { authReady = true; refresh(); });
       handlePayReturn();
+      // Dự phòng: sau 5 giây mà sự kiện auth vẫn chưa chạy thì tự đánh dấu
+      // đã sẵn sàng và kiểm tra lại, để trang không kẹt ở trạng thái chờ.
+      setTimeout(function () {
+        if (!authReady) { authReady = true; refresh(); }
+      }, 5000);
       return refresh();
     }).catch(function (err) {
       say("Không tải được Supabase: " + (err && err.message ? err.message : err) +
