@@ -69,12 +69,16 @@
         line-height: 1.55;
         -webkit-font-smoothing: antialiased;
       }
-      .num { font-variant-numeric: tabular-nums; }
+      .num, .value, .tx-amt, .bd-amt, .price-big, .bundle-price, .hero-price-amount { font-variant-numeric: tabular-nums; }
       a { color: var(--brand); }
       .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+      .field-optional { color: var(--ink-3); font-weight: 500; }
+      .panel-hint { font-weight: 500; color: var(--ink-3); font-size: .85rem; }
+      .hidden-input { display: none; }
+      .import-label { cursor: pointer; }
 
       /* ---------- Hero ---------- */
-      .hero { padding: 52px 0 8px; }
+      .hero { padding: 48px 0 32px; }
       .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: end; }
       h1 {
         font-size: clamp(2rem, 5.2vw, 3.4rem);
@@ -82,27 +86,29 @@
         margin: 0 0 16px;
       }
       h1 .hl { color: var(--brand); }
-      .hero-sub { font-size: 1.08rem; color: var(--ink-2); margin: 0 0 24px; max-width: 34rem; }
+      .hero-sub { font-size: 1.08rem; color: var(--ink-2); margin: 0 0 22px; max-width: 34rem; }
+      .hero-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px; margin: 0 0 18px; }
+      .hero-price-amount { font-size: clamp(1.9rem, 4vw, 2.5rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1; color: var(--brand); }
+      .hero-price-unit { font-size: 1rem; font-weight: 700; color: var(--ink); }
+      .hero-price-note { font-size: .92rem; color: var(--ink-2); }
       .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
       .btn {
         display: inline-flex; align-items: center; justify-content: center; gap: 8px;
         border: 0; cursor: pointer; text-decoration: none;
         font: inherit; font-weight: 700; font-size: .98rem;
         padding: 12px 22px; border-radius: 999px; min-height: 48px;
-        transition: transform .12s ease, background .12s ease;
+        transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
       }
       .btn:active { transform: scale(.98); }
-      .btn-primary { background: var(--brand); color: #fff; }
-      @media (prefers-color-scheme: dark) { .btn-primary { color: #08130c; } }
+      .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 10px 24px rgba(13, 122, 74, .28); }
+      @media (prefers-color-scheme: dark) { .btn-primary { color: #08130c; box-shadow: 0 10px 24px rgba(0, 0, 0, .35); } }
       .btn-primary:hover { background: var(--brand-dark); }
       @media (prefers-color-scheme: dark) { .btn-primary:hover { background: var(--brand); filter: brightness(1.12); color: #08130c; } }
-      .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line-strong); }
+      .btn-hero { font-size: 1.07rem; font-weight: 800; padding: 16px 32px; min-height: 58px; }
+      .btn-ghost { background: transparent; color: var(--ink-2); border: 1px solid var(--line); font-weight: 600; font-size: .94rem; padding: 11px 18px; min-height: 46px; box-shadow: none; }
       .btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
-      .price-line { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 20px; color: var(--ink-2); font-size: .95rem; }
+      .price-line { margin-top: 16px; color: var(--ink-2); font-size: .94rem; line-height: 1.5; }
       .price-line strong { color: var(--ink); }
-      .price-line > span { display: inline-flex; align-items: center; gap: 8px; }
-      .price-line .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3); flex: none; }
-      .price-line > span:first-child .dot { display: none; }
 
       .hero-facts {
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
@@ -116,7 +122,7 @@
       .fact p b { display: block; font-size: 1rem; }
 
       /* ---------- App (sổ) ---------- */
-      .app-section { padding: 40px 0 8px; }
+      .app-section { padding: 0 0 8px; }
       .app {
         background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
         box-shadow: var(--shadow); overflow: hidden;
@@ -146,11 +152,12 @@
       .filters button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
       @media (prefers-color-scheme: dark) { .filters button[aria-pressed="true"] { background: var(--ink); color: #0d130f; } }
 
-      .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
-      .sum-cell { background: var(--surface); padding: 18px 24px; }
-      .sum-cell .label { font-size: .82rem; color: var(--ink-3); font-weight: 600; display: flex; align-items: center; gap: 7px; }
-      .sum-cell .value { font-size: clamp(1.25rem, 2.6vw, 1.7rem); font-weight: 800; letter-spacing: -0.01em; margin-top: 2px; }
-      .sum-cell .sub { font-size: .83rem; color: var(--ink-3); margin-top: 1px; }
+      .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); align-items: stretch; }
+      .sum-cell { background: var(--surface); padding: 18px 24px; display: flex; flex-direction: column; }
+      .sum-cell .label { font-size: .82rem; color: var(--ink-3); font-weight: 600; display: flex; align-items: center; gap: 7px; line-height: 1.35; min-height: 1.1rem; }
+      .sum-cell .value { font-size: clamp(1.25rem, 2.6vw, 1.7rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1.25; margin-top: 4px; }
+      .sum-cell .value-top { font-size: 1.12rem; line-height: 1.3; padding-top: 5px; overflow-wrap: anywhere; }
+      .sum-cell .sub { font-size: .83rem; color: var(--ink-3); margin-top: 3px; line-height: 1.4; }
       .swatch { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
       .sw-thu { background: var(--thu); } .sw-chi { background: var(--chi); } .sw-lai { background: var(--amber); }
 
@@ -180,15 +187,21 @@
       .amount-input { font-size: 1.3rem !important; font-weight: 800; text-align: right; }
       .quick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
       .quick button {
+        flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center;
         font: inherit; font-size: .83rem; font-weight: 600; cursor: pointer;
         border: 1px solid var(--line-strong); background: var(--surface-2); color: var(--ink-2);
-        border-radius: 999px; padding: 6px 12px; min-height: 36px;
+        border-radius: 999px; padding: 7px 12px; min-height: 38px; white-space: nowrap;
       }
       .quick button:hover { border-color: var(--brand); color: var(--brand); }
       .form-error { display: none; color: var(--chi); font-size: .88rem; font-weight: 600; margin: 0 0 10px; }
       .form-error.show { display: block; }
-      .btn-add { width: 100%; }
+      .btn-add { width: 100%; min-height: 52px; font-size: 1rem; }
       .form-actions { display: flex; gap: 8px; margin-top: 10px; }
+      #sampleBtn { border-color: var(--brand); color: var(--brand); font-weight: 700; background: var(--brand-soft); }
+      #sampleBtn:hover { background: var(--brand); color: #fff; }
+      @media (prefers-color-scheme: dark) { #sampleBtn:hover { color: #08130c; } }
+      #clearBtn { border-color: var(--line); color: var(--chi); background: transparent; font-weight: 600; }
+      #clearBtn:hover { border-color: var(--chi); background: var(--chi-soft); color: var(--chi); }
       .btn-small {
         flex: 1; font: inherit; font-size: .88rem; font-weight: 600; cursor: pointer;
         border: 1.5px solid var(--line-strong); background: var(--surface); color: var(--ink-2);
@@ -202,28 +215,29 @@
       .panel + .panel { border-top: 1px solid var(--line); }
       .tx-list { list-style: none; margin: 0; padding: 0; }
       .tx {
-        display: grid; grid-template-columns: auto 1fr auto auto; gap: 12px; align-items: center;
-        padding: 11px 0; border-top: 1px dashed var(--line);
+        display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 12px; align-items: center;
+        padding: 11px 8px; margin: 0 -8px; border-top: 1px dashed var(--line); border-radius: 10px;
+        transition: background .12s ease;
       }
-      .tx:first-child { border-top: 0; padding-top: 2px; }
+      .tx:first-child { border-top: 0; padding-top: 4px; }
       .tx-badge {
         width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; flex: none;
       }
       .tx-badge.thu { background: var(--thu-soft); color: var(--thu); }
       .tx-badge.chi { background: var(--chi-soft); color: var(--chi); }
       .tx-main { min-width: 0; }
-      .tx-cat { font-weight: 700; font-size: .95rem; }
-      .tx-note { color: var(--ink-2); font-size: .86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .tx-cat { font-weight: 700; font-size: .95rem; line-height: 1.35; overflow-wrap: anywhere; }
+      .tx-note { display: block; color: var(--ink-2); font-size: .86rem; line-height: 1.45; overflow-wrap: anywhere; }
       .tx-date { color: var(--ink-3); font-size: .83rem; text-align: right; white-space: nowrap; }
-      .tx-amt { font-weight: 800; white-space: nowrap; }
+      .tx-amt { font-weight: 800; white-space: nowrap; line-height: 1.3; }
       .tx-amt.thu { color: var(--thu); } .tx-amt.chi { color: var(--chi); }
       .tx-del {
         grid-column: 4; justify-self: end;
-        background: none; border: 0; cursor: pointer; color: var(--ink-3);
-        width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center; padding: 0;
+        background: var(--surface-2); border: 1px solid var(--line); cursor: pointer; color: var(--ink-2);
+        width: 36px; height: 36px; min-height: 36px; border-radius: 9px; display: grid; place-items: center; padding: 0;
       }
-      .tx-del:hover { color: var(--chi); background: var(--chi-soft); }
-      .tx-right { text-align: right; display: grid; gap: 0; justify-items: end; }
+      .tx-del:hover { color: var(--chi); background: var(--chi-soft); border-color: var(--chi-soft); }
+      .tx-right { text-align: right; display: grid; gap: 1px; justify-items: end; min-width: 0; }
       .empty {
         border: 1.5px dashed var(--line-strong); border-radius: var(--radius);
         padding: 26px 20px; text-align: center; color: var(--ink-2);
@@ -238,15 +252,18 @@
 
       .chart-wrap { width: 100%; }
       .chart-wrap svg { width: 100%; height: auto; display: block; }
-      .chart-legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: .86rem; color: var(--ink-2); margin-top: 6px; }
+      .chart-legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: .88rem; color: var(--ink-2); margin-top: 10px; padding-left: 6.7%; }
       .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
       .chart-empty { color: var(--ink-3); font-size: .92rem; padding: 18px 0 6px; }
+      .chart-empty-tight { padding-top: 4px; }
+      .chart-footnote { font-size: .78rem; color: var(--ink-3); margin: 6px 0 0; line-height: 1.45; }
 
-      .bd-row { display: grid; grid-template-columns: 130px 1fr auto; gap: 12px; align-items: center; padding: 7px 0; }
-      .bd-cat { font-size: .92rem; font-weight: 600; display: flex; align-items: center; gap: 8px; min-width: 0; }
+      .bd-row { display: grid; grid-template-columns: minmax(120px, 170px) minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 7px 0; }
+      .bd-cat { font-size: .92rem; font-weight: 600; display: flex; align-items: flex-start; gap: 8px; min-width: 0; line-height: 1.4; }
+      .bd-cat .swatch { flex: none; margin-top: 5px; }
       .bd-cat span { overflow-wrap: anywhere; }
-      .bd-bar { height: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; }
-      .bd-fill { height: 100%; border-radius: 99px; }
+      .bd-bar { height: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; min-width: 0; }
+      .bd-fill { display: block; height: 100%; border-radius: 99px; }
       .bd-fill.thu { background: var(--thu); } .bd-fill.chi { background: var(--chi); }
       .bd-amt { font-size: .9rem; font-weight: 700; white-space: nowrap; }
       .bd-amt small { color: var(--ink-3); font-weight: 500; }
@@ -258,10 +275,11 @@
       .app-foot .btn-small { flex: 0 1 auto; padding: 9px 18px; background: var(--surface); }
 
       /* ---------- Sections ---------- */
-      section.block { padding: 56px 0 8px; }
+      section.block { padding: 48px 0 8px; }
       .block-head { max-width: 40rem; margin-bottom: 28px; }
-      .block-head h2 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 800; letter-spacing: -0.015em; margin: 0 0 10px; line-height: 1.2; }
-      .block-head p { color: var(--ink-2); margin: 0; font-size: 1.02rem; }
+      .block-head h2, .price-panel h2, .final-cta h2 { font-size: clamp(1.55rem, 3.2vw, 2rem); font-weight: 800; letter-spacing: -0.015em; line-height: 1.25; }
+      .block-head h2 { margin: 0 0 10px; }
+      .block-head p { color: var(--ink-2); margin: 0; font-size: 1.02rem; line-height: 1.6; }
 
       .feat-rows { border-top: 1px solid var(--line); }
       .feat {
@@ -297,17 +315,22 @@
       /* ---------- Pricing ---------- */
       .price-panel {
         background: var(--ink); color: var(--bg); border-radius: 20px;
-        padding: clamp(26px, 5vw, 48px); display: grid; grid-template-columns: 1fr 1fr; gap: 36px;
+        padding: clamp(26px, 5vw, 44px); display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: start;
       }
       @media (prefers-color-scheme: dark) { .price-panel { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); } }
-      .price-panel h2 { margin: 0 0 8px; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.01em; }
-      .price-panel .lede { opacity: .75; margin: 0; }
-      .price-big { font-size: clamp(2.4rem, 6vw, 3.4rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+      .price-panel h2 { margin: 0 0 10px; }
+      .price-panel .lede { opacity: .78; margin: 0; line-height: 1.6; }
+      .price-big { font-size: clamp(2.4rem, 6vw, 3.4rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1; margin-top: 22px; }
       .price-big small { font-size: 1.05rem; font-weight: 600; opacity: .7; letter-spacing: 0; }
-      .price-note { margin-top: 10px; font-weight: 700; color: var(--amber); }
-      @media (prefers-color-scheme: light) { .price-note { color: #f2c14e; } }
-      .incl { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; align-content: start; }
-      .incl li { display: flex; gap: 11px; align-items: flex-start; font-size: .98rem; }
+      .price-note { margin: 12px 0 0; font-size: .94rem; opacity: .78; }
+      .bundle-box { margin-top: 20px; border-radius: 14px; padding: 16px 18px; background: rgba(255, 255, 255, .08); display: grid; gap: 3px; }
+      @media (prefers-color-scheme: dark) { .bundle-box { background: var(--brand-soft); } }
+      .bundle-label { font-size: .84rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
+      .bundle-price { font-size: 1.7rem; font-weight: 900; letter-spacing: -0.01em; line-height: 1.15; }
+      .bundle-price small { font-size: .95rem; font-weight: 600; opacity: .7; }
+      .bundle-sub { font-size: .9rem; opacity: .78; line-height: 1.5; }
+      .incl { list-style: none; margin: 0; padding: 4px 0 0; display: grid; gap: 13px; align-content: start; }
+      .incl li { display: flex; gap: 11px; align-items: flex-start; font-size: .98rem; line-height: 1.55; }
       .incl svg { flex: none; margin-top: 3px; }
       .price-panel .btn { margin-top: 22px; }
 
@@ -316,17 +339,17 @@
       details { border-bottom: 1px solid var(--line); }
       details:first-of-type { border-top: 1px solid var(--line); }
       summary {
-        cursor: pointer; font-weight: 700; font-size: 1.02rem; padding: 16px 4px;
-        list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 52px;
+        cursor: pointer; font-weight: 700; font-size: 1.02rem; line-height: 1.45; padding: 17px 4px;
+        list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 14px; min-height: 56px;
       }
       summary::-webkit-details-marker { display: none; }
-      summary::after { content: "+"; font-size: 1.4rem; font-weight: 400; color: var(--brand); flex: none; }
+      summary::after { content: "+"; width: 28px; height: 28px; display: grid; place-items: center; font-size: 1.35rem; line-height: 1; font-weight: 400; color: var(--brand); flex: none; }
       details[open ] summary::after { content: "−"; }
-      details p { margin: 0; padding: 0 4px 18px; color: var(--ink-2); max-width: 42rem; }
+      details p { margin: 0; padding: 0 32px 18px 4px; color: var(--ink-2); max-width: 42rem; line-height: 1.6; }
 
-      .final-cta { text-align: left; padding: 56px 0 70px; }
-      .final-cta h2 { font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 900; letter-spacing: -0.02em; margin: 0 0 10px; line-height: 1.15; }
-      .final-cta p { color: var(--ink-2); margin: 0 0 22px; max-width: 36rem; }
+      .final-cta { text-align: left; padding: 48px 0 56px; }
+      .final-cta h2 { font-weight: 900; margin: 0 0 10px; }
+      .final-cta p { color: var(--ink-2); margin: 0 0 22px; max-width: 36rem; line-height: 1.6; }
       footer { border-top: 1px solid var(--line); padding: 22px 0 34px; color: var(--ink-3); font-size: .88rem; }
       footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
 
@@ -349,13 +372,23 @@
       }
       @media (max-width: 560px) {
         .hero { padding-top: 36px; }
-        .tx { grid-template-columns: auto 1fr auto; }
+        .hero-price-amount { font-size: 1.85rem; }
+        .btn-hero { width: 100%; }
+        .cta-row .btn-ghost { width: 100%; }
+        .tx { grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 8px; padding-left: 6px; padding-right: 6px; margin: 0 -6px; }
+        .tx-badge { width: 34px; height: 34px; }
         .tx-date { display: none; }
-        .tx-del { grid-column: 3; }
-        .bd-row { grid-template-columns: 104px 1fr auto; }
+        .tx-del { grid-column: 4; width: 32px; height: 32px; min-height: 32px; }
+        .tx-amt { font-size: .93rem; }
+        .bd-row { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; padding: 9px 0; }
+        .bd-bar { grid-column: 1 / -1; grid-row: 2; }
+        .bd-amt { font-size: .88rem; }
+        .chart-legend { padding-left: 0; }
         .sum-cell { padding: 14px 16px; }
+        .sum-cell .value-top { font-size: 1.02rem; }
         .panel, .entry-form { padding: 18px; }
         .app-head { padding: 16px 18px; }
+        .price-panel { gap: 28px; }
       }
       .free-banner {
         background: var(--brand); color: #fff; text-align: center;
@@ -364,9 +397,9 @@
       @media (prefers-color-scheme: dark) { .free-banner { color: #08130c; } }
       .free-banner a { color: inherit; text-decoration: underline; font-weight: 800; }
       .cat-manage { margin-top: 8px; }
-      .cat-add-row { display: flex; gap: 6px; }
-      .cat-add-row input { flex: 1; font: inherit; font-size: .92rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: 9px; padding: 8px 10px; min-height: 40px; }
-      .cat-add-row button, .cat-del-btn { font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; border: 1.5px solid var(--line-strong); background: var(--surface-2); color: var(--ink-2); border-radius: 9px; padding: 8px 12px; min-height: 40px; white-space: nowrap; }
+      .cat-add-row { display: flex; gap: 6px; align-items: stretch; }
+      .cat-add-row input { flex: 1; min-width: 0; font: inherit; font-size: .92rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: 10px; padding: 10px 12px; min-height: 46px; }
+      .cat-add-row button, .cat-del-btn { display: inline-flex; align-items: center; justify-content: center; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; border: 1.5px solid var(--line-strong); background: var(--surface-2); color: var(--ink-2); border-radius: 10px; padding: 10px 14px; min-height: 46px; white-space: nowrap; }
       .cat-add-row button:hover, .cat-del-btn:hover { border-color: var(--brand); color: var(--brand); }
       .custom-cat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
       .custom-cat-chip { display: inline-flex; align-items: center; gap: 6px; font-size: .83rem; font-weight: 600; background: var(--brand-soft); color: var(--ink); border-radius: 999px; padding: 5px 6px 5px 12px; }
@@ -379,12 +412,12 @@
       .tx:hover { background: var(--surface-2); }
       .recurring-box { margin-top: 22px; border-top: 1px dashed var(--line); padding-top: 18px; }
       .recurring-box h4 { margin: 0 0 6px; font-size: .98rem; font-weight: 800; }
-      .recurring-box p.desc { margin: 0 0 12px; font-size: .86rem; color: var(--ink-2); }
-      .rec-row { display: flex; gap: 6px; flex-wrap: wrap; }
-      .rec-row input, .rec-row select { font: inherit; font-size: .9rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: 9px; padding: 8px 10px; min-height: 42px; }
-      .rec-row input[name="recName"] { flex: 1 1 120px; }
-      .rec-row input[name="recAmount"] { flex: 1 1 100px; text-align: right; }
-      .rec-row input[name="recDay"] { width: 72px; }
+      .recurring-box p.desc { margin: 0 0 12px; font-size: .86rem; color: var(--ink-2); line-height: 1.55; }
+      .rec-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .rec-row input, .rec-row select { width: 100%; min-width: 0; font: inherit; font-size: .95rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line-strong); border-radius: 10px; padding: 10px 12px; min-height: 46px; }
+      .rec-row input[name="recName"] { grid-column: 1 / -1; }
+      .rec-row input[name="recAmount"] { text-align: right; }
+      .rec-add-btn { width: 100%; min-height: 46px; border-radius: 10px; }
       .rec-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
       .rec-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: .9rem; }
       .rec-item small { display: block; color: var(--ink-3); }
@@ -405,10 +438,11 @@
       .confirm-row { display: flex; gap: 8px; flex-wrap: wrap; }
       .confirm-row .btn-small { flex: 1; }
       .confirm-danger { border-color: var(--chi) !important; color: var(--chi) !important; font-weight: 800; background: var(--surface) !important; }
-      .bd-group-head { font-weight: 800; font-size: .95rem; margin: 16px 0 2px; }
-      .bd-group-head:first-child { margin-top: 0; }
-      .chart-note { font-size: .85rem; color: var(--ink-3); margin: 0 0 10px; }
-      .zero-note { margin: 16px 0 0; font-size: .9rem; border: 1px solid rgba(128, 128, 128, .4); border-radius: 12px; padding: 12px 14px; }
+      .bd-group-head { font-weight: 800; font-size: .98rem; line-height: 1.4; margin: 20px 0 4px; padding-top: 16px; border-top: 1px solid var(--line); }
+      .bd-group-head:first-child { margin-top: 2px; padding-top: 0; border-top: 0; }
+      .chart-note { font-size: .88rem; color: var(--ink-2); margin: 0 0 10px; line-height: 1.55; }
+      .zero-note { margin: 18px 0 0; font-size: .9rem; line-height: 1.6; border: 0; border-radius: 12px; padding: 14px 16px; background: rgba(255, 255, 255, .08); }
+      @media (prefers-color-scheme: dark) { .zero-note { background: var(--brand-soft); } }
       @media print {
         body { background: #fff !important; color: #000 !important; }
         .hero, .free-banner, section.block, .final-cta, footer, .toast, .entry-form, .app-head .filters, .sample-banner, .app-foot, .chart-wrap, .chart-legend, .print-hint { display: none !important; }
@@ -438,15 +472,12 @@
         <div>
           <h1>Cuối ngày, biết ngay hôm nay <span class="hl">lãi hay lỗ</span>.</h1>
           <p class="hero-sub">Sổ thu chi gọn nhẹ cho hộ kinh doanh, cửa hàng nhỏ và người bán cá nhân. Ghi một khoản trong vài giây — sổ tự cộng thu, trừ chi, phân loại chi phí và cho bạn xem dòng tiền theo ngày, theo tháng.</p>
+          <p class="hero-price"><span class="hero-price-amount num">39.000đ</span><span class="hero-price-unit">/tháng</span><span class="hero-price-note">sau 3 ngày dùng thử miễn phí</span></p>
           <div class="cta-row">
-            <a class="btn btn-primary" href="#so">Dùng thử 3 ngày miễn phí</a>
-            <a class="btn btn-ghost" href="#gia">Xem giá 39.000đ/tháng</a>
+            <a class="btn btn-primary btn-hero" href="#so">Dùng thử 3 ngày miễn phí</a>
+            <a class="btn btn-ghost" href="#gia">Xem giá</a>
           </div>
-          <div class="price-line">
-            <span><span class="dot"></span><strong>3 ngày đầu miễn phí</strong></span>
-            <span><span class="dot"></span><strong>Sau đó 39.000đ/tháng</strong></span>
-            <span><span class="dot"></span>Không cần thẻ · Không cần cài app · Dữ liệu lưu trên máy của bạn</span>
-          </div>
+          <p class="price-line">Không cần thẻ · Không cần cài app · Dữ liệu lưu trên máy của bạn</p>
         </div>
         <aside class="hero-facts" aria-label="Điểm chính">
           <h2>Sổ này làm thay bạn</h2>
@@ -505,8 +536,8 @@
           </div>
           <div class="sum-cell">
             <div class="label">Chi lớn nhất</div>
-            <div class="value num" id="sumTop" style="font-size:1.05rem; padding-top:6px;">—</div>
-            <div class="sub" id="sumTopSub">Chưa có khoản chi</div>
+            <div class="value value-top" id="sumTop">—</div>
+            <div class="sub num" id="sumTopSub">Chưa có khoản chi</div>
           </div>
         </div>
 
@@ -555,7 +586,7 @@
             </div>
 
             <div class="field">
-              <label for="note">Ghi chú <span style="color:var(--ink-3); font-weight:500;">(không bắt buộc)</span></label>
+              <label for="note">Ghi chú <span class="field-optional">(không bắt buộc)</span></label>
               <input id="note" type="text" maxlength="80" placeholder="Ví dụ: bán hàng buổi sáng, nhập rau…" />
             </div>
 
@@ -582,7 +613,7 @@
                 <input name="recAmount" id="recAmount" type="text" inputmode="numeric" placeholder="Số tiền" />
                 <input name="recDay" id="recDay" type="number" min="1" max="28" placeholder="Ngày" aria-label="Ngày trong tháng (1–28)" />
                 <select id="recType" aria-label="Loại khoản định kỳ"><option value="chi">Chi ra</option><option value="thu">Thu vào</option></select>
-                <button class="btn-small" type="button" id="addRecBtn" style="flex:0 1 auto;">+ Thêm</button>
+                <button class="btn-small rec-add-btn" type="button" id="addRecBtn">+ Thêm</button>
               </div>
               <ul class="rec-list" id="recList"></ul>
             </div>
@@ -592,7 +623,7 @@
             <div class="print-area" id="printArea"></div>
             <p class="print-hint" id="printHint">Đây là bản xem trước báo cáo tháng này. Để in hoặc lưu PDF, bấm Ctrl+P (trên điện thoại: menu trình duyệt → In / Chia sẻ → In) — bản in sẽ chỉ gồm tóm tắt và bảng giao dịch dưới đây.</p>
             <div class="panel">
-              <h3>Các khoản đã ghi <span style="font-weight:500; color:var(--ink-3); font-size:.85rem;">— chạm vào khoản để sửa</span></h3>
+              <h3>Các khoản đã ghi <span class="panel-hint">— chạm vào khoản để sửa</span></h3>
               <div class="empty" id="txEmpty">
                 <p>Sổ đang trống. Ghi khoản thu đầu tiên của hôm nay, hoặc nạp dữ liệu mẫu để xem sổ chạy thế nào.</p>
                 <button type="button" id="emptySampleBtn">Xem thử với dữ liệu mẫu</button>
@@ -602,12 +633,13 @@
 
             <div class="panel">
               <h3>Dòng tiền 7 ngày gần nhất</h3>
-              <p class="chart-note">Biểu đồ luôn tính 7 ngày gần nhất kể cả hôm nay, không đổi theo bộ lọc ở đầu sổ. Nhãn trên mỗi cột là số tiền của ngày đó, viết gọn để dễ đọc — số tổng chính xác nằm ở phần tổng phía trên.</p>
+              <p class="chart-note">Biểu đồ tính 7 ngày gần nhất kể cả hôm nay, không đổi theo bộ lọc ở đầu sổ.</p>
               <div class="chart-wrap" id="chartWrap"></div>
               <div class="chart-legend">
                 <span><span class="swatch sw-thu"></span>Thu theo ngày</span>
                 <span><span class="swatch sw-chi"></span>Chi theo ngày</span>
               </div>
+              <p class="chart-footnote">Nhãn cột viết gọn (ví dụ 1,31tr = 1.310.000đ) — số tổng chính xác ở phần tổng phía trên.</p>
             </div>
 
             <div class="panel">
@@ -623,11 +655,11 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 11l6 6 6-6"/><path d="M4 21h16"/></svg>
             Tải file CSV
           </button>
-          <label class="btn-small" for="importFile" style="cursor:pointer;">
+          <label class="btn-small import-label" for="importFile">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M6 9l6-6 6 6"/><path d="M4 21h16"/></svg>
             Nhập lại file CSV
           </label>
-          <input type="file" id="importFile" accept=".csv,text/csv" style="display:none;" />
+          <input type="file" id="importFile" accept=".csv,text/csv" class="hidden-input" />
           <button class="btn-small" type="button" id="printBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
             In báo cáo tháng
@@ -742,10 +774,14 @@
           <div>
             <h2>Dùng thử trước, thấy hợp mới trả tiền</h2>
             <p class="lede">3 ngày đầu dùng đầy đủ tính năng, không cần thẻ. Hết 3 ngày, nếu sổ giúp bạn nắm được lãi lỗ mỗi ngày thì mới tiếp tục với giá cố định dưới đây.</p>
-            <div class="price-big" style="margin-top:20px;">39.000đ<small> /tháng</small></div>
-            <p class="price-note">3 ngày đầu miễn phí — không cần thẻ, hủy bất cứ lúc nào</p>
+            <div class="price-big num">39.000đ<small> /tháng</small></div>
+            <p class="price-note">Hủy bất cứ lúc nào · Thanh toán VietQR qua payOS khi hết hạn dùng thử</p>
             <a class="btn btn-primary" href="#so">Bắt đầu dùng thử 3 ngày</a>
-            <p style="margin:16px 0 0; opacity:.75; font-size:.92rem;">Thanh toán bằng VietQR qua payOS khi hết hạn dùng thử. Gói Bundle cả 6 công cụ: 99.000đ/tháng hoặc 990.000đ/năm.</p>
+            <div class="bundle-box">
+              <span class="bundle-label">Gói Bundle cả 6 công cụ</span>
+              <span class="bundle-price num">99.000đ<small> /tháng</small></span>
+              <span class="bundle-sub">hoặc 990.000đ/năm — gồm Sổ Thu Chi và 5 công cụ còn lại cho người bán.</span>
+            </div>
             <p class="zero-note">Về con số “0 đồng”: đó là <strong>chi phí đầu tư ban đầu của bên làm sản phẩm</strong> — tận dụng hạ tầng miễn phí (Cloudflare Pages, GitHub) nên vốn bỏ ra là 0đ — <strong>không phải giá cho khách</strong>. Nhờ vậy giá cho khách mới giữ được 39.000đ/tháng sau 3 ngày dùng thử.</p>
           </div>
           <ul class="incl">
@@ -802,7 +838,7 @@
     <div class="wrap final-cta">
       <h2>Tối nay, thử trả lời câu hỏi:<br />“Hôm nay mình lãi bao nhiêu?”</h2>
       <p>Nếu câu trả lời đang là “chắc là có lãi”, thì cuốn sổ này sinh ra để đổi nó thành một con số. Ghi khoản đầu tiên mất chưa tới 10 giây — dùng thử 3 ngày miễn phí, sau đó 39.000đ/tháng.</p>
-      <a class="btn btn-primary" href="#so">Bắt đầu dùng thử 3 ngày</a>
+      <a class="btn btn-primary btn-hero" href="#so">Bắt đầu dùng thử 3 ngày</a>
     </div>
 
     <footer>
@@ -1174,7 +1210,7 @@
           sorted.forEach(function (e) {
             var li = document.createElement("li"); li.className = "tx"; li.title="Chạm để sửa khoản này";
             var arrow = e.type === "thu" ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>' : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>';
-            li.innerHTML = '<span class="tx-badge ' + e.type + '">' + arrow + "</span>" + '<span class="tx-main"><span class="tx-cat"></span>' + (e.note ? '<span class="tx-note" style="display:block;"></span>' : "") + "</span>" + '<span class="tx-right"><span class="tx-amt num ' + e.type + '">' + (e.type === "thu" ? "+" : "−") + fmt(e.amount) + "</span>" + '<span class="tx-date">' + fmtDate(e.date) + "</span></span>" + '<button type="button" class="tx-del" aria-label="Xóa khoản này"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>';
+            li.innerHTML = '<span class="tx-badge ' + e.type + '">' + arrow + "</span>" + '<span class="tx-main"><span class="tx-cat"></span>' + (e.note ? '<span class="tx-note"></span>' : "") + "</span>" + '<span class="tx-right"><span class="tx-amt num ' + e.type + '">' + (e.type === "thu" ? "+" : "−") + fmt(e.amount) + "</span>" + '<span class="tx-date">' + fmtDate(e.date) + "</span></span>" + '<button type="button" class="tx-del" aria-label="Xóa khoản này"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>';
             li.querySelector(".tx-cat").textContent = e.cat;
             if (e.note) li.querySelector(".tx-note").textContent = e.note;
             li.querySelector(".tx-del").addEventListener("click", function (ev) { ev.stopPropagation(); deleteEntry(e.id); });
@@ -1210,9 +1246,9 @@
           var max = 0; days.forEach(function (d) { max = Math.max(max, d.thu, d.chi); });
           if (max === 0) { chartEl.innerHTML = '<p class="chart-empty">Chưa có khoản nào trong 7 ngày gần nhất — biểu đồ dòng tiền sẽ hiện ở đây khi bạn bắt đầu ghi.</p>'; return; }
           var axisMax = niceCeil(max);
-          var W = 660, H = 250, base = 208, top = 26, plotH = base - top; var groupW = W / 7, barW = 24; var parts = [];
-          [0, 0.5, 1].forEach(function (f) { var y = base - plotH * f; parts.push('<line x1="44" y1="' + y + '" x2="' + (W - 6) + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/>'); parts.push('<text x="38" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="var(--ink-3)">' + (f === 0 ? "0" : fmtShort(axisMax * f)) + "</text>"); });
-          days.forEach(function (d, idx) { var cx = 44 + groupW * idx + groupW / 2 - 6; var th = axisMax ? (d.thu / axisMax) * plotH : 0; var ch = axisMax ? (d.chi / axisMax) * plotH : 0; parts.push('<rect x="' + (cx - barW - 3) + '" y="' + (base - th) + '" width="' + barW + '" height="' + Math.max(th, d.thu ? 2 : 0) + '" rx="4" fill="var(--thu)"><title>Thu ' + d.dm + ": " + fmt(d.thu) + "</title></rect>"); parts.push('<rect x="' + (cx + 3) + '" y="' + (base - ch) + '" width="' + barW + '" height="' + Math.max(ch, d.chi ? 2 : 0) + '" rx="4" fill="var(--chi)"><title>Chi ' + d.dm + ": " + fmt(d.chi) + "</title></rect>"); if (d.thu > 0) parts.push('<text x="' + (cx - 15) + '" y="' + (base - th - 6) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--thu)">' + fmtShort(d.thu) + "</text>"); if (d.chi > 0) parts.push('<text x="' + (cx + 15) + '" y="' + (base - ch - 6) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--chi)">' + fmtShort(d.chi) + "</text>"); parts.push('<text x="' + cx + '" y="' + (base + 20) + '" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--ink-2)">' + d.label + "</text>"); parts.push('<text x="' + cx + '" y="' + (base + 36) + '" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">' + d.dm + "</text>"); });
+          var W = 660, H = 262, base = 216, top = 30, plotH = base - top; var groupW = W / 7, barW = 24; var parts = [];
+          [0, 0.5, 1].forEach(function (f) { var y = base - plotH * f; parts.push('<line x1="44" y1="' + y + '" x2="' + (W - 6) + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/>'); parts.push('<text x="38" y="' + (y + 4) + '" text-anchor="end" font-size="12" fill="var(--ink-3)">' + (f === 0 ? "0" : fmtShort(axisMax * f)) + "</text>"); });
+          days.forEach(function (d, idx) { var cx = 44 + groupW * idx + groupW / 2 - 6; var th = axisMax ? (d.thu / axisMax) * plotH : 0; var ch = axisMax ? (d.chi / axisMax) * plotH : 0; parts.push('<rect x="' + (cx - barW - 3) + '" y="' + (base - th) + '" width="' + barW + '" height="' + Math.max(th, d.thu ? 2 : 0) + '" rx="4" fill="var(--thu)"><title>Thu ' + d.dm + ": " + fmt(d.thu) + "</title></rect>"); parts.push('<rect x="' + (cx + 3) + '" y="' + (base - ch) + '" width="' + barW + '" height="' + Math.max(ch, d.chi ? 2 : 0) + '" rx="4" fill="var(--chi)"><title>Chi ' + d.dm + ": " + fmt(d.chi) + "</title></rect>"); if (d.thu > 0) parts.push('<text x="' + (cx - 15) + '" y="' + (base - th - 7) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--thu)">' + fmtShort(d.thu) + "</text>"); if (d.chi > 0) parts.push('<text x="' + (cx + 15) + '" y="' + (base - ch - 7) + '" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--chi)">' + fmtShort(d.chi) + "</text>"); parts.push('<text x="' + cx + '" y="' + (base + 21) + '" text-anchor="middle" font-size="12.5" font-weight="600" fill="var(--ink-2)">' + d.label + "</text>"); parts.push('<text x="' + cx + '" y="' + (base + 38) + '" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">' + d.dm + "</text>"); });
           parts.push('<line x1="44" y1="' + base + '" x2="' + (W - 6) + '" y2="' + base + '" stroke="var(--line-strong)" stroke-width="1.5"/>');
           chartEl.innerHTML = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Biểu đồ thu chi 7 ngày gần nhất">' + parts.join("") + "</svg>";
         }
@@ -1230,7 +1266,7 @@
           var total = thu + chi;
           var noteEl2 = $("breakdownNote");
           if (noteEl2) noteEl2.textContent = "Kỳ đang xem: " + FILTER_LABEL[currentFilter] + ". Mỗi nhóm tính % theo tổng thu hoặc tổng chi riêng — cộng mỗi phía đúng 100%.";
-          if (!list.length || total === 0) { bdEl.innerHTML = '<p class="chart-empty" style="padding-top:4px;">Chưa có số liệu trong kỳ đang chọn.</p>'; return; }
+          if (!list.length || total === 0) { bdEl.innerHTML = '<p class="chart-empty chart-empty-tight">Chưa có số liệu trong kỳ đang chọn.</p>'; return; }
           bdEl.innerHTML = "";
           [{ type: "thu", groupTotal: thu, title: "Tiền vào — theo nhóm thu" }, { type: "chi", groupTotal: chi, title: "Tiền ra — theo nhóm chi" }].forEach(function (cfg) {
             if (cfg.groupTotal <= 0) return;
@@ -1244,7 +1280,7 @@
             bdEl.appendChild(head);
             rows.forEach(function (r, idx) {
               var row = document.createElement("div"); row.className = "bd-row";
-              row.innerHTML = '<span class="bd-cat"><span class="swatch ' + (r.type === "thu" ? "sw-thu" : "sw-chi") + '"></span><span></span></span>' + '<span class="bd-bar"><span class="bd-fill ' + r.type + '" style="display:block; width:' + Math.max(3, r.val / max * 100) + '%"></span></span>' + '<span class="bd-amt num">' + fmt(r.val) + " <small>· " + pcts[idx] + "%</small></span>";
+              row.innerHTML = '<span class="bd-cat"><span class="swatch ' + (r.type === "thu" ? "sw-thu" : "sw-chi") + '"></span><span></span></span>' + '<span class="bd-bar"><span class="bd-fill ' + r.type + '" style="width:' + Math.max(3, r.val / max * 100) + '%"></span></span>' + '<span class="bd-amt num">' + fmt(r.val) + " <small>· " + pcts[idx] + "%</small></span>";
               row.querySelector(".bd-cat span:last-child").textContent = r.cat;
               bdEl.appendChild(row);
             });
